@@ -2,11 +2,11 @@
       <div>
         <b-list-group-item v-bind:active=selected @click=toggle class="flex-column align-items-start">
           <div class="d-flex w-100 justify-content-between">
-            <b-form-checkbox v-model=hecho :class="{'secondary':selected}">
-              Titulo de mi tarea
+            <b-form-checkbox v-model=hecho>
+              {{ title }}
               <small>Tarea</small>
             </b-form-checkbox>
-            <small>in 3 days </small>
+            <small>{{ date }} </small>
           </div>
         </b-list-group-item>
         <b-list-group-item v-if=selected>
@@ -19,6 +19,20 @@
 
 <script>
 export default {
+  props:{
+    title:{
+      Type:String,
+      required: true
+    },
+    priority:{
+      Type:Number,
+      required: true
+    },
+    date:{
+      Type:String,
+      required: true
+    }
+  },
   data(){
     return{
       name: "Tarea",

@@ -1,0 +1,18 @@
+@import "~bootstrap/scss/_variables.scss";
+$theme-colors: (
+        "primary": #31b40d,
+        "secondary": $gray-700,
+        "info":#6F16B5,
+
+);
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~bootstrap-vue/src/index.scss';
+
+//$custom-checkbox-indicator-icon-checked:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 8 8'><path fill='#{$danger}' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26l2.974 2.99L8 2.193z'/></svg>") !default;
+//.custom-checkbox .custom-control-input:checked~.custom-control-label::before{
+//  background-color:$gray-500;
+//  border-color: $gray-500;
+//}
+//.custom-checkbox .custom-control-input:checked~.custom-control-label::after{
+//  background-image:url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='red' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
+//}

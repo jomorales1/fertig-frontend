@@ -83,6 +83,7 @@
 
 <script>
 import Tarea from "@/components/Tarea";
+import User from "../models/User"
 export default {
   name: "Lista",
   components:{
@@ -103,7 +104,8 @@ export default {
         endDate:null
       },
       startHour:null,
-      endHour:null
+      endHour:null,
+      user:new User('user','secret','myemail@email.com')
     }
   },
   methods:{

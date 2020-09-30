@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {auth} from "./auth.module"
 import 'es6-promise/auto'
-// import router from '@/router'
 
 Vue.use(Vuex)
 const store = new Vuex.Store({
@@ -35,6 +35,9 @@ const store = new Vuex.Store({
         increment (state) {
             state.count++
         }
+    },
+    modules:{
+        auth
     }
 })
 export default store

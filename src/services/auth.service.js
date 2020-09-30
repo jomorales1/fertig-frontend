@@ -4,23 +4,20 @@ const API_URL = 'http://localhost:8090'
 class AuthService{
     login(user){
         let res= axios
-            .request({
-                url:'oauth/token',
-                method:'POST',
-                baseURL:API_URL,
-                auth:{
-                    username:'cliente',
-                    password:'password'
-                },
-                headers:{
-                    "Content-Type": "application/x-www-form-urlencoded"
-                },
-                data:querystring.stringify({
+            .post(API_URL + '/oauth/token',
+                querystring.stringify({
                     username: user.username,
                     password: user.password,
                     "grant_type":"password"
-                })
-            }
+                }),{
+                    auth:{
+                        username:'cliente',
+                        password:'password'
+                    },
+                    headers:{
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    }
+                }
             ).then(response =>{
                 if (response.data.accessToken){
                     localStorage.setItem('user',JSON.stringify(response.data))
@@ -29,6 +26,21 @@ class AuthService{
             });
         console.log(res)
         return res
+    }
+    logout() {
+        localStorage.removeItem('user');
+    }
+
+    register(user) {
+        return axios.post(API_URL + '/add', {
+            correo: user.email,
+            nombre: user.username,
+            password: user.password
+        },{
+            headers:{
+                "Content-Type": "application/json"
+            }
+        });
     }
 }
 export default new AuthService()

@@ -17,7 +17,6 @@
           v-bind:priority="task.priority"
       />
     </b-list-group>
-    <b-button @click="login"/>
     <b-modal id="create-activity"
              title="Crear Actividad"
              @ok="ok"
@@ -106,7 +105,7 @@ export default {
       },
       startHour:null,
       endHour:null,
-      user:new User('user','secret')
+      user:new User('user','secret','myemail@email.com')
     }
   },
   methods:{
@@ -129,9 +128,6 @@ export default {
           this.$store.state.Tareas.sort((a, b) => b.endDate-a.endDate);
       }
 
-    },
-    login(){
-      this.$store.dispatch('auth/login',this.user)
     }
   }
 }

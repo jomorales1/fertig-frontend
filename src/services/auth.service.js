@@ -32,10 +32,11 @@ class AuthService{
     }
 
     register(user) {
-        return axios.post(API_URL + '/add', {
+        return axios.post(API_URL + '/users/addUser', {
             correo: user.email,
-            nombre: user.username,
-            password: user.password
+            usuario: user.username,
+            password: user.password,
+            nombre:user.nombre
         },{
             headers:{
                 "Content-Type": "application/json"

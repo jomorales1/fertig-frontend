@@ -17,6 +17,12 @@
                   </b-form-group>
                   <b-form-group >
                     <div class="form-row">
+                      <label class="col-form-label">Usuario: </label>
+                      <b-form-input id="usuario" required placeholder="Ingrese el usuario" v-model="Register_form.username"></b-form-input>
+                    </div>
+                  </b-form-group>
+                  <b-form-group >
+                    <div class="form-row">
                       <label class="col-form-label">Correo: </label>
                       <b-form-input id="email" required placeholder="Ingrese el correo" v-model="Register_form.email"></b-form-input>
                     </div>
@@ -39,7 +45,7 @@
                         <b-button type="reset" variant="danger"  class="col-md-4 offset-md-4" v-model="vaciar">Vaciar</b-button>
                     </div>
                   </b-form-group>
-                  <span id="stringErrorContrasenna" style="display: none">{{stringError}}</span>
+                  <span id="stringErrorContrasenna" style="color: red">{{stringError}}</span>
                   <span id="stringErrorUsuario" style="display: none">Este correo ya está siendo utilizado</span>
                 </b-form>
               </b-card>
@@ -50,13 +56,16 @@
 </template>
 
 <script>
-  import RegistroDataService from "../services/RegistroDataService";
+
+  import User from "../models/User";
 
   export default {
+    name: "SignUp",
     data(){
       return {
         Register_form:{
           name: '',
+          username: '',
           email: '',
           password:'',
             reviewPassword:''
@@ -67,21 +76,17 @@
     methods:{
       onSubmit(){
           if(this.Register_form.password === this.Register_form.reviewPassword){
-            alert("sirvaaaaaaaa")
-              var dataUser = {
-                nombre: this.Register_form.name,
-                correo: this.Register_form.email,
-                password: this.Register_form.password
-              }
+              let dataUser = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name)
+             this.$store.dispatch("auth/register", dataUser)
+                     .then(data => {
+                       alert("Usuario registrado correctamente")
+                       console.log(data)
+                     },error =>{
+                       console.log(error)
+                       this.stringError = "Error en registro"
+                       //alert("Error en registro")
+                     })
 
-              RegistroDataService.addUsuario(dataUser).
-              then(response =>{
-                console.log(response.data);
-              })
-              .catch(e =>{
-                alert(e.response.status);
-                //this.vaciar();
-              })
           }else{
               //this.vaciar()
 
@@ -92,6 +97,8 @@
         this.Register_form.name= ''
         this.Register_form.email= ''
         this.Register_form.password= ''
+        this.Register_form.username = ''
+        this.stringError = ''
 
 
       },

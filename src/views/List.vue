@@ -8,16 +8,16 @@
     </b-dropdown>
     <b-list-group>
       <Tarea
-          v-for="task in this.$store.state.Tareas"
-          v-bind:key="task.priority"
-          v-bind:title="task.title"
-          v-bind:description="task.description"
-          v-bind:startDate="task.startDate"
-          v-bind:endDate="task.endDate"
-          v-bind:priority="task.priority"
+          v-for="task in this.$store.state.DataModule.tareas"
+          v-bind:key="task.prioridad"
+          v-bind:title="task.nombre"
+          v-bind:description="task.descripcion"
+          v-bind:startDate="new Date(task.fechaInicio)"
+          v-bind:endDate="new Date(task.fechaFin)"
+          v-bind:priority="task.prioridad"
       />
     </b-list-group>
-    <b-button @click="login"/>
+<!--    <b-button @click="tareas"/>-->
     <b-modal id="create-activity"
              title="Crear Actividad"
              @ok="ok"
@@ -29,7 +29,7 @@
           description="Titulo de la tarea que deseas crear"
           label="Titulo"
           label-for="title"
-      ><b-form-input id="title" v-model="tarea.title"></b-form-input>
+      ><b-form-input id="title" v-model="tarea.nombre"></b-form-input>
       </b-form-group>
       <b-form-group
           id="fieldset-description"
@@ -42,7 +42,7 @@
           id="description"
           rows="3"
           max-rows="8"
-          v-model="tarea.description"
+          v-model="tarea.descripcion"
       ></b-form-textarea>
       </b-form-group>
       <b-form-group
@@ -53,7 +53,7 @@
           label="Prioridad"
           label-for="priority"
       >
-        <b-form-input v-model="tarea.priority" type="range" min="1" max="5"></b-form-input>
+        <b-form-input v-model="tarea.prioridad" type="range" min="1" max="5"></b-form-input>
       </b-form-group>
       <b-form-group
           id="fieldset-start-date"
@@ -63,8 +63,8 @@
           label="Fecha de inicio"
           label-for="start-date, start-time"
       >
-        <b-datepicker id="start-date" value-as-date v-model="tarea.startDate" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-        <b-form-timepicker id="start-time" @change="tarea.startDate.setHours(startHour)" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+        <b-datepicker id="start-date" value-as-date v-model="tarea.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+        <b-form-timepicker id="start-time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
       </b-form-group>
       <b-form-group
           id="fieldset-end-date"
@@ -74,7 +74,7 @@
           label="Fecha de finalización"
           label-for="end-date, end-time"
       >
-        <b-datepicker id="end-date" value-as-date v-model="tarea.endDate" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+        <b-datepicker id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
         <b-form-timepicker id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
       </b-form-group>
     </b-modal>
@@ -85,6 +85,8 @@
 <script>
 import Tarea from "@/components/Tarea";
 import User from "../models/User"
+import Task from "../models/Task"
+import UserService from "../services/user.service"
 export default {
   name: "Lista",
   components:{
@@ -97,13 +99,7 @@ export default {
           "Más pronta",
           "Menos pronta"
       ],
-      tarea:{
-        title:"",
-        description:"",
-        priority:3,
-        startDate:null,
-        endDate:null
-      },
+      tarea:new Task(),
       startHour:null,
       endHour:null,
       user:new User('user','secret','myemail@email.com',"pablito")
@@ -112,10 +108,15 @@ export default {
   methods:{
     ok(){
       let h=this.endHour.split(":")
-      this.tarea.endDate.setHours(h[0],h[1])
+      this.tarea.fechaFin.setHours(h[0],h[1])
       h=this.startHour.split(":")
-      this.tarea.startDate.setHours(h[0],h[1])
-      this.$store.state.Tareas.push(this.tarea)
+      this.tarea.fechaInicio.setHours(h[0],h[1])
+      this.tarea.level=0
+      this.tarea.estimacion=0
+      this.tarea.hecha=0
+      this.tarea.etiqueta=""
+      this.tarea.recordatorio=0
+      UserService.createTask(this.tarea)
     },
     reorder(order){
       switch (order){
@@ -128,12 +129,17 @@ export default {
         case "Menos pronta":
           this.$store.state.Tareas.sort((a, b) => b.endDate-a.endDate);
       }
-
     }
   },
-  mounted(){
-    this.$store.dispatch('auth/register',this.user)
-}
+    mounted(){
+      //this.$store.dispatch('auth/register',new User("Santiago","secret","lkilni@jk.kh","santiago"))
+      this.tarea.prioridad=3
+  },
+  created(){
+    this.$store.dispatch('auth/login',new User("Santiago","secret")).then(()=>{
+      this.$store.dispatch('DataModule/update')
+    })
+  }
 }
 </script>
 

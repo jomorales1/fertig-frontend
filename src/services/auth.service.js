@@ -3,7 +3,7 @@ import querystring from "query-string"
 const API_URL = 'http://localhost:8090'
 class AuthService{
     login(user){
-        let res= axios
+        return axios
             .post(API_URL + '/oauth/token',
                 querystring.stringify({
                     username: user.username,
@@ -12,20 +12,18 @@ class AuthService{
                 }),{
                     auth:{
                         username:'cliente',
-                        password:'password'
+                        password:'secret'
                     },
                     headers:{
                         "Content-Type": "application/x-www-form-urlencoded"
                     }
                 }
             ).then(response =>{
-                if (response.data.accessToken){
+                if (response.data.access_token){
                     localStorage.setItem('user',JSON.stringify(response.data))
                 }
                 return response.data
             });
-        console.log(res)
-        return res
     }
     logout() {
         localStorage.removeItem('user');

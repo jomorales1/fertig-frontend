@@ -6,18 +6,18 @@ class UserService {
         return axios.get(API_URL + 'all')
     }
 
-    getTasks() {
-        return axios.get(API_URL + '/tasks/getTasks', { headers: authHeader() })
+    getTasks() { //Funcion para obtener tareas del usuario
+        return axios.get(API_URL + '/tasks/getTasks', { headers: authHeader() }) // Peticion tipo GET para obtener tareas
     }
 
-    createTask(task){
-        axios.post(API_URL + '/tasks/addTask'
+    createTask(task){ // Funcion para crear tarea
+        axios.post(API_URL + '/tasks/addTask' // Peticion tipo POST para agregar la tarea
             ,task,{
             headers: authHeader()
         }).then(()=>{
-            this.$store.state.Tareas=this.getTasks()
+            this.$store.state.Tareas=this.getTasks() // Luego de la petición, llamar a la función para obtener las tareas
         },()=>{
-            return "Error"
+            return "Error" // Error en otro caso
         })
     }
 

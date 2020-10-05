@@ -9,7 +9,7 @@
     <b-list-group>
       <Tarea
           v-for="task in this.$store.state.DataModule.tareas"
-          v-bind:key="task.prioridad"
+          v-bind:key="task.id"
           v-bind:title="task.nombre"
           v-bind:description="task.descripcion"
           v-bind:startDate="new Date(task.fechaInicio)"
@@ -17,7 +17,7 @@
           v-bind:priority="task.prioridad"
       />
     </b-list-group>
-<!--    <b-button @click="tareas"/>-->
+    <b-button @click="$store.dispatch('auth/logout').then(()=>$router.push('/Login'))"/>
     <b-modal id="create-activity"
              title="Crear Actividad"
              @ok="ok"
@@ -136,9 +136,7 @@ export default {
       this.tarea.prioridad=3
   },
   created(){
-    this.$store.dispatch('auth/login',new User("Santiago","secret")).then(()=>{
-      this.$store.dispatch('DataModule/update')
-    })
+    this.$store.dispatch('DataModule/update')
   }
 }
 </script>

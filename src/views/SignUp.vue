@@ -81,6 +81,7 @@
                      .then(data => {
                        alert("Usuario registrado correctamente")
                        console.log(data)
+                       this.$router.push('/Login')
                      },error =>{
                        console.log(error)
                        this.stringError = "Error en registro"
@@ -109,7 +110,7 @@
     },
     computed:{
         PasswordVerify(){
-            return this.contrasenna.length < 6 ? false : true
+            return this.contrasenna.length >= 6
         },
 
     }

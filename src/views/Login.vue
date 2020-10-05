@@ -34,7 +34,7 @@
                     <b-button type="submit" >Iniciar sesión</b-button>
                   </b-form-group>
                   <b-form-group>
-                    <b-button href="/SignUp">Registrarse</b-button>
+                    <b-button @click="$router.push('/SignUp')">Registrarse</b-button>
                   </b-form-group>
 
 

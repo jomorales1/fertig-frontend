@@ -39,11 +39,11 @@
 
 
                 </b-form>
-                <b-form-group>
-                  <button @click="handleClickGetAuth" :disabled="!isInit">get auth code</button>
-                  <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>
-                  <button @click="handleClickSignOut" v-if="isSignIn" :disabled="!isInit">signOout</button>
-                </b-form-group>
+<!--                <b-form-group>-->
+<!--                  <button @click="handleClickGetAuth" :disabled="!isInit">get auth code</button>-->
+<!--                  <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>-->
+<!--                  <button @click="handleClickSignOut" v-if="isSignIn" :disabled="!isInit">signOout</button>-->
+<!--                </b-form-group>-->
               </b-card-text>
             </b-card>
           </b-col>

@@ -58,7 +58,6 @@
 <script>
 
   import User from "../models/User";
-
   export default {
     name: "SignUp",
     data(){
@@ -70,7 +69,9 @@
           password:'',
             reviewPassword:''
         },
-        stringError: ''
+        stringError: '',
+        isInit: false,
+        isSignIn: false
       }
     },
     methods:{
@@ -85,12 +86,12 @@
                      },error =>{
                        console.log(error)
                        this.stringError = "Error en registro"
-                       //alert("Error en registro")
+
                      })
 
           }else{
-              //this.vaciar()
 
+            this.stringError = "Contraseña no verificada"
           }
 
       },
@@ -105,15 +106,14 @@
       },
       error(error){
         document.getElementById("tagError").textContent = error.toString()
-      },
-
-    },
-    computed:{
-        PasswordVerify(){
-            return this.contrasenna.length >= 6
-        },
-
+      }
     }
+    // ,computed:{
+    //     PasswordVerify(){
+    //         return this.contrasenna.length >= 6
+    //     }
+
+
   }
 </script>
 

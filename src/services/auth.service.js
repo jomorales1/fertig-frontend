@@ -4,13 +4,13 @@ const API_URL = 'http://localhost:8090'
 class AuthService{
     login(user){ // Funcion para login del susuario
         return axios
-            .post(API_URL + '/oauth/token', // request tipo POST para enviar nombre y contraseña
+            .post(API_URL + '/oauth/token', // request tipo POST para enviar usuario y contraseña
                 querystring.stringify({
                     username: user.username,
                     password: user.password,
                     "grant_type":"password"
                 }),{
-                auth:{                          // Credenciales de usuario autorizado
+                auth:{                          // Credenciales de cliente autorizado
                         username:'cliente',
                         password:'secret'
                     },

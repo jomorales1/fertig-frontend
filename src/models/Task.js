@@ -1,4 +1,5 @@
 export default class Task {
+       //modelo de tarea para enviar a backend
         constructor(title,description,priority,startDate,endDate,level, etiqueta,estimacion,hecha,recordatorio) {
             this.nombre=title
             this.descripcion=description

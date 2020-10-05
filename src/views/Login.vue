@@ -36,9 +36,10 @@
                   <b-form-group>
                     <b-button @click="$router.push('/SignUp')">Registrarse</b-button>
                   </b-form-group>
-
+                  <span id="stringErrorContrasenna" style="color: red">{{message}}</span>
 
                 </b-form>
+<!--                Botones de google -->
 <!--                <b-form-group>-->
 <!--                  <button @click="handleClickGetAuth" :disabled="!isInit">get auth code</button>-->
 <!--                  <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>-->
@@ -78,24 +79,27 @@ export default {
 
   methods: {
     onSubmit() {
+      //metodo de inicio de sesión
+      //añadrir los datos de formulario a el objeto user
       this.user.username=this.username
       this.user.password=this.password
+      //si ningun campo esta vacio llamar metodo del store de vuex
       if (this.user.username && this.user.password) {
         this.loading = true;
         this.$store.dispatch('auth/login', this.user).then(
             () => {
+              //si inicio sesión redirigir a lista
               this.$router.push('/List');
             },
-            error => {
+            () => {
+              //si hubo error mostrarlo en pantalla
               this.loading = false;
-              this.message =
-                  (error.response && error.response.data) ||
-                  error.message ||
-                  error.toString();
+              this.message ="Error en inicio de sesión, por favor revisa el usuario y la contraseña"
             }
         );
       }
     },
+    //metodos de google no funcionales
     handleClickGetAuth(){
       this.$gAuth.getAuthCode()
           .then(authCode => {
@@ -145,11 +149,13 @@ export default {
     /*acceptableSub(){
       return this.Correo.length > 0 && this.Password.length > 0 ? false:true
     },*/
+    //variable de sesión
     loggedIn() {
       return this.$store.state.auth.status.loggedIn;
     }
   },
     created() {
+    //si ya se inicio sesión redirigir directamente a lista
     if (this.loggedIn) {
       this.$router.push('/List');
     }

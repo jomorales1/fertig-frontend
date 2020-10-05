@@ -1,4 +1,5 @@
 <template>
+<!--  template por de fecto de vue para paginas que no se han implementado-->
   <div class="hello">
     <h1>{{ msg }}</h1>
     <p>

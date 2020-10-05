@@ -1,52 +1,54 @@
 <template>
   <div class="align-self-center">
     <b-container>
-      <b-row class ="justify-content-md-center "><!-- para centrar en la pantalla-->
-        <b-col col md="6" >
-          <h1>Fertig</h1>
-          <b-card
-              header="Login"
-              border-variant="primary"
-              header-bg-variant="primary"
-              header-text-variant="white"
-          >
-            <b-card-text >
-              <!-- no pasa nada hasta que se hace el 'registrarse'-->
-              <b-form @submit.prevent="onSubmit">
-                <b-form-group
-                    label="username">
-                  <!-- required para que no pase nada si no está lleno el campo-->
-                  <ValidationProvider name="username" rules="required">
-                    <b-form-input v-model="username" required  placeholder="username"></b-form-input>
-                  </ValidationProvider>
-                </b-form-group>
+      <b-overlay :show="loading" rounded="sm">
+        <b-row class ="justify-content-md-center "><!-- para centrar en la pantalla-->
+          <b-col col md="6" >
+            <h1>Fertig</h1>
+            <b-card
+                header="Login"
+                border-variant="primary"
+                header-bg-variant="primary"
+                header-text-variant="white"
+            >
+              <b-card-text >
+                <!-- no pasa nada hasta que se hace el 'registrarse'-->
+                <b-form @submit.prevent="onSubmit">
+                  <b-form-group
+                      label="username">
+                    <!-- required para que no pase nada si no está lleno el campo-->
 
-                <b-form-group
-                    label="Contraseña">
-                  <ValidationProvider name="password" rules="required">
-                    <b-form-input v-model="password"  required type="password" placeholder="*******"></b-form-input>
-                  </ValidationProvider>
+                      <b-form-input v-model="username" required  placeholder="username"></b-form-input>
 
-                </b-form-group>
+                  </b-form-group>
+
+                  <b-form-group
+                      label="Contraseña">
+
+                      <b-form-input v-model="password"  required type="password" placeholder="*******"></b-form-input>
+
+
+                  </b-form-group>
+                  <b-form-group>
+                    <!--se desabilita el boton si los campos no estan llenos o no cumplen con los requisitos-->
+                    <b-button type="submit" >Iniciar sesión</b-button>
+                  </b-form-group>
+                  <b-form-group>
+                    <b-button href="/SignUp">Registrarse</b-button>
+                  </b-form-group>
+
+
+                </b-form>
                 <b-form-group>
-                  <!--se desabilita el boton si los campos no estan llenos o no cumplen con los requisitos-->
-                  <b-button type="submit" >Iniciar sesión</b-button>
+                  <button @click="handleClickGetAuth" :disabled="!isInit">get auth code</button>
+                  <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>
+                  <button @click="handleClickSignOut" v-if="isSignIn" :disabled="!isInit">signOout</button>
                 </b-form-group>
-                <b-form-group>
-                  <b-button href="/SignUp">Registrarse</b-button>
-                </b-form-group>
-
-
-              </b-form>
-              <b-form-group>
-                <button @click="handleClickGetAuth" :disabled="!isInit">get auth code</button>
-                <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>
-                <button @click="handleClickSignOut" v-if="isSignIn" :disabled="!isInit">signOout</button>
-              </b-form-group>
-            </b-card-text>
-          </b-card>
-        </b-col>
-      </b-row>
+              </b-card-text>
+            </b-card>
+          </b-col>
+        </b-row>
+      </b-overlay>
     </b-container>
 
   </div>
@@ -78,32 +80,21 @@ export default {
     onSubmit() {
       this.user.username=this.username
       this.user.password=this.password
-      alert('bbbbbbbbbbbbbb')
-      this.loading = true;
-      this.$validator.validateAll().then(() => {
-        // if (!isValid) {
-        //   alert('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
-        //   this.loading = false;
-        //   return;
-        //
-        // }
-
-        if (this.user.username && this.user.password) {
-          this.$store.dispatch('auth/login', this.user).then(
-              () => {
-                alert('praise the sun')
-                this.$router.push('/List');
-              },
-              error => {
-                this.loading = false;
-                this.message =
-                    (error.response && error.response.data) ||
-                    error.message ||
-                    error.toString();
-              }
-          );
-        }
-      });
+      if (this.user.username && this.user.password) {
+        this.loading = true;
+        this.$store.dispatch('auth/login', this.user).then(
+            () => {
+              this.$router.push('/List');
+            },
+            error => {
+              this.loading = false;
+              this.message =
+                  (error.response && error.response.data) ||
+                  error.message ||
+                  error.toString();
+            }
+        );
+      }
     },
     handleClickGetAuth(){
       this.$gAuth.getAuthCode()
@@ -160,7 +151,7 @@ export default {
   },
     created() {
     if (this.loggedIn) {
-      this.$router.push('/profile');
+      this.$router.push('/List');
     }
   },
   }

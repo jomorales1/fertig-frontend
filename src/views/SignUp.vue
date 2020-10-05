@@ -58,7 +58,10 @@
 <script>
 
   import User from "../models/User";
-
+  import Vue from 'vue';
+  import loadScript from 'vue-plugin-load-script';
+  Vue.use(loadScript)
+  Vue.loadScript("https://apis.google.com/js/platform.js")
   export default {
     name: "SignUp",
     data(){
@@ -70,7 +73,9 @@
           password:'',
             reviewPassword:''
         },
-        stringError: ''
+        stringError: '',
+        isInit: false,
+        isSignIn: false
       }
     },
     methods:{
@@ -84,12 +89,12 @@
                      },error =>{
                        console.log(error)
                        this.stringError = "Error en registro"
-                       //alert("Error en registro")
+
                      })
 
           }else{
-              //this.vaciar()
 
+            this.stringError = "Contraseña no verificada"
           }
 
       },
@@ -105,7 +110,48 @@
       error(error){
         document.getElementById("tagError").textContent = error.toString()
       },
-
+      signUpWithGoogle(){
+        this.$gAuth.signIn()
+        .then(GoogleUser => {
+          this.Register_form.name = GoogleUser.getBasicProfile.getName()
+          console.log(GoogleUser.getId())
+        })
+      },
+      handleClickGetAuth(){
+        this.$gAuth.getAuthCode()
+                .then(authCode => {
+                  // On success
+                  alert(authCode)
+                  // return this.$http.post('http://your-backend-server.com/auth/google', { code: authCode, redirect_uri: 'postmessage' })
+                })
+                .then(() => {
+                  // And then
+                })
+                .catch(() => {
+                  // On fail do something
+                })
+      },
+      handleClickSignIn(){
+        this.$gAuth.signIn()
+                .then(() => {
+                  // On success do something, refer to https://developers.google.com/api-client-library/javascript/reference/referencedocs#googleusergetid
+                  // console.log('user', GoogleUser)
+                  this.isSignIn = this.$gAuth.isAuthorized
+                })
+                .catch(()  => {
+                  // On fail do something
+                })
+      },
+      handleClickSignOut(){
+        this.$gAuth.signOut()
+                .then(() => {
+                  // On success do something
+                  this.isSignIn = this.$gAuth.isAuthorized
+                })
+                .catch(()  => {
+                  // On fail do something
+                })
+      },
     },
     computed:{
         PasswordVerify(){

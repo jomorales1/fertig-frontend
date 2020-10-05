@@ -5,9 +5,13 @@ import router from '@/router';
 import store from '@/store';
 import * as VeeValidate from 'vee-validate';
 import 'es6-promise/auto'
+import LoadScript from 'vue-plugin-load-script';
 
 Vue.config.productionTip = false
 Vue.use(VeeValidate)
+Vue.use(LoadScript)
+
+
 
 new Vue({
     router,

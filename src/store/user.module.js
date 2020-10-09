@@ -13,7 +13,7 @@ export const DataModule = {
     state:initialState,
     actions:{
         update({commit}){//metodo del vuex para actualizar la lista de tareas desde user service
-                UserService.getTasks().then(tasks=>{
+                return UserService.getTasks().then(tasks=>{
                     commit('updated',tasks.data)
                 },()=>{
                     commit('error')

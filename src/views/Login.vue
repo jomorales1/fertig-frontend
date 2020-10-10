@@ -41,7 +41,6 @@
                 </b-form>
                 Botones de google
                 <b-form-group>
-                  <button @click="handleClickGetAuth" :disabled="!isInit">get auth code</button>
                   <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>
                   <button @click="handleClickSignOut" v-if="isSignIn" :disabled="!isInit">signOout</button>
                 </b-form-group>
@@ -100,12 +99,13 @@ export default {
       }
     },
     //metodos de google no funcionales
-    handleClickGetAuth(){
-      this.$gAuth.getAuthCode()
-          .then(authCode => {
-            // On success
-            alert(authCode)
-            this.$store.dispatch("auth/googleLogin").then(
+    handleClickSignIn(){
+      this.$gAuth.signIn()
+          .then(user => {
+            // On success do something, refer to https://developers.google.com/api-client-library/javascript/reference/referencedocs#googleusergetid
+            // console.log('user', GoogleUser)
+            console.log(user)
+            this.$store.dispatch("auth/googleLogin",user.id_token).then(
                 () => {
                   //si inicio sesión redirigir a lista
                   this.$router.push('/List');
@@ -116,20 +116,6 @@ export default {
                   this.message ="Error en inicio de sesión con google, vuelve a intentarlo"
                 }
             );
-            // return this.$http.post('http://your-backend-server.com/auth/google', { code: authCode, redirect_uri: 'postmessage' })
-          })
-          .then(() => {
-            // And then
-          })
-          .catch(() => {
-            // On fail do something
-          })
-    },
-    handleClickSignIn(){
-      this.$gAuth.signIn()
-          .then(() => {
-            // On success do something, refer to https://developers.google.com/api-client-library/javascript/reference/referencedocs#googleusergetid
-            // console.log('user', GoogleUser)
             this.isSignIn = this.$gAuth.isAuthorized
           })
           .catch(()  => {

@@ -25,8 +25,8 @@ export const auth = {
                 }
             );
         },
-        googleLogin({ commit }){
-            return AuthService.googleLogin().then(
+        googleLogin({ commit },id_token){
+            return AuthService.googleLogin(id_token).then(
                 user => {
                     commit('loginSuccess', user);//cambio del estado a inicio de sesión exitoso
                     return Promise.resolve(user);

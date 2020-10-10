@@ -1,50 +1,51 @@
 <template>
   <div class="align-self-center">
-      <b-container>
+      <b-container> <!-- Contenedor titulo y formulario de registro !-->
         <b-row  class ="justify-content-md-center ">
           <div class="col-md-6" >
             <h1>Fertig</h1>
               <b-card header="Sign Up"
                       border-variant="primary"
                       header-bg-variant="primary"
-                      header-text-variant="white">
-                <b-form id="form_registro" @submit.prevent="onSubmit" >
-                  <b-form-group >
+                      header-text-variant="white"><!-- Etiqueta para definir bordes del formulario !-->
+                <b-form id="form_registro" @submit.prevent="onSubmit" > <!-- Formulario de registro !-->
+                  <b-form-group ><!-- Campo nombre !-->
                     <div class="form-row">
                     <label class="col-form-label">Nombre: </label>
                     <b-form-input id="nombre" required placeholder="Ingrese el nombre" v-model="Register_form.name"></b-form-input>
                     </div>
                   </b-form-group>
-                  <b-form-group >
+                  <b-form-group ><!-- Campo nombre de usuario !-->
                     <div class="form-row">
                       <label class="col-form-label">Usuario: </label>
                       <b-form-input id="usuario" required placeholder="Ingrese el usuario" v-model="Register_form.username"></b-form-input>
                     </div>
                   </b-form-group>
-                  <b-form-group >
+                  <b-form-group ><!-- Campo correo !-->
                     <div class="form-row">
                       <label class="col-form-label">Correo: </label>
                       <b-form-input id="email" required placeholder="Ingrese el correo" v-model="Register_form.email"></b-form-input>
                     </div>
                   </b-form-group>
-                  <b-form-group >
+                  <b-form-group ><!-- Campo contraseña !-->
                     <div class="form-row">
                       <label class="col-form-label">Contraseña: </label>
                       <b-form-input type="password" id="password" required placeholder="Ingrese la contraseña" v-model="Register_form.password"></b-form-input>
                     </div>
                   </b-form-group>
-                    <b-form-group>
+                    <b-form-group><!-- Campo repetir contraseña !-->
                     <div class="form-row">
                         <label class="col-form-label">Repetir contraseña: </label>
                         <b-form-input type="password" id="reviewPassword" required placeholder="Confirme la contraseña" v-model="Register_form.reviewPassword"></b-form-input>
                     </div>
                     </b-form-group>
-                  <b-form-group>
+                  <b-form-group><!-- Botones de registrar y vaciar !-->
                     <div class="form-row " >
                       <b-button type="submit" class="col-md-4 text-center" variant="primary" v-model="onSubmit">Registrar</b-button>
                         <b-button type="reset" variant="danger"  class="col-md-4 offset-md-4" v-model="vaciar">Vaciar</b-button>
                     </div>
                   </b-form-group>
+                  <!-- Span en caso de errores en registro !-->
                   <span id="stringErrorContrasenna" style="color: red">{{stringError}}</span>
                   <span id="stringErrorUsuario" style="display: none">Este correo ya está siendo utilizado</span>
                 </b-form>
@@ -58,14 +59,11 @@
 <script>
 
   import User from "../models/User";
-  import Vue from 'vue';
-  import loadScript from 'vue-plugin-load-script';
-  Vue.use(loadScript)
-  Vue.loadScript("https://apis.google.com/js/platform.js")
   export default {
     name: "SignUp",
     data(){
       return {
+        // campos del formulario de registro Register_form
         Register_form:{
           name: '',
           username: '',
@@ -73,19 +71,21 @@
           password:'',
             reviewPassword:''
         },
+        // String del error
         stringError: '',
         isInit: false,
         isSignIn: false
       }
     },
     methods:{
-      onSubmit(){
+      onSubmit(){ //Metodo de registro
           if(this.Register_form.password === this.Register_form.reviewPassword){
               let dataUser = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name)
-             this.$store.dispatch("auth/register", dataUser)
+             this.$store.dispatch("auth/register", dataUser) // Llamada a la función de axios creada para registro
                      .then(data => {
                        alert("Usuario registrado correctamente")
                        console.log(data)
+                       this.$router.push('/Login') // Cambiar a la ventana login
                      },error =>{
                        console.log(error)
                        this.stringError = "Error en registro"
@@ -98,7 +98,7 @@
           }
 
       },
-      vaciar(){
+      vaciar(){ // Funcion para vaciar los campos del formulario
         this.Register_form.name= ''
         this.Register_form.email= ''
         this.Register_form.password= ''
@@ -107,58 +107,16 @@
 
 
       },
-      error(error){
+      error(error){ //Funcion para mandar error
         document.getElementById("tagError").textContent = error.toString()
-      },
-      signUpWithGoogle(){
-        this.$gAuth.signIn()
-        .then(GoogleUser => {
-          this.Register_form.name = GoogleUser.getBasicProfile.getName()
-          console.log(GoogleUser.getId())
-        })
-      },
-      handleClickGetAuth(){
-        this.$gAuth.getAuthCode()
-                .then(authCode => {
-                  // On success
-                  alert(authCode)
-                  // return this.$http.post('http://your-backend-server.com/auth/google', { code: authCode, redirect_uri: 'postmessage' })
-                })
-                .then(() => {
-                  // And then
-                })
-                .catch(() => {
-                  // On fail do something
-                })
-      },
-      handleClickSignIn(){
-        this.$gAuth.signIn()
-                .then(() => {
-                  // On success do something, refer to https://developers.google.com/api-client-library/javascript/reference/referencedocs#googleusergetid
-                  // console.log('user', GoogleUser)
-                  this.isSignIn = this.$gAuth.isAuthorized
-                })
-                .catch(()  => {
-                  // On fail do something
-                })
-      },
-      handleClickSignOut(){
-        this.$gAuth.signOut()
-                .then(() => {
-                  // On success do something
-                  this.isSignIn = this.$gAuth.isAuthorized
-                })
-                .catch(()  => {
-                  // On fail do something
-                })
-      },
-    },
-    computed:{
-        PasswordVerify(){
-            return this.contrasenna.length < 6 ? false : true
-        },
-
+      }
     }
+    // ,computed:{
+    //     PasswordVerify(){
+    //         return this.contrasenna.length >= 6
+    //     }
+
+
   }
 </script>
 

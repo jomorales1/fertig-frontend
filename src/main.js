@@ -5,14 +5,23 @@ import router from '@/router';
 import store from '@/store';
 import * as VeeValidate from 'vee-validate';
 import 'es6-promise/auto'
-import LoadScript from 'vue-plugin-load-script';
-
+import GAuth from 'vue-google-oauth2'
+import { ValidationProvider } from 'vee-validate';
+//libreria de google
+//Todavia no funciona
+const gauthOption = {
+    clientId: '699443937997-uq28jn89e4d89aqpob3cc79ab4o2aa6i.apps.googleusercontent.com',
+    scope: 'profile email',
+    prompt: 'select_account'
+}
+Vue.use(GAuth, gauthOption)
+//flag de servidor de produccion falso
 Vue.config.productionTip = false
+//adicion de vee-validate
+Vue.component('ValidationProvider', ValidationProvider);
 Vue.use(VeeValidate)
-Vue.use(LoadScript)
 
-
-
+//inicializar aplicación
 new Vue({
     router,
     store,

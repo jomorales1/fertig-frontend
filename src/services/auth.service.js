@@ -2,37 +2,35 @@ import axios from 'axios'
 import querystring from "query-string"
 const API_URL = 'http://localhost:8090'
 class AuthService{
-    login(user){
-        let res= axios
-            .post(API_URL + '/oauth/token',
+    login(user){ // Funcion para login del susuario
+        return axios
+            .post(API_URL + '/oauth/token', // request tipo POST para enviar usuario y contraseña
                 querystring.stringify({
                     username: user.username,
                     password: user.password,
                     "grant_type":"password"
                 }),{
-                    auth:{
+                auth:{                          // Credenciales de cliente autorizado
                         username:'cliente',
-                        password:'password'
+                        password:'secret'
                     },
                     headers:{
                         "Content-Type": "application/x-www-form-urlencoded"
                     }
                 }
             ).then(response =>{
-                if (response.data.accessToken){
-                    localStorage.setItem('user',JSON.stringify(response.data))
+                if (response.data.access_token){
+                    localStorage.setItem('user',JSON.stringify(response.data))  // Almacena en memoria el usuario
                 }
-                return response.data
+                return response.data // Devuelve los datos del usuario en respuesta
             });
-        console.log(res)
-        return res
     }
-    logout() {
-        localStorage.removeItem('user');
+    logout() { // Funcion para cerrar sesión
+        localStorage.removeItem('user'); // Remueve el usuario de memoria
     }
 
-    register(user) {
-        return axios.post(API_URL + '/users/addUser', {
+    register(user) { // Funcion de registro
+        return axios.post(API_URL + '/users/addUser', { // Peticion tipo POST con los datos de registro
             correo: user.email,
             usuario: user.username,
             password: user.password,

@@ -10,7 +10,7 @@ import { ValidationProvider } from 'vee-validate';
 //libreria de google
 //Todavia no funciona
 const gauthOption = {
-    clientId: '699443937997-uq28jn89e4d89aqpob3cc79ab4o2aa6i.apps.googleusercontent.com',
+    clientId: '756516316743-7fcc8028epqmhnftjeclt9dqo0dk3tls.apps.googleusercontent.com',
     scope: 'profile email',
     prompt: 'select_account'
 }

@@ -39,12 +39,12 @@
                   <span id="stringErrorContrasenna" style="color: red">{{message}}</span>
 
                 </b-form>
-<!--                Botones de google -->
-<!--                <b-form-group>-->
-<!--                  <button @click="handleClickGetAuth" :disabled="!isInit">get auth code</button>-->
-<!--                  <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>-->
-<!--                  <button @click="handleClickSignOut" v-if="isSignIn" :disabled="!isInit">signOout</button>-->
-<!--                </b-form-group>-->
+                Botones de google
+                <b-form-group>
+                  <button @click="handleClickGetAuth" :disabled="!isInit">get auth code</button>
+                  <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>
+                  <button @click="handleClickSignOut" v-if="isSignIn" :disabled="!isInit">signOout</button>
+                </b-form-group>
               </b-card-text>
             </b-card>
           </b-col>
@@ -105,6 +105,17 @@ export default {
           .then(authCode => {
             // On success
             alert(authCode)
+            this.$store.dispatch("auth/googleLogin").then(
+                () => {
+                  //si inicio sesión redirigir a lista
+                  this.$router.push('/List');
+                },
+                () => {
+                  //si hubo error mostrarlo en pantalla
+                  this.loading = false;
+                  this.message ="Error en inicio de sesión con google, vuelve a intentarlo"
+                }
+            );
             // return this.$http.post('http://your-backend-server.com/auth/google', { code: authCode, redirect_uri: 'postmessage' })
           })
           .then(() => {

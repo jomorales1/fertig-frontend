@@ -104,8 +104,8 @@ export default {
           .then(user => {
             // On success do something, refer to https://developers.google.com/api-client-library/javascript/reference/referencedocs#googleusergetid
             // console.log('user', GoogleUser)
-            console.log(user)
-            this.$store.dispatch("auth/googleLogin",user.id_token).then(
+            alert(user.getAuthResponse().id_token)
+            this.$store.dispatch("auth/googleLogin",user.getAuthResponse().id_token).then(
                 () => {
                   //si inicio sesión redirigir a lista
                   this.$router.push('/List');

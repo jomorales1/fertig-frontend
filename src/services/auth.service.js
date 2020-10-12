@@ -1,22 +1,18 @@
 import axios from 'axios'
-import querystring from "query-string"
+// import querystring from "query-string"
 const API_URL = 'http://localhost:8090'
 class AuthService{
     login(user){ // Funcion para login del susuario
         return axios
-            .post(API_URL + '/oauth/token', // request tipo POST para enviar usuario y contraseña
-                querystring.stringify({
+            .post(API_URL + '/signin', // request tipo POST para enviar usuario y contraseña
+                    {
                     username: user.username,
                     password: user.password,
-                    "grant_type":"password"
-                }),{
-                auth:{                          // Credenciales de cliente autorizado
-                        username:'cliente',
-                        password:'secret'
-                    },
-                    headers:{
-                        "Content-Type": "application/x-www-form-urlencoded"
-                    }
+                }
+            ,{
+                headers:{
+                    "Content-Type": "application/json"
+                }
                 }
             ).then(response =>{
                 if (response.data.access_token){

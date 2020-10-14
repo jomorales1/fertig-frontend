@@ -100,20 +100,18 @@ export default {
     },
     //metodos de google no funcionales
     handleClickSignIn(){
+      this.loading = true;
       this.$gAuth.signIn()
           .then(user => {
-            // On success do something, refer to https://developers.google.com/api-client-library/javascript/reference/referencedocs#googleusergetid
-            // console.log('user', GoogleUser)
-            alert(user.getAuthResponse().id_token)
             this.$store.dispatch("auth/googleLogin",user.getAuthResponse().id_token).then(
                 () => {
                   //si inicio sesión redirigir a lista
                   this.$router.push('/List');
                 },
-                () => {
+                (error) => {
                   //si hubo error mostrarlo en pantalla
+                  this.message =error.response.data
                   this.loading = false;
-                  this.message ="Error en inicio de sesión con google, vuelve a intentarlo"
                 }
             );
             this.isSignIn = this.$gAuth.isAuthorized

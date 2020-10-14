@@ -1,20 +1,18 @@
 import axios from 'axios'
-// import querystring from "query-string"
+import querystring from "query-string"
 const API_URL = 'http://localhost:8090'
 class AuthService{
     login(user){ // Funcion para login del susuario
         return axios
             .post(API_URL + '/signin', // request tipo POST para enviar usuario y contraseña
-                    {
-                    username: user.username,
-                    password: user.password,
-                }
-            ,{
+            {
+                username: user.username,
+                password: user.password,
+            },{
                 headers:{
                     "Content-Type": "application/json"
                 }
-                }
-            ).then(response =>{
+            }).then(response =>{
                 if (response.data.access_token){
                     localStorage.setItem('user',JSON.stringify(response.data))  // Almacena en memoria el usuario
                 }
@@ -25,11 +23,11 @@ class AuthService{
         localStorage.removeItem('user'); // Remueve el usuario de memoria
     }
     googleLogin(googleToken){
-         return axios.post(API_URL+'/login/oauth2/code/google',{
+         return axios.post(API_URL+'/login/oauth2/code/google',querystring.stringify({
              Token:googleToken
-         },{
+         }),{
              headers:{
-                 "Content-Type": "application/json"
+                 "Content-Type": "application/x-www-form-urlencoded"
              }
          }).then(response =>{
              if (response.data.access_token){

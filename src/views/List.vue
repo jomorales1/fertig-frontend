@@ -1,30 +1,50 @@
 <template>
   <b-container class="text-right">
 <!--    Alerta cuando hay error al crear tareas-->
-    <b-alert :show="error" class="text-left" variant="danger" dismissible>Error al crear Tarea</b-alert>
+    <b-alert :show="error" @dismissed="error=!error" class="text-left" variant="danger" dismissible>Error al crear Tarea</b-alert>
 <!--    Boton para reordenar las tareas mostradas-->
-    <b-dropdown id="reorder-dropdown" text="Ordenar por" class="m-md-2">
-      <b-dropdown-item v-for="order in orders"
-                       :key="order"
-                       @click="reorder(order)"
-      >{{order}}</b-dropdown-item>
-    </b-dropdown>
-    <b-dropdown id="filter-dropdown" text="filtrar por Prioridad" class="m-md-2">
-      <b-dropdown-item v-for="filter in filters"
-                       :key="filter"
-                       @click="filterTasks(filter)"
-      >{{filter}}</b-dropdown-item>-
-    </b-dropdown>
+    <div class="d-flex justify-content-between">
+      <div class="d-flex flex-column justify-content-end">
+        <b-button variant="outline-secondary"
+                  @click="etiquetaFilter=''"
+                  v-if="etiquetaFilter!==''"
+                  class="etqButton"
+                  size="sm"
+        >{{etiquetaFilter}} <strong class="close closeEtq">x</strong> </b-button>
+      </div>
+      <div>
+        <b-dropdown id="reorder-dropdown" text="Ordenar por" class="m-md-2">
+          <b-dropdown-item v-for="order in orders"
+                           :key="order"
+                           @click="reorder(order)"
+          >{{order}}</b-dropdown-item>
+        </b-dropdown>
+        <!--    Boton para filtrar por prioridad-->
+        <b-dropdown id="filter-dropdown" right text="Filtrar por prioridad" class="m-md-2">
+          <b-dropdown-item v-for="filter in filters"
+                           :key="filter"
+                           @click="filterTasks(filter)"
+                           class="text-center"
+
+          >{{filter}}</b-dropdown-item>-
+        </b-dropdown>
+      </div>
+    </div>
+
 <!--    Lista de tareas a partir de la variable de tareas del store de vuex-->
     <b-list-group>
       <Tarea
           v-for="task in tareas"
           v-bind:key="task.id"
+          v-bind:id="task.id"
           v-bind:title="task.nombre"
           v-bind:description="task.descripcion"
           v-bind:startDate="new Date(task.fechaInicio)"
           v-bind:endDate="new Date(task.fechaFin)"
           v-bind:priority="task.prioridad"
+          v-bind:etiquetas="task.etiqueta"
+          v-bind:hecha="task.hecha"
+          v-on:etiqueta-filter="filterEtiqueta($event)"
       />
     </b-list-group>
 <!--    Boton temporal para cerrar sesión-->
@@ -73,7 +93,18 @@
             label="Prioridad"
             label-for="priority"
         >
-          <b-form-input v-model="tarea.prioridad" type="range" min="1" max="5"></b-form-input>
+          <b-form-input id="priority" v-model="tarea.prioridad" type="range" min="1" max="5"></b-form-input>
+        </b-form-group>
+        <!--      campo para etiquetas de tarea-->
+        <b-form-group
+            id="fieldset-etiqueta"
+            label-cols-sm="4"
+            label-cols-lg="3"
+            description="Etiquetas de la tarea separadas por espacios"
+            label="Etiquetas"
+            label-for="etiquetas"
+        >
+          <b-form-input id="etiquetas" v-model="tarea.etiqueta"></b-form-input>
         </b-form-group>
   <!--      campos para fecha de inicio-->
         <b-form-group
@@ -135,7 +166,8 @@ export default {
       incomplete:false,
       //opciones de filtro
       filters:["no filtrar",1,2,3,4,5],
-      priorityFilter:0
+      priorityFilter:0,
+      etiquetaFilter:""
     }
   },
   methods:{
@@ -155,20 +187,18 @@ export default {
         this.tarea.level=0
         this.tarea.estimacion=0
         this.tarea.hecha=0
-        this.tarea.etiqueta=""
         this.tarea.recordatorio=0
         this.incomplete=false
         //se llama al user service para crear la tarea
         UserService.createTask(this.tarea).then(
             ()=>{
               this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las tareas
+              this.error=false
             },()=>{
               this.error=true
             }
         )
       }
-    },check(){
-
     },
     reorder(order){
       switch (order){
@@ -190,15 +220,21 @@ export default {
       }else{
         this.priorityFilter=0
       }
+    },
+    filterEtiqueta(etiqueta){
+      this.etiquetaFilter=etiqueta;
     }
   },
   computed:{
     tareas(){
+      let lista=this.$store.state.DataModule.tareas
       if(this.priorityFilter!==0){
-        return this.$store.state.DataModule.tareas.filter(task=>task.prioridad===this.priorityFilter)
-      }else{
-        return this.$store.state.DataModule.tareas
+        lista= lista.filter(task=>task.prioridad===this.priorityFilter)
       }
+      if(this.etiquetaFilter!==""){
+        lista= lista.filter(task=>task.etiqueta.includes(this.etiquetaFilter))
+      }
+      return lista
 
     }
   },
@@ -218,5 +254,12 @@ export default {
     //css para ubicar el boton flotante de +
     bottom: 30px;
     right: 10%;
+  }
+  .etqButton{
+    white-space: pre;
+    margin-bottom: 5px;
+  }
+  .closeEtq{
+    font-size: 1.2rem;
   }
 </style>

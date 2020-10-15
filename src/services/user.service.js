@@ -17,6 +17,13 @@ class UserService {
         })
     }
 
+    checkTask(id){
+        return axios.put(API_URL + '/tasks/checkTask/'+id // Peticion tipo POST para agregar la tarea
+            ,null,{
+                headers: authHeader()
+            })
+    }
+
     // getModeratorBoard() {
     //     return axios.get(API_URL + 'mod', { headers: authHeader() })
     // }

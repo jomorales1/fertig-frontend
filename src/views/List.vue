@@ -66,6 +66,7 @@
       </b-form-group>
 <!--      campos para fecha de inicio-->
       <b-form-group
+          v-if="status=='not_accepted'"
           id="fieldset-start-date"
           label-cols-sm="4"
           label-cols-lg="3"
@@ -74,10 +75,23 @@
           label-for="start-date, start-time"
       >
         <b-datepicker id="start-date" value-as-date v-model="tarea.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-        <b-form-timepicker id="start-time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+        <b-form-timepicker v-if="status=='not_accepted'" id="start-time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+      </b-form-group>
+<!--      campos para fecha de inicio de Repetición-->
+      <b-form-group
+          v-else
+          id="fieldset-start-repetition-date"
+          label-cols-sm="4"
+          label-cols-lg="3"
+          description="Fecha en que las repeticiones inician"
+          label="Fecha de inicio de la repetición"
+          label-for="start-date, start-time"
+      >
+        <b-datepicker id="start-date" value-as-date v-model="rutina.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
       </b-form-group>
 <!--      campos para fecha de finalización-->
       <b-form-group
+          v-if="status=='not_accepted'"
           id="fieldset-end-date"
           label-cols-sm="4"
           label-cols-lg="3"
@@ -86,7 +100,70 @@
           label-for="end-date, end-time"
       >
         <b-datepicker id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-        <b-form-timepicker id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+        <b-form-timepicker  id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+      </b-form-group>
+<!--      campos para fecha de finalización de Repetición-->
+      <b-form-group
+          v-else
+          id="fieldset-end-repetition-date"
+          label-cols-sm="4"
+          label-cols-lg="3"
+          description="Fecha en que las repeticiones finalizan"
+          label="Fecha de finalización de la repetición"
+          label-for="end-date, end-time"
+      >
+
+        <b-datepicker id="end-date" value-as-date v-model="rutina.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+      </b-form-group>
+      <b-form-group id="fieldset-checkbox"
+          label-cols-sm="4"
+          label-cols-lg="3"
+          label="Repeticiones"
+          label-for="recurrency"
+          description="La actividad puede repetirse">
+
+        <b-form-checkbox
+            id="checkbox-Repetition"
+            v-model="status"
+            name="checkbox-Repetition"
+            value="accepted"
+            unchecked-value= "not_accepted"
+        >
+        </b-form-checkbox>
+      </b-form-group>
+      <b-form-group
+          v-if="status=='accepted'"
+          id="fieldset-repetition-recurrency"
+          label-cols-sm="4"
+          label-cols-lg="3"
+          description="tiempo entre cada repetición"
+          label-for="cada, numero-repeticion, rango-repeticion">
+        <label id="cada">Cada:</label>
+        <b-form-input id="numero-repeticion" type="number" ></b-form-input>
+        <!--      campos para la seleccion de la recurrencia de la actividad-->
+        <b-form-select id="rango-repeticion" v-model="rango" :options="options" ></b-form-select>
+      </b-form-group>
+      <b-form-group
+          v-if="status=='accepted'"
+          id="fieldset-from-repeticion"
+          label-cols-sm="4"
+          label-cols-lg="3"
+          description="Hora en que la tarea inicia en cada repeticion"
+          label-for="desde"
+      >
+        <div >Inicia a las:</div>
+        <b-form-input id="desde" type="time" ></b-form-input>
+      </b-form-group>
+      <b-form-group
+          v-if="status=='accepted'"
+          id="fieldset-to-repeticion"
+          label-cols-sm="4"
+          label-cols-lg="3"
+          description="Hora en que la tarea finaliza en cada repeticion"
+          label-for="hasta"
+      >
+        <div >Y termina a las:</div>
+        <b-form-input id="hasta" type="time" ></b-form-input>
       </b-form-group>
     </b-modal>
 <!--    Boton de + flotante que muestra el pop up de crear tarea-->
@@ -98,6 +175,8 @@
 import Tarea from "@/components/Tarea";
 import Task from "../models/Task"
 import UserService from "../services/user.service"
+import Routine from "@/models/Routine"
+
 export default {
   name: "Lista",
   components:{
@@ -116,7 +195,23 @@ export default {
       //campo para guardar la hora de inico
       startHour:null,
       //campo para guardar la hora de finalizacion
-      endHour:null
+      endHour:null,
+      //rutina que se crea
+      rutina:new Routine(),
+
+
+
+      status: 'not_accepted',
+      // seleccionador de repeticiones
+
+      Rango: null,
+      options: [
+        { value: 'h'  ,   text: 'horas'     },
+        { value: 'd'  ,   text: 'dias'      },
+        { value: 's'  ,   text: 'semanas'   },
+        { value: 'm'  ,   text: 'meses'     },
+        { value: 'a'  ,   text: 'años'      }
+      ]
     }
   },
   methods:{
@@ -149,6 +244,13 @@ export default {
           this.$store.state.Tareas.sort((a, b) => b.endDate-a.endDate);
       }
     }
+  },
+  computed:{
+    Stringinator(){
+      return null
+
+    }
+
   },
     mounted(){
     //valor por defecto de prioridad

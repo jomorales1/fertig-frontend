@@ -1,5 +1,6 @@
 import axios from 'axios'
 import querystring from "query-string"
+import authHeader from "./auth-header";
 const API_URL = 'http://localhost:8090'
 class AuthService{
     login(user){ // Funcion para login del susuario
@@ -44,6 +45,27 @@ class AuthService{
             nombre:user.nombre
         },{
             headers:{
+                "Content-Type": "application/json"
+            }
+        });
+    }
+
+    getUser(){
+        return axios.get(API_URL + '/users/get',{
+            headers: authHeader()
+        }).then(response => response)
+            .catch(error => error)
+
+    }
+
+    saveChanges(user){
+        return axios.put(API_URL + '/users/update',{
+            correo: user.email,
+            usuario: user.username,
+            password: user.password,
+            nombre:user.nombre
+        }, {
+            headers: {
                 "Content-Type": "application/json"
             }
         });

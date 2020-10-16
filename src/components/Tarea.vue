@@ -6,10 +6,18 @@
           <div class="d-flex w-100 justify-content-between" >
             <div class="d-inline-block align-top align-text-top">
 <!--              checkbox de hecho-->
-              <b-form-checkbox v-model=hecho class="d-inline-block"></b-form-checkbox>
+              <b-form-checkbox @change="toggleCheck" v-model=hecho class="d-inline-block"></b-form-checkbox>
 <!--              titulo de tarea-->
               {{ title }}
               <small>Tarea</small>
+              <b-badge  v-for="etiqueta in etiquetasList"
+                       :key="etiqueta"
+                        class="badges"
+                        :variant="selected?'secondary':'primary'"
+                        @click="$emit('etiqueta-filter',etiqueta)"
+              >
+                {{etiqueta}}
+              </b-badge>
             </div>
 <!--            tiempo restante para que termine la tarea-->
             <small>{{ timeLeft}}</small>
@@ -40,9 +48,14 @@
 </template>
 
 <script>
+
 export default {
   props:{
     //variables requerias para crear una vista de tarea
+    id:{
+      Type:Number,
+      required:true
+    },
     title:{
       Type:String,
       required: true
@@ -62,6 +75,14 @@ export default {
     endDate:{
       Type:Date,
       required: true
+    },
+    etiquetas:{
+      Type:String,
+      required: true
+    },
+    hecha:{
+      Type:Boolean,
+      required:true
     }
   },
   data(){
@@ -69,13 +90,14 @@ export default {
       name: "Tarea",
       //flags para cambios en la vista
       show: true,
-      hecho: false,
-      selected: false
+      selected: false,
+      hecho:this.hecha
     }
   },
   methods: {
-    toggle() {
-      //cambiar estado de selección de la tarea
+    toggle(event) {
+      //cambiar estado de selección de la tarea si el evento no viene del checkbox
+      if(event.target.tagName==="LABEL"||event.target.tagName==="INPUT"||event.target.tagName==="SPAN")return
       this.selected = !this.selected
     },
     longDate(date){
@@ -83,6 +105,9 @@ export default {
       let options={ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
                     hour: 'numeric', minute: 'numeric', hour12:true }
       return (new Intl.DateTimeFormat('es',options)).format(date)
+    },
+    toggleCheck(){
+        this.$store.dispatch("DataModule/check",this.id)
     }
   },
   computed:{
@@ -97,6 +122,12 @@ export default {
           res=res.concat((Math.round(diff).toString()).concat(" Horas"));
         }
         return res;
+    },
+    etiquetasList(){
+      if(this.etiquetas===""){
+        return []
+      }
+      return this.etiquetas.split(' ')
     }
   }
 }
@@ -112,8 +143,11 @@ export default {
    padding: 0;
    border: none;
  }
- .custom-list-item:last-child{
+ .custom-list-item:last-child {
    //estilo para que el ultimo hijo si tenga borde inferior
    border-bottom: 1px solid rgba(0, 0, 0, 0.125);;
+ }
+ .badges{
+   margin: 2px;
  }
 </style>

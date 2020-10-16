@@ -1,5 +1,5 @@
 import UserService from "../services/user.service"
-
+import router from "@/router";
 //modulo de vuex para manejo de datos
 
 //obtenemos tareas del store de vuex
@@ -12,11 +12,18 @@ export const DataModule = {
     namespaced: true,
     state:initialState,
     actions:{
-        update({commit}){//metodo del vuex para actualizar la lista de tareas desde user service
+        update({commit,dispatch}){//metodo del vuex para actualizar la lista de tareas desde user service
                 return UserService.getTasks().then(tasks=>{
                     commit('updated',tasks.data)
                 },()=>{
                     commit('error')
+                    dispatch("auth/logout",null, { root: true })
+                    router.push("/login")
+                })
+        },
+        check({commit},id){
+            return UserService.checkTask(id).then(()=>{},()=>{
+                commit('error')
             })
         }
     },

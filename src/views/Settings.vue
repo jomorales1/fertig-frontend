@@ -35,31 +35,24 @@
               </b-form-group>
               <b-form-group ><!-- Campo contraseña !-->
                 <div class="form-row">
-                  <label class="col-form-label">Contraseña Actual: </label>
-                  <b-form-input type="password" id="password" required placeholder="Ingrese la contraseña actual" v-model="Settings_form.password" disabled></b-form-input>
-                </div>
-              </b-form-group>
-              <b-form-group ><!-- Campo contraseña !-->
-                <div class="form-row">
                   <label class="col-form-label">Nueva contraseña: </label>
-                  <b-form-input type="password" id="newPassword" required placeholder="Ingrese la Nueva contraseña" v-model="Settings_form.newPassword" disabled></b-form-input>
+                  <b-form-input type="password" id="newPassword" required placeholder="Ingrese la Nueva contraseña" v-model="Settings_form.newPassword" :disabled="changePassword"></b-form-input>
                 </div>
               </b-form-group>
               <b-form-group><!-- Campo repetir contraseña !-->
                 <div class="form-row">
                   <label class="col-form-label">Repetir contraseña: </label>
-                  <b-form-input type="password" id="reviewNewPassword" required placeholder="Confirme la contraseña" v-model="Settings_form.reviewNewPassword" disabled></b-form-input>
+                  <b-form-input type="password" id="reviewNewPassword" required placeholder="Confirme la contraseña" v-model="Settings_form.reviewNewPassword" :disabled="changePassword"></b-form-input>
                 </div>
               </b-form-group>
               <b-form-group><!-- Botones de registrar y vaciar !-->
                 <div class="form-row " >
-                  <b-button type="submit" class="col-md-4 text-center" variant="primary">Cambiar datos</b-button>
-                  <b-button type="reset" variant="danger"  class="col-md-4 offset-md-4" v-model="vaciar">Vaciar</b-button>
+                  <b-button type="submit" class="col text-center" variant="primary">Cambiar datos</b-button>
                 </div>
               </b-form-group>
-              <!-- Span en caso de errores en registro !-->
-              <span id="stringErrorContrasenna" style="color: red">{{stringError}}</span>
-              <span id="stringErrorUsuario" style="display: none">Este correo ya está siendo utilizado</span>
+              <!-- Alert en caso de error y éxito en registro !-->
+              <b-alert variant="primary" :show="registerSuccess">Cambios guardados</b-alert>
+              <b-alert variant="danger" :show="failSuccess">Error en registro</b-alert>
             </b-form>
           </b-card>
         </div>
@@ -80,58 +73,59 @@
           name: '',
           username: '',
           email: '',
-          password: '',
           newPassword:'',
           reviewNewPassword: ''
         },
         // String del error
         stringError: '',
-        changePassword: false
+        changePassword: true,
+        registerSuccess: false,
+        failSuccess: false,
       }
     },
     methods:{
-      saveChanges(){ //Metodo de registro
-        if(this.Settings_form.newPassword === this.Settings_form.reviewNewPassword){
-          let dataUser = new User(this.Settings_form.username, this.Settings_form.password, this.Settings_form.email, this.Settings_form.name)
+      saveChanges(){ //Metodo de guardar cambios
+        if(this.changePassword === false){
+          if(this.Settings_form.newPassword === this.Settings_form.reviewNewPassword && this.Settings_form.newPassword !== "" && this.Settings_form.reviewNewPassword !== ""){
+              let dataUser = new User(this.Settings_form.username, this.Settings_form.newPassword, this.Settings_form.email, this.Settings_form.name)
+              this.$store.dispatch("auth/saveChanges", dataUser) // Llamada a la función de axios creada para registro
+                      .then(data => {
+                        this.registerSuccess = true
+                        this.failSuccess = false
+                        console.log(data)
+                      },error =>{
+                        console.log(error)
+                        this.failSuccess = true
+                        this.registerSuccess = false
+                        this.stringError = "Error en registro"
+
+                      })
+
+            }else{
+              this.failSuccess = true
+              this.registerSuccess = false
+              this.stringError = "Contraseña no verificada"
+            }
+
+        }else{
+          let dataUser = new User(this.Settings_form.username, this.Settings_form.newPassword, this.Settings_form.email, this.Settings_form.name)
           this.$store.dispatch("auth/saveChanges", dataUser) // Llamada a la función de axios creada para registro
                   .then(data => {
-                    alert("cambios guardados correctamente")
+                    this.registerSuccess = true
+                    this.failSuccess = false
                     console.log(data)
                   },error =>{
                     console.log(error)
+                    this.failSuccess = true
+                    this.registerSuccess = false
                     this.stringError = "Error en registro"
 
                   })
-
-        }else{
-
-          this.stringError = "Contraseña no verificada"
         }
 
-      },
-      vaciar(){ // Funcion para vaciar los campos del formulario
-        this.Settings_form.name= ''
-        this.Settings_form.email= ''
-        this.Settings_form.password= ''
-        this.Settings_form.username = ''
-        this.stringError = ''
-
-
-      },
-      error(error){ //Funcion para mandar error
-        document.getElementById("tagError").textContent = error.toString()
       },
       change(){
-        if(document.getElementById("password").disabled === true){
-          document.getElementById("password").disabled = false;
-          document.getElementById("reviewNewPassword").disabled = false;
-          document.getElementById("newPassword").disabled = false;
-        }else{
-          document.getElementById("password").disabled = true;
-          document.getElementById("reviewNewPassword").disabled = true;
-          document.getElementById("newPassword").disabled = true;
-        }
-
+        this.changePassword = !this.changePassword
       }
     },
     mounted() {

@@ -65,9 +65,7 @@ class AuthService{
             password: user.password,
             nombre:user.nombre
         }, {
-            headers: {
-                "Content-Type": "application/json"
-            }
+            headers: authHeader()
         });
     }
 }

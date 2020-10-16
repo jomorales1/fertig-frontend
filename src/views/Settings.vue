@@ -8,7 +8,7 @@
                   border-variant="primary"
                   header-bg-variant="primary"
                   header-text-variant="white"><!-- Etiqueta para definir bordes del formulario !-->
-            <b-form id="form_registro" @submit.prevent="SaveChanges" > <!-- Formulario de registro !-->
+            <b-form id="form_registro" @submit.prevent="saveChanges" > <!-- Formulario de registro !-->
               <b-form-group ><!-- Campo nombre !-->
                 <div class="form-row">
                   <label class="col-form-label">Nombre: </label>
@@ -53,7 +53,7 @@
               </b-form-group>
               <b-form-group><!-- Botones de registrar y vaciar !-->
                 <div class="form-row " >
-                  <b-button type="submit" class="col-md-4 text-center" variant="primary" v-model="saveChanges">Registrar</b-button>
+                  <b-button type="submit" class="col-md-4 text-center" variant="primary">Cambiar datos</b-button>
                   <b-button type="reset" variant="danger"  class="col-md-4 offset-md-4" v-model="vaciar">Vaciar</b-button>
                 </div>
               </b-form-group>
@@ -91,7 +91,7 @@
     },
     methods:{
       saveChanges(){ //Metodo de registro
-        if(this.Settings_form.password === this.Settings_form.reviewPassword){
+        if(this.Settings_form.newPassword === this.Settings_form.reviewNewPassword){
           let dataUser = new User(this.Settings_form.username, this.Settings_form.password, this.Settings_form.email, this.Settings_form.name)
           this.$store.dispatch("auth/saveChanges", dataUser) // Llamada a la función de axios creada para registro
                   .then(data => {

@@ -139,9 +139,9 @@
           description="tiempo entre cada repetición"
           label-for="cada, numero-repeticion, rango-repeticion">
         <label id="cada">Cada:</label>
-        <b-form-input id="numero-repeticion" type="number" ></b-form-input>
+        <b-form-input id="numero-repeticion" type="number" v-model="numbRep"></b-form-input>
         <!--      campos para la seleccion de la recurrencia de la actividad-->
-        <b-form-select id="rango-repeticion" v-model="rango" :options="options" ></b-form-select>
+        <b-form-select id="rango-repeticion" v-model="range" :options="options" ></b-form-select>
       </b-form-group>
       <b-form-group
           v-if="status=='accepted'"
@@ -152,7 +152,7 @@
           label-for="desde"
       >
         <div >Inicia a las:</div>
-        <b-form-input id="desde" type="time" ></b-form-input>
+        <b-form-input id="desde" type="time" v-model="fromHour"></b-form-input>
       </b-form-group>
       <b-form-group
           v-if="status=='accepted'"
@@ -163,7 +163,7 @@
           label-for="hasta"
       >
         <div >Y termina a las:</div>
-        <b-form-input id="hasta" type="time" ></b-form-input>
+        <b-form-input id="hasta" type="time" v-model="toHour"></b-form-input>
       </b-form-group>
     </b-modal>
 <!--    Boton de + flotante que muestra el pop up de crear tarea-->
@@ -198,13 +198,16 @@ export default {
       endHour:null,
       //rutina que se crea
       rutina:new Routine(),
-
-
-
+      //campo para guardar el tiempo de espera entre las repeticiones
+      numbRep:null,
+      //campo para guardar la hora de inico de las repeticiones
+      fromHour:null,
+      //campo para guardar la hora de finalizacion de las repeticiones
+      toHour:null,
+      // seleccionador del cambio de tarea a rutina
       status: 'not_accepted',
-      // seleccionador de repeticiones
-
-      Rango: null,
+      // seleccionador del tipo de repeticiones
+      Range: null,
       options: [
         { value: 'h'  ,   text: 'horas'     },
         { value: 'd'  ,   text: 'dias'      },
@@ -216,20 +219,43 @@ export default {
   },
   methods:{
     ok(){
-      // metodo de crear tarea
-      //se añade las horas a las fechas
-      let h=this.endHour.split(":")
-      this.tarea.fechaFin.setHours(h[0],h[1])
-      h=this.startHour.split(":")
-      this.tarea.fechaInicio.setHours(h[0],h[1])
-      //se rellenan los campos que no se muestran en la interfaz
-      this.tarea.level=0
-      this.tarea.estimacion=0
-      this.tarea.hecha=0
-      this.tarea.etiqueta=""
-      this.tarea.recordatorio=0
-      //se llama al user service para crear la tarea
-      UserService.createTask(this.tarea)
+      if (status=='accepted'){
+        // metodo de crear rutina
+        //se añade las horas a las fechas
+        let h=this.endHour.split(":")
+        this.rutina.fechaFin.setHours(h[0],h[1])
+        h=this.startHour.split(":")
+        this.rutina.fechaInicio.setHours(h[0],h[1])
+        //se rellenan los campos que no se muestran en la interfaz
+        this.rutina.level=0
+        this.rutina.estimacion=0
+        this.rutina.hecha=0
+        this.rutina.etiqueta=""
+        this.rutina.recordatorio=0
+        let n=this.numbRep
+        let r=this.Range
+        let fh=this.fromHour
+        let th=this.toHour
+        this.rutina.StringRepeticion=[n, r, fh, th].join(' ')
+        //se llama al user service para crear la tarea
+        UserService.createRoutine(this.rutina)
+
+      }else {
+        // metodo de crear tarea
+        //se añade las horas a las fechas
+        let h=this.endHour.split(":")
+        this.tarea.fechaFin.setHours(h[0],h[1])
+        h=this.startHour.split(":")
+        this.tarea.fechaInicio.setHours(h[0],h[1])
+        //se rellenan los campos que no se muestran en la interfaz
+        this.tarea.level=0
+        this.tarea.estimacion=0
+        this.tarea.hecha=0
+        this.tarea.etiqueta=""
+        this.tarea.recordatorio=0
+        //se llama al user service para crear la tarea
+        UserService.createTask(this.tarea)
+      }
     },
     reorder(order){
       switch (order){
@@ -246,10 +272,7 @@ export default {
     }
   },
   computed:{
-    Stringinator(){
-      return null
 
-    }
 
   },
     mounted(){

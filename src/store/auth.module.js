@@ -36,6 +36,17 @@ export const auth = {
                     return Promise.reject(error);
                 })
         },
+        facebookLogin({ commit },id_token){
+            return AuthService.facebookLogin(id_token).then(
+                user => {
+                    commit('loginSuccess', user);//cambio del estado a inicio de sesión exitoso
+                    return Promise.resolve(user);
+                },
+                error => {
+                    commit('loginFailure');//cambio de estado a error en inicio de sesión
+                    return Promise.reject(error);
+                })
+        },
         logout({ commit }) {//metodo del store para cerrar sesión usando metodo se AuthService
             AuthService.logout();
             commit('logout');//cambio de estado a sesión cerrada

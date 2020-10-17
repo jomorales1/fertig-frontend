@@ -39,17 +39,25 @@
                   <span id="stringErrorContrasenna" style="color: red">{{message}}</span>
 
                 </b-form>
-                <b-form-group>
-                  <b-button @click="handleGoogle" v-if="!isSignIn" variant="outline-secondary" :disabled="!isInit">
+                <div class="d-flex justify-content-around flex-wrap">
+                  <b-button class="OauthBtn" @click="handleGoogle" v-if="!isSignIn" variant="outline-secondary" :disabled="!isInit">
                     <div class="d-flex">
                       <img alt="Google logo" class="googleIcon"  src="../assets/google.svg">
                       <div>
-                        Continuar con google
+                        Continuar con Google
                       </div>
                     </div>
                   </b-button>
-                  <button @click="handleFacebook" v-if="isSignIn" :disabled="!isInit">signOout</button>
-                </b-form-group>
+                  <b-button class="OauthBtn" @click="googleLogout" v-if="isSignIn" variant="outline-secondary" :disabled="!isInit">
+                    LogOut
+                  </b-button>
+                  <v-facebook-login @login="handleFacebook" sdk-locale="es_LA" @sdk-init="handleSdkInit" app-id="1472299989621414" class="btn OauthBtn">
+                    <template v-slot:login>
+                      Continuar con Facebook
+                    </template>
+                  </v-facebook-login>
+<!--                  <button @click="handleFacebook" v-if="isSignIn" :disabled="!isInit">signOout</button>-->
+                </div>
               </b-card-text>
             </b-card>
           </b-col>
@@ -63,15 +71,18 @@
 <script>
 
 import User from "@/models/User";
-
+import VFacebookLogin from 'vue-facebook-login-component'
 
 export default {
   name: "Login",
   components: {
-
+    VFacebookLogin
   },
   data(){
     return{
+      FB:{},
+      model:{},
+      scope:{},
       password:'',
       username:'',
       user: new User('',''),
@@ -83,6 +94,10 @@ export default {
   },
 
   methods: {
+    handleSdkInit({ FB, scope }) {
+      this.FB = FB
+      this.scope = scope
+    },
     onSubmit() {
       //metodo de inicio de sesión
       //añadrir los datos de formulario a el objeto user
@@ -109,6 +124,7 @@ export default {
       this.loading = true;
       this.$gAuth.signIn()
           .then(user => {
+            localStorage.setItem("googleUser",JSON.stringify(user.getAuthResponse().id_token))
             this.$store.dispatch("auth/googleLogin",user.getAuthResponse().id_token).then(
                 () => {
                   //si inicio sesión redirigir a lista
@@ -126,15 +142,39 @@ export default {
             // On fail do something
           })
     },
+    googleLogout(){
+      this.$gAuth.signOut().then(()=>{
+        this.isSignIn = this.$gAuth.isAuthorized
+        localStorage.clear()
+      } )
+    },
     handleFacebook(){
-
+      this.loading = true;
+      this.$store.dispatch("auth/facebookLogin",this.FB.getAccessToken()).then(
+          () => {
+            //si inicio sesión redirigir a lista
+            this.$router.push('/List');
+          },
+          (error) => {
+            //si hubo error mostrarlo en pantalla
+            this.message =error.response.data
+            this.loading = false;
+          }
+      );
     }
   },
   mounted(){
     let that = this
     let checkGauthLoad = setInterval(function(){
       that.isInit = that.$gAuth.isInit
-      that.isSignIn = false
+      that.isSignIn = that.$gAuth.isAuthorized
+      if(that.isSignIn){
+        let user=JSON.parse(localStorage.getItem("googleUser"))
+        console.log(user)
+        that.$store.dispatch("auth/googleLogin",user).then(()=>{
+          that.$router.push('/list')
+        })
+      }
       if(that.isInit) clearInterval(checkGauthLoad)
     }, 1000);
   },
@@ -149,11 +189,11 @@ export default {
     }
   },
     created() {
-    //si ya se inicio sesión redirigir directamente a lista
-    if (this.loggedIn) {
-      this.$router.push('/List');
+      //si ya se inicio sesión redirigir directamente a lista
+      if (this.loggedIn) {
+        this.$router.push('/List');
+      }
     }
-  },
   }
 </script>
 
@@ -161,5 +201,8 @@ export default {
 .googleIcon{
   height: 1.5rem;
   margin-right: 0.5rem;
+}
+.OauthBtn{
+  margin-bottom: 1rem;
 }
 </style>

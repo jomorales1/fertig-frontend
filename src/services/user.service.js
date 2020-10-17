@@ -15,13 +15,9 @@ class UserService {
     }
 
     createTask(task){ // Funcion para crear tarea
-        axios.post(API_URL + '/tasks/addTask' // Peticion tipo POST para agregar la tarea
+        return axios.post(API_URL + '/tasks/addTask' // Peticion tipo POST para agregar la tarea
             ,task,{
             headers: authHeader()
-        }).then(()=>{
-            this.$store.state.Tareas=this.getTasks() // Luego de la petición, llamar a la función para obtener las tareas
-        },()=>{
-            return "Error" // Error en otro caso
         })
     }
 

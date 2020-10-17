@@ -39,12 +39,11 @@
                   <span id="stringErrorContrasenna" style="color: red">{{message}}</span>
 
                 </b-form>
-<!--                Botones de google -->
-<!--                <b-form-group>-->
-<!--                  <button @click="handleClickGetAuth" :disabled="!isInit">get auth code</button>-->
-<!--                  <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>-->
-<!--                  <button @click="handleClickSignOut" v-if="isSignIn" :disabled="!isInit">signOout</button>-->
-<!--                </b-form-group>-->
+                Botones de google
+                <b-form-group>
+                  <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>
+                  <button @click="handleClickSignOut" v-if="isSignIn" :disabled="!isInit">signOout</button>
+                </b-form-group>
               </b-card-text>
             </b-card>
           </b-col>
@@ -100,25 +99,21 @@ export default {
       }
     },
     //metodos de google no funcionales
-    handleClickGetAuth(){
-      this.$gAuth.getAuthCode()
-          .then(authCode => {
-            // On success
-            alert(authCode)
-            // return this.$http.post('http://your-backend-server.com/auth/google', { code: authCode, redirect_uri: 'postmessage' })
-          })
-          .then(() => {
-            // And then
-          })
-          .catch(() => {
-            // On fail do something
-          })
-    },
     handleClickSignIn(){
+      this.loading = true;
       this.$gAuth.signIn()
-          .then(() => {
-            // On success do something, refer to https://developers.google.com/api-client-library/javascript/reference/referencedocs#googleusergetid
-            // console.log('user', GoogleUser)
+          .then(user => {
+            this.$store.dispatch("auth/googleLogin",user.getAuthResponse().id_token).then(
+                () => {
+                  //si inicio sesión redirigir a lista
+                  this.$router.push('/List');
+                },
+                (error) => {
+                  //si hubo error mostrarlo en pantalla
+                  this.message =error.response.data
+                  this.loading = false;
+                }
+            );
             this.isSignIn = this.$gAuth.isAuthorized
           })
           .catch(()  => {

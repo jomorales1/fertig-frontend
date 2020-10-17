@@ -39,10 +39,16 @@
                   <span id="stringErrorContrasenna" style="color: red">{{message}}</span>
 
                 </b-form>
-                Botones de google
                 <b-form-group>
-                  <button @click="handleClickSignIn" v-if="!isSignIn" :disabled="!isInit">signIn</button>
-                  <button @click="handleClickSignOut" v-if="isSignIn" :disabled="!isInit">signOout</button>
+                  <b-button @click="handleGoogle" v-if="!isSignIn" variant="outline-secondary" :disabled="!isInit">
+                    <div class="d-flex">
+                      <img alt="Google logo" class="googleIcon"  src="../assets/google.svg">
+                      <div>
+                        Continuar con google
+                      </div>
+                    </div>
+                  </b-button>
+                  <button @click="handleFacebook" v-if="isSignIn" :disabled="!isInit">signOout</button>
                 </b-form-group>
               </b-card-text>
             </b-card>
@@ -99,7 +105,7 @@ export default {
       }
     },
     //metodos de google no funcionales
-    handleClickSignIn(){
+    handleGoogle(){
       this.loading = true;
       this.$gAuth.signIn()
           .then(user => {
@@ -120,22 +126,15 @@ export default {
             // On fail do something
           })
     },
-    handleClickSignOut(){
-      this.$gAuth.signOut()
-          .then(() => {
-            // On success do something
-            this.isSignIn = this.$gAuth.isAuthorized
-          })
-          .catch(()  => {
-            // On fail do something
-          })
+    handleFacebook(){
+
     }
   },
   mounted(){
     let that = this
     let checkGauthLoad = setInterval(function(){
       that.isInit = that.$gAuth.isInit
-      that.isSignIn = that.$gAuth.isAuthorized
+      that.isSignIn = false
       if(that.isInit) clearInterval(checkGauthLoad)
     }, 1000);
   },
@@ -159,5 +158,8 @@ export default {
 </script>
 
 <style scoped>
-
+.googleIcon{
+  height: 1.5rem;
+  margin-right: 0.5rem;
+}
 </style>

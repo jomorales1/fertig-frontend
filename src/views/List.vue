@@ -174,7 +174,7 @@
           </b-form-checkbox>
         </b-form-group>
         <b-form-group
-            v-if="status==='accepted'"
+            v-if='status==="accepted"'
             id="fieldset-repetition-recurrency"
             label-cols-sm="4"
             label-cols-lg="3"
@@ -183,10 +183,10 @@
           <label id="cada">Cada:</label>
           <b-form-input required id="numero-repeticion" type="number" v-model="numbRep"></b-form-input>
           <!--      campos para la seleccion de la recurrencia de la actividad-->
-          <b-form-select required id="rango-repeticion" v-model="range" :options="options" ></b-form-select>
+          <b-form-select required id="rango-repeticion" v-model="Range" :options="options" ></b-form-select>
         </b-form-group>
         <b-form-group
-            v-if="status==='accepted'"
+            v-if='status==="accepted"'
             id="fieldset-from-repeticion"
             label-cols-sm="4"
             label-cols-lg="3"
@@ -197,7 +197,7 @@
           <b-form-input required id="desde" type="time" v-model="fromHour"></b-form-input>
         </b-form-group>
         <b-form-group
-            v-if="status==='accepted'"
+            v-if='status==="accepted"'
             id="fieldset-to-repeticion"
             label-cols-sm="4"
             label-cols-lg="3"
@@ -277,9 +277,15 @@ export default {
         this.incomplete=true
       }else{
         this.incomplete=false
-        if (status==='accepted'){
+        console.log(status)
+        if (this.status==="accepted"){
+          alert("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
           // metodo de crear rutina
           //se rellenan los campos que no se muestran en la interfaz
+          this.rutina.nombre=this.tarea.nombre
+          this.rutina.descripcion=this.tarea.descripcion
+          this.rutina.prioridad=this.tarea.prioridad
+          this.rutina.etiqueta=this.tarea.etiqueta
           this.rutina.level=0
           this.rutina.estimacion=0
           this.rutina.hecha=0
@@ -289,7 +295,7 @@ export default {
           let r=this.Range
           let fh=this.fromHour
           let th=this.toHour
-          this.rutina.StringRepeticion=[n, r, fh, th].join(' ')
+          this.rutina.recurrencia=[n, r, fh, th].join(' ')
 
           //se llama al user service para crear la tarea
           UserService.createRoutine(this.rutina).then(

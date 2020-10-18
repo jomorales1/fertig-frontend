@@ -17,20 +17,12 @@ class UserService {
         })
     }
 
-    checkTask(id){
-        return axios.put(API_URL + '/tasks/checkTask/'+id // Peticion tipo POST para agregar la tarea
+    checkTask(id){//metodo para cambiar el estado de hecho en tarea en el backend
+        return axios.put(API_URL + '/tasks/checkTask/'+id
             ,null,{
                 headers: authHeader()
             })
     }
-
-    // getModeratorBoard() {
-    //     return axios.get(API_URL + 'mod', { headers: authHeader() })
-    // }
-    //
-    // getAdminBoard() {
-    //     return axios.get(API_URL + 'admin', { headers: authHeader() })
-    // }
 }
 
 export default new UserService()

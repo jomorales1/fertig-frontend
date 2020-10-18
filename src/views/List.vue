@@ -2,9 +2,9 @@
   <b-container class="text-right">
 <!--    Alerta cuando hay error al crear tareas-->
     <b-alert :show="error" @dismissed="error=!error" class="text-left" variant="danger" dismissible>Error al crear Tarea</b-alert>
-<!--    Boton para reordenar las tareas mostradas-->
     <div class="d-flex justify-content-between">
       <div class="d-flex flex-column justify-content-end">
+        <!--    Boton para quitar el filtro por etiqueta-->
         <b-button variant="outline-secondary"
                   @click="etiquetaFilter=''"
                   v-if="etiquetaFilter!==''"
@@ -13,6 +13,7 @@
         >{{etiquetaFilter}} <strong class="close closeEtq">x</strong> </b-button>
       </div>
       <div>
+        <!--    Boton para reordenar las tareas mostradas-->
         <b-dropdown id="reorder-dropdown" text="Ordenar por" class="m-md-2">
           <b-dropdown-item v-for="order in orders"
                            :key="order"
@@ -48,9 +49,11 @@
       />
     </b-list-group>
 <!--    Boton temporal para cerrar sesión-->
-    <b-button @click="$store.dispatch('auth/logout').then(()=>$router.push('/Login'))">
+    <b-button @click="logout">
       Cerrar sesión
     </b-button>
+<!--    componente para api de facebook-->
+    <v-facebook-login-scope app-id="1472299989621414" @sdk-init="handleSdkInit"/>
 <!--    pop up con formulario para crear tarea-->
     <b-modal id="create-activity"
              title="Crear Actividad"
@@ -141,10 +144,12 @@
 import Tarea from "@/components/Tarea";
 import Task from "../models/Task"
 import UserService from "../services/user.service"
+import { VFBLoginScope as VFacebookLoginScope } from 'vue-facebook-login-component'
 export default {
   name: "Lista",
   components:{
-    Tarea
+    Tarea,
+    VFacebookLoginScope
   },
   data(){
     return {
@@ -166,8 +171,12 @@ export default {
       incomplete:false,
       //opciones de filtro
       filters:["no filtrar",1,2,3,4,5],
+      //prioridad por la que se esta filtrando
       priorityFilter:0,
-      etiquetaFilter:""
+      //etiqueta por la que se esta filtrando
+      etiquetaFilter:"",
+      //objeto de API facebook
+      FB:{}
     }
   },
   methods:{
@@ -213,7 +222,7 @@ export default {
           this.$store.state.DataModule.tareas.sort((a, b) => b.endDate-a.endDate);
       }
     },
-    filterTasks(filter){
+    filterTasks(filter){ //modifica el filtro por prioridad
       this.$store.dispatch("DataModule/update")
       if(filter!=="no filtrar"){
         this.priorityFilter=filter
@@ -221,13 +230,28 @@ export default {
         this.priorityFilter=0
       }
     },
-    filterEtiqueta(etiqueta){
+    filterEtiqueta(etiqueta){//filtra segun la etiqueta seleccionada
       this.etiquetaFilter=etiqueta;
+    },
+    handleSdkInit({ FB}) {
+      this.FB = FB//trae el objeto de facebook desde el sdkInit
+    },
+    logout(){
+      //verifica si esta logeado con facebook y cierra sesión si así es
+      this.FB.getLoginStatus(function (response){
+        if(response.status==='connected'){
+          this.FB.logout()
+        }
+      })
+      //llama al logout del store
+      this.$store.dispatch('auth/logout').then(()=>this.$router.push('/Login'))
     }
   },
   computed:{
+    //lista de tareas que se muestra
     tareas(){
       let lista=this.$store.state.DataModule.tareas
+      //aplicación de filtros
       if(this.priorityFilter!==0){
         lista= lista.filter(task=>task.prioridad===this.priorityFilter)
       }

@@ -25,7 +25,7 @@ export const auth = {
                 }
             );
         },
-        googleLogin({ commit },id_token){
+        googleLogin({ commit },id_token){//metodo del store para iniciar sesión con google usando metodo se AuthService
             return AuthService.googleLogin(id_token).then(
                 user => {
                     commit('loginSuccess', user);//cambio del estado a inicio de sesión exitoso
@@ -36,7 +36,7 @@ export const auth = {
                     return Promise.reject(error);
                 })
         },
-        facebookLogin({ commit },id_token){
+        facebookLogin({ commit },id_token){//metodo del store para iniciar sesión con facebook usando metodo se AuthService
             return AuthService.facebookLogin(id_token).then(
                 user => {
                     commit('loginSuccess', user);//cambio del estado a inicio de sesión exitoso

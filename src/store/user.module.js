@@ -21,7 +21,7 @@ export const DataModule = {
                     router.push("/login")
                 })
         },
-        check({commit},id){
+        check({commit},id){//metodo para cambiar el estado de hecho de una tarea usando user service
             return UserService.checkTask(id).then(()=>{},()=>{
                 commit('error')
             })

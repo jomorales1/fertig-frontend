@@ -21,9 +21,9 @@ class AuthService{
     }
     logout() { // Funcion para cerrar sesión
         localStorage.removeItem('user'); // Remueve el usuario de memoria
-        localStorage.removeItem('googleUser');
+        localStorage.removeItem('googleUser');//Remueve el usuario de google de la memoria
     }
-    googleLogin(googleToken){
+    googleLogin(googleToken){//metodo para enviar token de google y obtener token propio
          return axios.post(API_URL+'/login/oauth2/code/google',querystring.stringify({
              Token:googleToken
          }),{
@@ -37,7 +37,7 @@ class AuthService{
              return response.data // Devuelve los datos del usuario en respuesta
          });
     }
-    facebookLogin(facebookToken){
+    facebookLogin(facebookToken){//metodo para enviar token de facebook y obtener token propio
         return axios.post(API_URL+'/login/oauth2/code/facebook',querystring.stringify({
             Token:facebookToken
         }),{

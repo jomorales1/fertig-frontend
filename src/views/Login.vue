@@ -48,9 +48,6 @@
                       </div>
                     </div>
                   </b-button>
-                  <b-button class="OauthBtn" @click="googleLogout" v-if="isSignIn" variant="outline-secondary" :disabled="!isInit">
-                    LogOut
-                  </b-button>
                   <v-facebook-login @login="handleFacebook" sdk-locale="es_LA" @sdk-init="handleSdkInit" app-id="1472299989621414" class="btn OauthBtn">
                     <template v-slot:login>
                       Continuar con Facebook
@@ -94,6 +91,7 @@ export default {
   },
 
   methods: {
+    //Trae los ojetos de facebook desde el sdkInit
     handleSdkInit({ FB, scope }) {
       this.FB = FB
       this.scope = scope
@@ -119,14 +117,16 @@ export default {
         );
       }
     },
-    //metodos de google no funcionales
+    //metodo de inicio de sesión con google
     handleGoogle(){
       this.loading = true;
       this.$gAuth.signIn()
           .then(user => {
-            localStorage.setItem("googleUser",JSON.stringify(user.getAuthResponse().id_token))
+            //peticion de inicio de sesión con el token de google
             this.$store.dispatch("auth/googleLogin",user.getAuthResponse().id_token).then(
                 () => {
+                  //guardar el token en el storage para inicio de sesión automatico
+                  localStorage.setItem("googleUser",JSON.stringify(user.getAuthResponse().id_token))
                   //si inicio sesión redirigir a lista
                   this.$router.push('/List');
                 },
@@ -139,17 +139,13 @@ export default {
             this.isSignIn = this.$gAuth.isAuthorized
           })
           .catch(()  => {
-            // On fail do something
+            this.message ="Error de comunicación con Google"
+            this.loading = false;
           })
-    },
-    googleLogout(){
-      this.$gAuth.signOut().then(()=>{
-        this.isSignIn = this.$gAuth.isAuthorized
-        localStorage.clear()
-      } )
     },
     handleFacebook(){
       this.loading = true;
+      //peticion de inicio de sesión con el token de google
       this.$store.dispatch("auth/facebookLogin",this.FB.getAccessToken()).then(
           () => {
             //si inicio sesión redirigir a lista
@@ -165,12 +161,18 @@ export default {
   },
   mounted(){
     let that = this
+    //verificar estado de la sesión de google
     let checkGauthLoad = setInterval(function(){
       that.isInit = that.$gAuth.isInit
       that.isSignIn = that.$gAuth.isAuthorized
       if(that.isSignIn){
         let user=JSON.parse(localStorage.getItem("googleUser"))
-        console.log(user)
+        //cerrar sesión en google si se cerro la sesión en la pagina
+        if(user==null){
+          that.googleLogout()
+          return
+        }
+        // iniciar sesión automaticamente si inicio sesión con google
         that.$store.dispatch("auth/googleLogin",user).then(()=>{
           that.$router.push('/list')
         })
@@ -179,11 +181,7 @@ export default {
     }, 1000);
   },
 
-  computed:{
-    /*acceptableSub(){
-      return this.Correo.length > 0 && this.Password.length > 0 ? false:true
-    },*/
-    //variable de sesión
+  computed:{    //variable de sesión
     loggedIn() {
       return this.$store.state.auth.status.loggedIn;
     }

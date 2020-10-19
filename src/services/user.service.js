@@ -31,25 +31,17 @@ class UserService {
     }
 
     createRoutine(routine) {
-        axios.post(API_URL + '/routines/addRoutine' // Peticion tipo POST para agregar la rutina
+        return axios.post(API_URL + '/routines/addRoutine' // Peticion tipo POST para agregar la rutina
             ,routine,{
                 headers: authHeader()
-            }).then(()=>{
-            this.$store.state.Rutinas=this.getRoutines() // Luego de la petición, llamar a la función para obtener las rutinas
-        },()=>{
-            return "Error" // Error en otro caso
-        })
+            })
     }
 
     createTEvent(tEvent) {
-        axios.post(API_URL + '/events/addEvent' // Peticion tipo POST para agregar el evento
+        return axios.post(API_URL + '/events/addEvent' // Peticion tipo POST para agregar el evento
             ,tEvent,{
                 headers: authHeader()
-            }).then(()=>{
-            this.$store.state.Eventos=this.getTEvents() // Luego de la petición, llamar a la función para obtener los eventos
-        },()=>{
-            return "Error" // Error en otro caso
-        })
+            })
     }
 }
 

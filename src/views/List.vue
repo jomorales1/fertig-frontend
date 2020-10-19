@@ -165,6 +165,7 @@
                       label-cols-sm="4"
                       label-cols-lg="3"
                       label="Repeticiones"
+                      label-for="recurrency"
                       description="La actividad puede repetirse">
 
           <b-form-checkbox
@@ -240,6 +241,7 @@ import Tarea from "@/components/Tarea";
 import Task from "../models/Task"
 import UserService from "../services/user.service"
 import Routine from "@/models/Routine"
+import TEvent from "@/models/TEvent";
 
 import { VFBLoginScope as VFacebookLoginScope } from 'vue-facebook-login-component'
 export default {
@@ -261,7 +263,7 @@ export default {
       //rutina que se crea
       rutina:new Routine(),
       //evento que se crea
-      evento:new Event(),
+      evento:new TEvent(),
       //campo para guardar la hora de inico
       startHour:null,
       //campo para guardar la hora de finalizacion
@@ -328,7 +330,7 @@ export default {
 
           if(this.statusEvent==="accepted"){
             //se llama al user service para crear la tarea
-            UserService.createTEvent(this.evento).then(
+            UserService.createTEvent(this.rutina).then(
                 ()=>{
                   this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
                   this.error=false
@@ -336,18 +338,16 @@ export default {
                   this.error=true
                 }
             )}
-
-        else{
-
-          //se llama al user service para crear la tarea
-          UserService.createRoutine(this.rutina).then(
-              ()=>{
-                this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las rutinas
-                this.error=false
-              },()=>{
-                this.error=true
-              }
-          )}
+          else{
+            //se llama al user service para crear la tarea
+            UserService.createRoutine(this.rutina).then(
+                ()=>{
+                  this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las rutinas
+                  this.error=false
+                },()=>{
+                  this.error=true
+                }
+            )}
 
         }
         else {
@@ -365,7 +365,9 @@ export default {
 
           if(this.statusEvent==="accepted"){
             //se llama al user service para crear la tarea
-            UserService.createTEvent(this.evento).then(
+
+
+            UserService.createTEvent(this.tarea).then(
                 ()=>{
                   this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
                   this.error=false

@@ -165,7 +165,6 @@
                       label-cols-sm="4"
                       label-cols-lg="3"
                       label="Repeticiones"
-                      label-for="recurrency"
                       description="La actividad puede repetirse">
 
           <b-form-checkbox
@@ -211,6 +210,24 @@
           <div >Y termina a las:</div>
           <b-form-input required id="hasta" type="time" v-model="toHour"></b-form-input>
         </b-form-group>
+        <b-form-group id="fieldset-checkboxevent"
+                      label-cols-sm="4"
+                      label-cols-lg="3"
+                      label="Autocheck al terminar "
+                      description="la actividad no aparecerá en la lista">
+
+          <b-form-checkbox
+              id="checkbox-autocheck"
+              v-model="statusEvent"
+              name="checkbox-autocheck"
+              value="accepted"
+              unchecked-value= "not_accepted"
+          >
+          </b-form-checkbox>
+        </b-form-group>
+
+
+
       </form>
     </b-modal>
 <!--    Boton de + flotante que muestra el pop up de crear tarea-->
@@ -241,6 +258,10 @@ export default {
       ],
       //tarea que se crea
       tarea:new Task(),
+      //rutina que se crea
+      rutina:new Routine(),
+      //evento que se crea
+      evento:new Event(),
       //campo para guardar la hora de inico
       startHour:null,
       //campo para guardar la hora de finalizacion
@@ -253,8 +274,6 @@ export default {
       filters:["no filtrar",1,2,3,4,5],
       //prioridad por la que se esta filtrando
       priorityFilter:0,
-      //rutina que se crea
-      rutina:new Routine(),
       //campo para guardar el tiempo de espera entre las repeticiones
       numbRep:null,
       //campo para guardar la hora de inico de las repeticiones
@@ -263,6 +282,8 @@ export default {
       toHour:null,
       // seleccionador del cambio de tarea a rutina
       status: 'not_accepted',
+      // seleccionador del cambio de tarea, o rutina, a evento
+      statusEvent: 'not_accepted',
       //variable para filtrar etiquetas
       etiquetaFilter:"",
       // seleccionador del tipo de repeticiones
@@ -284,11 +305,10 @@ export default {
       if(!this.$refs.form.checkValidity()){
         bvModalEvt.preventDefault()
         this.incomplete=true
-      }else{
+      }
+      else{
         this.incomplete=false
-        console.log(status)
         if (this.status==="accepted"){
-          alert("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
           // metodo de crear rutina
           //se rellenan los campos que no se muestran en la interfaz
           this.rutina.nombre=this.tarea.nombre
@@ -306,6 +326,19 @@ export default {
           let th=this.toHour
           this.rutina.recurrencia=[n, r, fh, th].join(' ')
 
+          if(this.statusEvent==="accepted"){
+            //se llama al user service para crear la tarea
+            UserService.createTEvent(this.evento).then(
+                ()=>{
+                  this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
+                  this.error=false
+                },()=>{
+                  this.error=true
+                }
+            )}
+
+        else{
+
           //se llama al user service para crear la tarea
           UserService.createRoutine(this.rutina).then(
               ()=>{
@@ -314,9 +347,10 @@ export default {
               },()=>{
                 this.error=true
               }
-          )
+          )}
 
-        }else {
+        }
+        else {
           // metodo de crear tarea
           //se añade las horas a las fechas
           let h=this.endHour.split(":")
@@ -328,18 +362,28 @@ export default {
           this.tarea.estimacion=0
           this.tarea.hecha=0
           this.tarea.recordatorio=0
-          //se llama al user service para crear la tarea
-          UserService.createTask(this.tarea).then(
-              ()=>{
-                this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las tareas
-                this.error=false
-              },()=>{
-                this.error=true
-              }
-          )
+
+          if(this.statusEvent==="accepted"){
+            //se llama al user service para crear la tarea
+            UserService.createTEvent(this.evento).then(
+                ()=>{
+                  this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
+                  this.error=false
+                },()=>{
+                  this.error=true
+                }
+            )}
+          else{
+            //se llama al user service para crear la tarea
+            UserService.createTask(this.tarea).then(
+                ()=>{
+                  this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las tareas
+                  this.error=false
+                },()=>{
+                  this.error=true
+                }
+            )}
         }
-
-
       }
     },
     reorder(order){

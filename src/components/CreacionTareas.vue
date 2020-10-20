@@ -58,6 +58,23 @@
         >
           <b-form-input id="etiquetas" v-model="tarea.etiqueta"></b-form-input>
         </b-form-group>
+        <!--        Checkbox de rutina-->
+        <b-form-group id="fieldset-checkbox"
+                      label-cols-sm="4"
+                      label-cols-lg="3"
+                      label="Repeticiones"
+                      label-for="recurrency"
+                      description="La actividad puede repetirse">
+
+          <b-form-checkbox
+              id="checkbox-Repetition"
+              v-model="status"
+              name="checkbox-Repetition"
+              value="accepted"
+              unchecked-value= "not_accepted"
+          >
+          </b-form-checkbox>
+        </b-form-group>
         <!--      campos para fecha de inicio-->
         <b-form-group
             v-if="status==='not_accepted'"
@@ -81,7 +98,7 @@
             label="Fecha de inicio de la repetición"
             label-for="start-date, start-time"
         >
-          <b-datepicker required id="start-date" value-as-date v-model="rutina.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+          <b-datepicker required id="start-date" value-as-date v-model="tarea.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
         </b-form-group>
         <!--      campos para fecha de finalización-->
         <b-form-group
@@ -107,23 +124,7 @@
             label-for="end-date, end-time"
         >
 
-          <b-datepicker required id="end-date" value-as-date v-model="rutina.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-        </b-form-group>
-        <b-form-group id="fieldset-checkbox"
-                      label-cols-sm="4"
-                      label-cols-lg="3"
-                      label="Repeticiones"
-                      label-for="recurrency"
-                      description="La actividad puede repetirse">
-
-          <b-form-checkbox
-              id="checkbox-Repetition"
-              v-model="status"
-              name="checkbox-Repetition"
-              value="accepted"
-              unchecked-value= "not_accepted"
-          >
-          </b-form-checkbox>
+          <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
         </b-form-group>
         <b-form-group
             v-if='status==="accepted"'
@@ -163,7 +164,7 @@
                       label-cols-sm="4"
                       label-cols-lg="3"
                       label="Autocheck al terminar "
-                      description="la actividad no aparecerá en la lista">
+                      description="la actividad no tendrá check de hecha">
 
           <b-form-checkbox
               id="checkbox-autocheck"
@@ -240,17 +241,15 @@ export default {
       }
       else{
         this.incomplete=false
+        //se rellenan los campos que no se muestran en la interfaz
+        this.tarea.level=0
+        this.tarea.estimacion=0
+        this.tarea.hecha=0
+        this.tarea.recordatorio=0
         if (this.status==="accepted"){
           // metodo de crear rutina
           //se rellenan los campos que no se muestran en la interfaz
-          this.rutina.nombre=this.tarea.nombre
-          this.rutina.descripcion=this.tarea.descripcion
-          this.rutina.prioridad=this.tarea.prioridad
-          this.rutina.etiqueta=this.tarea.etiqueta
-          this.rutina.level=0
-          this.rutina.estimacion=0
-          this.rutina.hecha=0
-          this.rutina.recordatorio=0
+          this.rutina=Object.assign(new Routine(),this.tarea)
           //se hace la String de Repeticion
           let n=this.numbRep
           let r=this.Range
@@ -264,6 +263,8 @@ export default {
                 ()=>{
                   this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
                   this.error=false
+                  this.tarea=new Task()
+                  this.rutina=new Routine()
                 },()=>{
                   this.error=true
                 }
@@ -274,6 +275,8 @@ export default {
                 ()=>{
                   this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las rutinas
                   this.error=false
+                  this.tarea=new Task()
+                  this.rutina=new Routine()
                 },()=>{
                   this.error=true
                 }
@@ -287,16 +290,8 @@ export default {
           this.tarea.fechaFin.setHours(h[0],h[1])
           h=this.startHour.split(":")
           this.tarea.fechaInicio.setHours(h[0],h[1])
-          //se rellenan los campos que no se muestran en la interfaz
-          this.tarea.level=0
-          this.tarea.estimacion=0
-          this.tarea.hecha=0
-          this.tarea.recordatorio=0
-
           if(this.statusEvent==="accepted"){
             //se llama al user service para crear la tarea
-
-
             UserService.createTEvent(this.tarea).then(
                 ()=>{
                   this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos

@@ -1,16 +1,9 @@
-export default class Task {
+import ListItem from "@/models/LitstItem";
+export default class Task extends ListItem{
        //modelo de tarea para enviar a backend
-        constructor(title,description,priority,startDate,endDate,level, etiqueta,estimacion,hecha,recordatorio) {
-            this.nombre=title
-            this.descripcion=description
-            this.prioridad=priority
-            this.fechaInicio=startDate
-            this.fechaFin=endDate
-            this.level=level
-            this.estimacion=estimacion
+        constructor(id,title,description,priority,startDate,endDate,level, etiqueta,estimacion,hecha,recordatorio) {
+            super(id,title,description,priority,startDate,endDate, etiqueta,estimacion,recordatorio)
             this.hecha=hecha
-            this.recordatorio=recordatorio
-            this.etiqueta=etiqueta
+            this.nivel=level
         }
-
 }

@@ -11,10 +11,10 @@ class UserService {
     }
 
     getRoutines() { //Funcion para obtener rutinas del usuario
-        return axios.get(API_URL + '/routine/getRoutines', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
+        return axios.get(API_URL + '/routines/getRoutines', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
     }
     getTEvents() { //Funcion para obtener rutinas del usuario
-        return axios.get(API_URL + '/event/getEvents', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
+        return axios.get(API_URL + '/events/getEvents', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
     }
     createTask(task){ // Funcion para crear tarea
         return axios.post(API_URL + '/tasks/addTask' // Peticion tipo POST para agregar la tarea
@@ -24,7 +24,7 @@ class UserService {
     }
 
     checkTask(id){//metodo para cambiar el estado de hecho en tarea en el backend
-        return axios.put(API_URL + '/tasks/checkTask/'+id // Peticion tipo POST para chequear la tarea
+        return axios.patch(API_URL + '/tasks/checkTask/'+id // Peticion tipo POST para chequear la tarea
             ,null,{
                 headers: authHeader()
             })

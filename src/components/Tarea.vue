@@ -6,10 +6,12 @@
           <div class="d-flex w-100 justify-content-between" >
             <div class="d-inline-block align-top align-text-top">
 <!--              checkbox de hecho-->
-              <b-form-checkbox @change="toggleCheck" v-model=hecho class="d-inline-block"></b-form-checkbox>
+              <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
 <!--              titulo de tarea-->
-              {{ title }}
-              <small>Tarea</small>
+              {{ listItem.nombre }}
+              <small v-if="task">Tarea</small>
+              <small v-if="routine">Rutina</small>
+              <small v-if="event && !routine">Evento</small>
               <b-badge  v-for="etiqueta in etiquetasList"
                        :key="etiqueta"
                         class="badges"
@@ -26,17 +28,22 @@
 <!--    informacion detallada de tarea que se abre cuando se da click en la cabecera-->
           <b-collapse id="collapse-1"  v-model=selected >
             <b-card>
-              <div class="text-left" style="margin-bottom: 1rem">
+              <div class="text-left divPrioridad" style="margin-bottom: 1rem">
                 Desde:
-                {{ longDate(startDate) }}
-                <div class="float-right"> Prioridad: {{priority}} </div>
+                {{ longDate(new Date(listItem.fechaInicio)) }}
+                <div class="float-right prioridad"> Prioridad: {{listItem.prioridad}} </div>
               </div>
 
               <p class="text-left ">
                 Hasta:
-                {{ longDate(endDate)}}
+                {{ longDate(new Date(listItem.fechaFin))}}
               </p>
-              <p class="text-left">{{ description }}</p>
+              <p v-if="event&&listItem.recurrencia!=null" class="text-left ">
+                Cada:
+                {{ recurrencia[0]+" "+timeMesure[recurrencia[1]]+" desde "+recurrencia[2]+" hasta "+recurrencia[3]}}
+              </p>
+
+              <p class="text-left">{{ listItem.descripcion}}</p>
 <!--Boton para editat tarea por implementar-->
               <b-button v-b-toggle.collapse-1-inner size="sm">Editar Tarea</b-button>
               <b-collapse id="collapse-1-inner" class="mt-2">
@@ -49,49 +56,34 @@
 
 <script>
 
+import ListItem from "@/models/LitstItem";
+import Task from '@/models/Task';
+import Routine from "@/models/Routine";
+import TEvent from "@/models/TEvent";
 export default {
   props:{
     //variables requerias para crear una vista de tarea
-    id:{
-      Type:Number,
-      required:true
-    },
-    title:{
-      Type:String,
-      required: true
-    },
-    description:{
-      Type:String,
-      required: true
-    },
-    priority:{
-      Type:Number,
-      required: true
-    },
-    startDate:{
-      Type:Date,
-      required: true
-    },
-    endDate:{
-      Type:Date,
-      required: true
-    },
-    etiquetas:{
-      Type:String,
-      required: true
-    },
-    hecha:{
-      Type:Boolean,
+    listItem:{
+      Type:ListItem,
       required:true
     }
   },
   data(){
-    return{
+    return {
       name: "Tarea",
       //flags para cambios en la vista
       show: true,
       selected: false,
-      hecho:this.hecha
+      task: this.listItem instanceof Task,
+      routine: this.listItem instanceof Routine,
+      event: this.listItem instanceof TEvent,
+      timeMesure: {
+        'h': 'horas',
+        'd': 'dias',
+        's': 'semanas',
+        'm': 'meses',
+        'a': 'años'
+      }
     }
   },
   methods: {
@@ -107,13 +99,65 @@ export default {
       return (new Intl.DateTimeFormat('es',options)).format(date)
     },
     toggleCheck(){
-        this.$store.dispatch("DataModule/check",this.id)
+        this.$store.dispatch("DataModule/check",this.listItem.id)
     }
   },
   computed:{
+
+    hecho(){
+      if (this.routine && this.listItem.completada!=null){
+        let diff =(new Date(this.listItem.completada.fecha).getTime()- (new Date()).getTime()) / (1000*60*60);
+        switch(this.recurrencia[1]){
+          case "h":{
+            return diff<this.recurrencia[0]
+          }
+          case  'd': {
+            return diff<this.recurrencia[0]*24
+          }
+          case    's': {
+            return diff<this.recurrencia[0]*24*7
+          }
+          case    'm': {
+            return diff<this.recurrencia[0]*24*30
+          }
+          case    'a': {
+            return diff<this.recurrencia[0]*24*356
+          }
+          default: return false
+        }
+      }
+      return this.listItem.hecha
+    },
+    recurrencia(){
+      return this.event?this.listItem.recurrencia.split(' '):null
+    } ,
     timeLeft(){
         //calculo del tiempo restante a partir de la fecha de finalización
-        let diff =(this.endDate.getTime() - (new Date()).getTime()) / (1000*60*60);
+        let diff =(new Date(this.listItem.fechaInicio).getTime()- (new Date()).getTime()) / (1000*60*60);
+        if(this.routine && this.listItem.completada!=null){
+          switch(this.recurrencia[1]){
+            case "h":{
+              diff =(new Date(this.listItem.completada.fecha).getTime()+this.recurrencia[0]*60*60*1000- (new Date()).getTime()) / (1000*60*60);
+              break
+            }
+            case  'd': {
+              diff =(new Date(this.listItem.completada.fecha).getTime()+this.recurrencia[0]*24*60*60*1000- (new Date()).getTime()) / (1000*60*60);
+              break
+            }
+            case    's': {
+              diff =(new Date(this.listItem.completada.fecha).getTime()+this.recurrencia[0]*7*24*60*60*1000- (new Date()).getTime()) / (1000*60*60);
+              break
+            }
+            case    'm': {
+              diff =(new Date(this.listItem.completada.fecha).getTime()+this.recurrencia[0]*30*7*24*60*60*1000- (new Date()).getTime()) / (1000*60*60);
+              break
+            }
+            case    'a': {
+              diff =(new Date(this.listItem.completada.fecha).getTime()+this.recurrencia[0]*365*7*24*60*60*1000- (new Date()).getTime()) / (1000*60*60);
+              break
+            }
+          }
+        }
         let res="en ";
         if(diff>24){
           diff /=24;
@@ -124,10 +168,10 @@ export default {
         return res;
     },
     etiquetasList(){
-      if(this.etiquetas===""){
+      if(this.listItem.etiqueta===""){
         return []
       }
-      return this.etiquetas.split(' ')
+      return this.listItem.etiqueta.trim().split(' ')
     }
   }
 }
@@ -145,9 +189,20 @@ export default {
  }
  .custom-list-item:last-child {
    //estilo para que el ultimo hijo si tenga borde inferior
-   border-bottom: 1px solid rgba(0, 0, 0, 0.125);;
+   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
  }
  .badges{
    margin: 2px;
  }
+ @media(max-device-width: 768px){
+   .prioridad{
+      float: left !important;
+   }
+   .divPrioridad{
+     display: flex!important;
+     flex-direction: column-reverse!important;
+   }
+
+ }
+
 </style>

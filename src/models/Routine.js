@@ -1,9 +1,9 @@
-import Task from "@/models/Task";
-export default class Routine extends Task{
+import TEvent from "@/models/TEvent";
+export default class Routine extends TEvent{
     //modelo de rutina para enviar a backend
-    constructor(title,description,priority,startDate,endDate,repetitionString, level, etiqueta,estimacion,hecha,recordatorio) {
-        super(title,description,priority,startDate,endDate,level, etiqueta,estimacion,hecha,recordatorio)
-        this.recurrencia=repetitionString
+    constructor(id,title,description,priority,startDate,endDate,repetitionString, etiqueta,recordatorio,completada) {
+        super(id,title,description,priority,startDate,endDate,repetitionString,etiqueta,recordatorio)
+        this.completada=completada
     }
 
 }

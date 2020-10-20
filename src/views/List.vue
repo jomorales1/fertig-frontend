@@ -1,7 +1,6 @@
 <template>
   <b-container class="text-right">
-<!--&lt;!&ndash;    Alerta cuando hay error al crear tareas&ndash;&gt;-->
-<!--    <b-alert :show="error" @dismissed="error=!error" class="text-left" variant="danger" dismissible>Error al crear Tarea</b-alert>-->
+    <CreacionTareas/>
 <!--    Boton para reordenar las tareas mostradas-->
     <div class="d-flex justify-content-between">
       <div class="d-flex flex-column justify-content-end">
@@ -34,18 +33,11 @@
     </div>
 
 <!--    Lista de tareas a partir de la variable de tareas del store de vuex-->
-    <b-list-group>
+    <b-list-group class="listView">
       <Tarea
           v-for="task in tareas"
-          v-bind:key="task.id"
-          v-bind:id="task.id"
-          v-bind:title="task.nombre"
-          v-bind:description="task.descripcion"
-          v-bind:startDate="new Date(task.fechaInicio)"
-          v-bind:endDate="new Date(task.fechaFin)"
-          v-bind:priority="task.prioridad"
-          v-bind:etiquetas="task.etiqueta"
-          v-bind:hecha="task.hecha"
+          v-bind:key="task.id+task.constructor.name"
+          v-bind:listItem="task"
           v-on:etiqueta-filter="filterEtiqueta($event)"
       />
     </b-list-group>
@@ -56,11 +48,6 @@
 <!--    componente para api de facebook-->
     <v-facebook-login-scope app-id="1472299989621414" @sdk-init="handleSdkInit"/>
     <!--    pop up con formulario para crear tarea-->
-    <div>
-      <CreacionTareas></CreacionTareas>
-    </div>
-
-
   </b-container>
 </template>
 
@@ -96,18 +83,17 @@ export default {
     }
   },
   methods:{
-
     reorder(order){
       switch (order){
         //funciones para ordenar segun lo que se escoja
         case "Prioridad":
-          this.$store.state.DataModule.tareas.sort((a, b) => a.priority-b.priority);
+          this.$store.state.DataModule.tareas.sort((a, b) => a.prioridad-b.prioridad);
           break
         case "Más pronta":
-          this.$store.state.DataModule.tareas.sort((a, b) => a.endDate-b.endDate);
+          this.$store.state.DataModule.tareas.sort((a, b) =>new Date(a.fechaFin)-new Date(b.fechaFin));
           break
         case "Menos pronta":
-          this.$store.state.DataModule.tareas.sort((a, b) => b.endDate-a.endDate);
+          this.$store.state.DataModule.tareas.sort((a, b) => new Date(b.fechaFin)-new Date(a.fechaFin));
       }
     },
     filterTasks(filter){ //modifica el filtro por prioridad
@@ -162,6 +148,7 @@ export default {
     //css para ubicar el boton flotante de +
     bottom: 30px;
     right: 10%;
+    z-index: 10;
   }
   .etqButton{
     white-space: pre;
@@ -169,5 +156,8 @@ export default {
   }
   .closeEtq{
     font-size: 1.2rem;
+  }
+  .listView{
+    margin-bottom: 5%;
   }
 </style>

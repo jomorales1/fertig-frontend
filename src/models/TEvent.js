@@ -1,9 +1,10 @@
 
-import Routine from "@/models/Routine";
-export default class TEvent extends Routine{
+import ListItem from "@/models/LitstItem";
+export default class TEvent extends ListItem{
     //modelo de evento para enviar a backend
-    constructor(title,description,priority,startDate,endDate,repetitionString, level, etiqueta,hecha,recordatorio) {
-        super(title,description,priority,startDate,endDate,repetitionString, level, etiqueta,0,hecha,recordatorio)
+    constructor(id,title,description,priority,startDate,endDate,repetitionString, etiqueta,recordatorio) {
+        super(id,title,description,priority,startDate,endDate,etiqueta,0,recordatorio)
+        this.recurrencia=repetitionString
     }
 
 }

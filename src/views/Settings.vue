@@ -1,5 +1,5 @@
 <template>
-  <div class="align-self-center">
+  <div class="align-self-center my-5">
     <b-container> <!-- Contenedor titulo y formulario de registro !-->
       <b-row  class ="justify-content-md-center ">
         <div class="col-md-6" >
@@ -27,9 +27,10 @@
                   <b-form-input id="email" required placeholder="Ingrese el correo" v-model="Settings_form.email"></b-form-input>
                 </div>
               </b-form-group>
-              <b-form-group ><!-- Campo correo !-->
+              <b-form-group ><!-- Check cambio contrase;a !-->
                 <div class="form-row">
-                  <input type="checkbox" id="check" @click="change">
+                  <b-form-checkbox @change="change" id="check" />
+<!--                  <input type="checkbox" id="check" @click="change">-->
                   <label  for="check">Cambiar contraseña: </label>
                 </div>
               </b-form-group>

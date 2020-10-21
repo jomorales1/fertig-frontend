@@ -1,5 +1,5 @@
 <template>
-  <div class="align-self-center">
+  <div class="align-self-center my-5">
       <b-container> <!-- Contenedor titulo y formulario de registro !-->
         <b-row  class ="justify-content-md-center ">
           <div class="col-md-6" >
@@ -111,11 +111,6 @@
         document.getElementById("tagError").textContent = error.toString()
       }
     }
-    // ,computed:{
-    //     PasswordVerify(){
-    //         return this.contrasenna.length >= 6
-    //     }
-
 
   }
 </script>

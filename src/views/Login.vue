@@ -1,5 +1,5 @@
 <template>
-  <div class="align-self-center">
+  <div class="align-self-center my-5">
     <b-container>
       <b-overlay :show="loading" rounded="sm">
         <b-row class ="justify-content-md-center "><!-- para centrar en la pantalla-->

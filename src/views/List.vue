@@ -1,5 +1,5 @@
 <template>
-  <b-container class="text-right">
+  <b-container class="text-right my-5">
     <CreacionTareas/>
 <!--    Boton para reordenar las tareas mostradas-->
     <div class="d-flex justify-content-between">

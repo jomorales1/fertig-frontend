@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-<!--    se llama a la vista de roter para que funcionen los links-->
-    <router-view/>
+      <!--    se llama a la vista de roter para que funcionen los links-->
+      <router-view/>
   </div>
 </template>
 

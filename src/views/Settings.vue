@@ -29,8 +29,7 @@
               </b-form-group>
               <b-form-group ><!-- Check cambio contrase;a !-->
                 <div class="form-row">
-                  <b-form-checkbox @change="change" id="check" />
-                  <label  for="check">Cambiar contraseña: </label>
+                  <b-form-checkbox @change="change" id="check" >Cambiar contraseña: </b-form-checkbox>
                 </div>
               </b-form-group>
               <b-form-group ><!-- Campo contraseña !-->

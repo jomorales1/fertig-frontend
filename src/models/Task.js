@@ -1,4 +1,4 @@
-import ListItem from "@/models/LitstItem";
+import ListItem from "@/models/ListItem";
 export default class Task extends ListItem{
        //modelo de tarea para enviar a backend
         constructor(id,title,description,priority,startDate,endDate,level, etiqueta,estimacion,hecha,recordatorio) {

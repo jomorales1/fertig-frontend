@@ -1,5 +1,5 @@
 
-import ListItem from "@/models/LitstItem";
+import ListItem from "@/models/ListItem";
 export default class TEvent extends ListItem{
     //modelo de evento para enviar a backend
     constructor(id,title,description,priority,startDate,endDate,repetitionString, etiqueta,recordatorio,next) {

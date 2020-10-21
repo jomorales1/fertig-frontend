@@ -30,7 +30,6 @@
               <b-form-group ><!-- Check cambio contrase;a !-->
                 <div class="form-row">
                   <b-form-checkbox @change="change" id="check" />
-<!--                  <input type="checkbox" id="check" @click="change">-->
                   <label  for="check">Cambiar contraseña: </label>
                 </div>
               </b-form-group>
@@ -137,12 +136,6 @@
         this.Settings_form.username = response.data.usuario;
       })
     }
-    // ,computed:{
-    //     PasswordVerify(){
-    //         return this.contrasenna.length >= 6
-    //     }
-
-
   }
 </script>
 

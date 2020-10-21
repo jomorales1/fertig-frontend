@@ -58,7 +58,7 @@
 
 <script>
 
-import ListItem from "@/models/LitstItem";
+import ListItem from "@/models/ListItem";
 import Task from '@/models/Task';
 import Routine from "@/models/Routine";
 import TEvent from "@/models/TEvent";

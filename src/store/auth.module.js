@@ -13,8 +13,8 @@ export const auth = {
     namespaced: true,
     state: initialState,
     actions: {
-        login({ commit }, user) {//metodo del store para iniciar sesión usando metodo se AuthService
-            return AuthService.login(user).then(
+        login({ commit }, luser) {//metodo del store para iniciar sesión usando metodo se AuthService
+            return AuthService.login(luser).then(
                 newUser => {
                     commit('loginSuccess', newUser);//cambio del estado a inicio de sesión exitoso
                     return Promise.resolve(newUser);
@@ -51,8 +51,8 @@ export const auth = {
             AuthService.logout();
             commit('logout');//cambio de estado a sesión cerrada
         },
-        register({ commit }, user) {//metodo del store para registro usando metodo se AuthService
-            return AuthService.register(user).then(
+        register({ commit }, ruser) {//metodo del store para registro usando metodo se AuthService
+            return AuthService.register(ruser).then(
                 response => {
                     commit('registerSuccess');//cambio de estado a registro exitoso
                     return Promise.resolve(response.data);
@@ -74,8 +74,8 @@ export const auth = {
                 }
             );
         },
-        saveChanges({ commit }, user) {//metodo del store para guardar cambios en usuario usando metodo se AuthService
-            return AuthService.saveChanges(user).then(
+        saveChanges({ commit }, suser) {//metodo del store para guardar cambios en usuario usando metodo se AuthService
+            return AuthService.saveChanges(suser).then(
                 response => {
                     return Promise.resolve(response.data);
                 },
@@ -88,9 +88,9 @@ export const auth = {
         },
     mutations: {
         //funciones de cambio de estado
-        loginSuccess(state, user) {
+        loginSuccess(state, luser) {
             state.status.loggedIn = true;
-            state.user = user;
+            state.user = luser;
         },
         loginFailure(state) {
             state.status.loggedIn = false;

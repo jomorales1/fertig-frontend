@@ -1,7 +1,7 @@
 <template>
-  <div id="app">
-<!--    se llama a la vista de roter para que funcionen los links-->
-    <router-view/>
+  <div id="app" >
+      <!--    se llama a la vista de roter para que funcionen los links-->
+      <router-view/>
   </div>
 </template>
 
@@ -18,6 +18,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
 </style>

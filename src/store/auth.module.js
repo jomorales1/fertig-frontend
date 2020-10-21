@@ -15,9 +15,9 @@ export const auth = {
     actions: {
         login({ commit }, user) {//metodo del store para iniciar sesión usando metodo se AuthService
             return AuthService.login(user).then(
-                user => {
-                    commit('loginSuccess', user);//cambio del estado a inicio de sesión exitoso
-                    return Promise.resolve(user);
+                newUser => {
+                    commit('loginSuccess', newUser);//cambio del estado a inicio de sesión exitoso
+                    return Promise.resolve(newUser);
                 },
                 error => {
                     commit('loginFailure');//cambio de estado a error en inicio de sesión
@@ -27,9 +27,9 @@ export const auth = {
         },
         googleLogin({ commit },id_token){//metodo del store para iniciar sesión con google usando metodo se AuthService
             return AuthService.googleLogin(id_token).then(
-                user => {
-                    commit('loginSuccess', user);//cambio del estado a inicio de sesión exitoso
-                    return Promise.resolve(user);
+                newUser => {
+                    commit('loginSuccess', newUser);//cambio del estado a inicio de sesión exitoso
+                    return Promise.resolve(newUser);
                 },
                 error => {
                     commit('loginFailure');//cambio de estado a error en inicio de sesión
@@ -38,9 +38,9 @@ export const auth = {
         },
         facebookLogin({ commit },id_token){//metodo del store para iniciar sesión con facebook usando metodo se AuthService
             return AuthService.facebookLogin(id_token).then(
-                user => {
-                    commit('loginSuccess', user);//cambio del estado a inicio de sesión exitoso
-                    return Promise.resolve(user);
+                newUser => {
+                    commit('loginSuccess', newUser);//cambio del estado a inicio de sesión exitoso
+                    return Promise.resolve(newUser);
                 },
                 error => {
                     commit('loginFailure');//cambio de estado a error en inicio de sesión
@@ -63,18 +63,18 @@ export const auth = {
                 }
             );
         },
-        getUser({ commit }) {//metodo del store para registro usando metodo se AuthService
+        getUser({ commit }) {//metodo del store para obtener usario usando metodo se AuthService
             return AuthService.getUser().then(
                 response => {
                     return Promise.resolve(response);
                 },
                 error => {
-                    commit('getUserFailure');//cambio de estado a usuario no iotenido
+                    commit('getUserFailure');//cambio de estado a usuario no obtenido
                     return Promise.reject(error);
                 }
             );
         },
-        saveChanges({ commit }, user) {//metodo del store para registro usando metodo se AuthService
+        saveChanges({ commit }, user) {//metodo del store para guardar cambios en usuario usando metodo se AuthService
             return AuthService.saveChanges(user).then(
                 response => {
                     return Promise.resolve(response.data);

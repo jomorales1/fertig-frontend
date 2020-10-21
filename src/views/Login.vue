@@ -40,7 +40,7 @@
 
                 </b-form>
                 <div class="d-flex justify-content-around flex-wrap">
-                  <b-button class="OauthBtn" @click="handleGoogle" v-if="!isSignIn" variant="outline-secondary" :disabled="!isInit">
+                  <b-button class="OauthBtn" @click="handleGoogle" variant="outline-secondary" :disabled="!isInit">
                     <div class="d-flex">
                       <img alt="Google logo" class="googleIcon"  src="../assets/google.svg">
                       <div>
@@ -53,7 +53,6 @@
                       Continuar con Facebook
                     </template>
                   </v-facebook-login>
-<!--                  <button @click="handleFacebook" v-if="isSignIn" :disabled="!isInit">signOout</button>-->
                 </div>
               </b-card-text>
             </b-card>

@@ -5,7 +5,6 @@
                 <b-container class="col-md-3 justify-content-center" style="height: 100%; max-width: 100%;">
                     <b-img :src="imagen" center></b-img>
                 </b-container>
-                <!--<b-container class="col-md-1"></b-container>-->
                 <div class="col-md-7" >
                     <header style="font-size: 300%">{{titulo}}</header>
                     <b-container class="row" style="height: 10%"></b-container>
@@ -14,7 +13,6 @@
                     <br>
                     <br>
                     <br>
-                    <!--<b-container class="row" style="height: 40%"></b-container-->
                     <b-button style="flex-direction: column;" variant="primary" @click="register">Crear cuenta</b-button>
                 </div>
             </div>

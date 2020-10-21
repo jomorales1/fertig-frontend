@@ -9,9 +9,11 @@
               <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
 <!--              titulo de tarea-->
               {{ listItem.nombre }}
+<!--              etiqueta de tipo de tarea-->
               <small v-if="task">Tarea</small>
               <small v-if="routine">Rutina</small>
               <small v-if="event && !routine">Evento</small>
+<!--              lista de etiquetas de la tarea-->
               <b-badge  v-for="etiqueta in etiquetasList"
                        :key="etiqueta"
                         class="badges"
@@ -44,7 +46,7 @@
               </p>
 
               <p class="text-left">{{ listItem.descripcion}}</p>
-<!--Boton para editat tarea por implementar-->
+<!--Boton para editar tarea por implementar-->
               <b-button v-b-toggle.collapse-1-inner size="sm">Editar Tarea</b-button>
               <b-collapse id="collapse-1-inner" class="mt-2">
                 <b-card>Aqui estará la vista de editar!</b-card>
@@ -135,28 +137,7 @@ export default {
         //calculo del tiempo restante a partir de la fecha de finalización
         let diff =(new Date(this.listItem.fechaInicio).getTime()- (new Date()).getTime()) / (1000*60*60);
         if(this.routine && this.listItem.completada!=null){
-          switch(this.recurrencia[1]){
-            case "h":{
-              diff =(new Date(this.listItem.completada.fecha).getTime()+this.recurrencia[0]*60*60*1000- (new Date()).getTime()) / (1000*60*60);
-              break
-            }
-            case  'd': {
-              diff =(new Date(this.listItem.completada.fecha).getTime()+this.recurrencia[0]*24*60*60*1000- (new Date()).getTime()) / (1000*60*60);
-              break
-            }
-            case    's': {
-              diff =(new Date(this.listItem.completada.fecha).getTime()+this.recurrencia[0]*7*24*60*60*1000- (new Date()).getTime()) / (1000*60*60);
-              break
-            }
-            case    'm': {
-              diff =(new Date(this.listItem.completada.fecha).getTime()+this.recurrencia[0]*30*7*24*60*60*1000- (new Date()).getTime()) / (1000*60*60);
-              break
-            }
-            case    'a': {
-              diff =(new Date(this.listItem.completada.fecha).getTime()+this.recurrencia[0]*365*7*24*60*60*1000- (new Date()).getTime()) / (1000*60*60);
-              break
-            }
-          }
+          diff=(this.listItem.next.getTime()-(new Date()).getTime()) / (1000*60*60)
         }
         let res="en ";
         if(diff>24){

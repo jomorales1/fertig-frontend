@@ -331,6 +331,7 @@ export default {
 //css para ubicar el boton flotante de +
 bottom: 30px;
   right: 10%;
+  z-index: 10;
 }
 
 </style>

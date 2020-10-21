@@ -30,6 +30,33 @@ export const DataModule = {
                 for (let i = 0; i < routines.data.length; i++) {
                     let rutina=Object.assign(new Routine(), routines.data[i].rutina)
                     rutina.completada=routines.data[i].ultimaCompletada
+                    let recurrencia=rutina.recurrencia.split(' ')
+                    if(rutina.completada!=null){
+                        switch(recurrencia[1]){
+                            case "h":{
+                                rutina.next =new Date(new Date(rutina.completada.fecha).getTime()+ recurrencia[0]*60*60*1000);
+                                break
+                            }
+                            case  'd': {
+                                rutina.next=new Date(new Date(rutina.completada.fecha).getTime()+recurrencia[0]*24*60*60*1000);
+                                break
+                            }
+                            case    's': {
+                                rutina.next =new Date(new Date(rutina.completada.fecha).getTime()+recurrencia[0]*7*24*60*60*1000);
+                                break
+                            }
+                            case    'm': {
+                                rutina.next =new Date(new Date(rutina.completada.fecha).getTime()+recurrencia[0]*30*7*24*60*60*1000);
+                                break
+                            }
+                            case    'a': {
+                                rutina.next =new Date(new Date(rutina.completada.fecha).getTime()+recurrencia[0]*365*7*24*60*60*1000);
+                                break
+                            }
+                        }
+                    }else{
+                        rutina.next=new Date(rutina.fechaInicio)
+                    }
                     listItems.push(rutina);
                 }
             })

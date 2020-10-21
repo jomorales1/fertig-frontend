@@ -57,6 +57,7 @@ import Tarea from "@/components/Tarea";
 import CreacionTareas from '../components/CreacionTareas.vue'
 
 import { VFBLoginScope as VFacebookLoginScope } from 'vue-facebook-login-component'
+import Routine from "@/models/Routine";
 export default {
   name: "Lista",
   components:{
@@ -87,13 +88,39 @@ export default {
       switch (order){
         //funciones para ordenar segun lo que se escoja
         case "Prioridad":
-          this.$store.state.DataModule.tareas.sort((a, b) => a.prioridad-b.prioridad);
+          this.$store.state.DataModule.tareas.sort((a, b) => b.prioridad-a.prioridad);
           break
         case "Más pronta":
-          this.$store.state.DataModule.tareas.sort((a, b) =>new Date(a.fechaFin)-new Date(b.fechaFin));
+          this.$store.state.DataModule.tareas.sort((a, b) =>{
+            if(a instanceof Routine){
+              if(b instanceof Routine){
+                return a.next-b.next
+              }else{
+                return a.next-new Date(b.fechaInicio)
+              }
+            }else{
+              if(b instanceof Routine){
+                return new Date(a.fechaInicio)-b.next
+              }
+            }
+            return new Date(a.fechaInicio)-new Date(b.fechaInicio)
+          });
           break
         case "Menos pronta":
-          this.$store.state.DataModule.tareas.sort((a, b) => new Date(b.fechaFin)-new Date(a.fechaFin));
+          this.$store.state.DataModule.tareas.sort((a, b) =>{
+            if(a instanceof Routine){
+              if(b instanceof Routine){
+                return b.next-a.next
+              }else{
+                return new Date(b.fechaInicio)-a.next
+              }
+            }else{
+              if(b instanceof Routine){
+                return b.next-new Date(a.fechaInicio)
+              }
+            }
+            return new Date(b.fechaInicio)-new Date(a.fechaInicio)
+          });
       }
     },
     filterTasks(filter){ //modifica el filtro por prioridad
@@ -124,7 +151,8 @@ export default {
   computed:{
     //lista de tareas que se muestra
     tareas(){
-      let lista=this.$store.state.DataModule.tareas
+      //filtrar las tareas y rutinas que ya hallan finalizado
+      let lista=this.$store.state.DataModule.tareas.filter(task=>new Date(task.fechaFin)>new Date())
       //aplicación de filtros
       if(this.priorityFilter!==0){
         lista= lista.filter(task=>task.prioridad===this.priorityFilter)
@@ -139,6 +167,7 @@ export default {
   created(){
     //actualizar la lista de tareas cuando se carga la pagina
     this.$store.dispatch('DataModule/update')
+    this.reorder("Más pronta")
   }
 }
 </script>

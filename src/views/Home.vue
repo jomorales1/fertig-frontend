@@ -2,9 +2,9 @@
   <div id="app" class="align-top">
     <b-navbar toggleable="lg" type="dark" variant="primary" >
       <b-navbar-brand>Fertig</b-navbar-brand>
-      <b-navbar-nav class="ml-auto">
-        <b-button variant="primary" text="white" @click="register">Regístrate</b-button>
-        <b-button variant="primary" text="white" @click="signUp">Inicia sesión</b-button>
+      <b-navbar-nav class="ml-auto flex-row">
+        <b-nav-item variant="primary" class="px-2" text="white" @click="register" >Regístrate</b-nav-item>
+        <b-nav-item variant="primary" text="white" @click="signUp" >Inicia sesión</b-nav-item>
       </b-navbar-nav>
     </b-navbar>
     <br>
@@ -24,7 +24,7 @@
   import InvertJumbotron from "../components/InvertJumbotron";
   import image from '../assets/list.png';
   import image2 from '../assets/image.png';
-  import image3 from '../assets/multi.png'
+  import image3 from '../assets/dispositivos.png'
 export default {
   name: "Inicio",
   components:{

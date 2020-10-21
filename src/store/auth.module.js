@@ -62,7 +62,30 @@ export const auth = {
                     return Promise.reject(error);
                 }
             );
-        }},
+        },
+        getUser({ commit }) {//metodo del store para registro usando metodo se AuthService
+            return AuthService.getUser().then(
+                response => {
+                    return Promise.resolve(response);
+                },
+                error => {
+                    commit('getUserFailure');//cambio de estado a usuario no iotenido
+                    return Promise.reject(error);
+                }
+            );
+        },
+        saveChanges({ commit }, user) {//metodo del store para registro usando metodo se AuthService
+            return AuthService.saveChanges(user).then(
+                response => {
+                    return Promise.resolve(response.data);
+                },
+                error => {
+                    commit('changesFailure');//cambio de estado a cambios no guardados
+                    return Promise.reject(error);
+                }
+            );
+        },
+        },
     mutations: {
         //funciones de cambio de estado
         loginSuccess(state, user) {
@@ -82,6 +105,15 @@ export const auth = {
         },
         registerFailure(state) {
             state.status.loggedIn = false;
+        },
+        getUserFailure(state){
+            state.status.loggedIn = true;
+        },
+        changesSaved(state){
+            state.status.loggedIn = true;
+        },
+        changesFailure(state){
+            state.status.loggedIn = true;
         }
     }
 };

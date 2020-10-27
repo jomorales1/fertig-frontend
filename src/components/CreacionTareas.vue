@@ -8,180 +8,190 @@
              title="Crear Actividad"
              @ok="ok"
     >
-      <form ref="form">
-        <!--        Alerta de formulario incompleto-->
-        <b-alert :show="incomplete" class="text-left" variant="danger" dismissible>Por favor rellene todos los campos</b-alert>
-        <!--      campo para titulo de tarea-->
-        <b-form-group
-            id="fieldset-title"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="Titulo de la tarea que deseas crear"
-            label="Titulo"
-            label-for="title"
-        ><b-form-input id="title" required v-model="tarea.nombre"></b-form-input>
-        </b-form-group>
-        <!--      campo para descripcion de tarea-->
-        <b-form-group
-            id="fieldset-description"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="Descripción de la tarea que deseas crear"
-            label="Descripción"
-            label-for="description"
-        ><b-form-textarea required
-                          id="description"
-                          rows="3"
-                          max-rows="8"
-                          v-model="tarea.descripcion"
-        ></b-form-textarea>
-        </b-form-group>
-        <!--      campo para prioridad de tarea-->
-        <b-form-group
-            id="fieldset-priority"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="Prioridad de 1 a 5 de la tarea"
-            label="Prioridad"
-            label-for="priority"
-        >
-          <b-form-input id="priority" v-model="tarea.prioridad" type="range" min="1" max="5"></b-form-input>
-        </b-form-group>
-        <!--      campo para etiquetas de tarea-->
-        <b-form-group
-            id="fieldset-etiqueta"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="Etiquetas de la tarea separadas por espacios"
-            label="Etiquetas"
-            label-for="etiquetas"
-        >
-          <b-form-input id="etiquetas" v-model="tarea.etiqueta"></b-form-input>
-        </b-form-group>
-        <!--        Checkbox de rutina-->
-        <b-form-group id="fieldset-checkbox"
-                      label-cols-sm="4"
-                      label-cols-lg="3"
-                      label="Repeticiones"
-                      label-for="recurrency"
-                      description="La actividad puede repetirse">
-
-          <b-form-checkbox
-              id="checkbox-Repetition"
-              v-model="status"
-              name="checkbox-Repetition"
-              value="accepted"
-              unchecked-value= "not_accepted"
+      <template #modal-footer="{ ok, cancel}">
+        <b-button variant="danger" v-if="isEdit">
+          Eliminar
+        </b-button>
+        <b-button variant="secondary" @click="cancel()">
+          Cancelar
+        </b-button>
+        <b-button variant="primary" @click="ok()">
+          OK
+        </b-button>
+      </template>
+      <template>
+        <form ref="form">
+          <!--        Alerta de formulario incompleto-->
+          <b-alert :show="incomplete" class="text-left" variant="danger" dismissible>Por favor rellene todos los campos</b-alert>
+          <!--      campo para titulo de tarea-->
+          <b-form-group
+              id="fieldset-title"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Titulo de la tarea que deseas crear"
+              label="Titulo"
+              label-for="title"
+          ><b-form-input id="title" required v-model="tarea.nombre"></b-form-input>
+          </b-form-group>
+          <!--      campo para descripcion de tarea-->
+          <b-form-group
+              id="fieldset-description"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Descripción de la tarea que deseas crear"
+              label="Descripción"
+              label-for="description"
+          ><b-form-textarea required
+                            id="description"
+                            rows="3"
+                            max-rows="8"
+                            v-model="tarea.descripcion"
+          ></b-form-textarea>
+          </b-form-group>
+          <!--      campo para prioridad de tarea-->
+          <b-form-group
+              id="fieldset-priority"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Prioridad de 1 a 5 de la tarea"
+              label="Prioridad"
+              label-for="priority"
           >
-          </b-form-checkbox>
-        </b-form-group>
-        <!--      campos para fecha de inicio-->
-        <b-form-group
-            v-if="status==='not_accepted'"
-            id="fieldset-start-date"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="Fecha y hora en que la tarea inicia"
-            label="Fecha de inicio"
-            label-for="start-date, start-time"
-        >
-          <b-datepicker required id="start-date" value-as-date v-model="tarea.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-          <b-form-timepicker required id="start-time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
-        </b-form-group>
-        <!--      campos para fecha de inicio de Repetición-->
-        <b-form-group
-            v-else
-            id="fieldset-start-repetition-date"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="Fecha en que las repeticiones inician"
-            label="Fecha de inicio de la repetición"
-            label-for="start-date, start-time"
-        >
-          <b-datepicker required id="start-date" value-as-date v-model="tarea.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-        </b-form-group>
-        <!--      campos para fecha de finalización-->
-        <b-form-group
-            v-if="status==='not_accepted'"
-            id="fieldset-end-date"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="Fecha y hora en que la tarea termina"
-            label="Fecha de finalización"
-            label-for="end-date, end-time"
-        >
-          <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-          <b-form-timepicker required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
-        </b-form-group>
-        <!--      campos para fecha de finalización de Repetición-->
-        <b-form-group
-            v-else
-            id="fieldset-end-repetition-date"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="Fecha en que las repeticiones finalizan"
-            label="Fecha de finalización de la repetición"
-            label-for="end-date, end-time"
-        >
-
-          <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-        </b-form-group>
-        <b-form-group
-            v-if='status==="accepted"'
-            id="fieldset-repetition-recurrency"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="tiempo entre cada repetición"
-            label-for="cada, numero-repeticion, rango-repeticion">
-          <label id="cada">Cada:</label>
-          <b-form-input required id="numero-repeticion" type="number" v-model="numbRep"></b-form-input>
-          <!--      campos para la seleccion de la recurrencia de la actividad-->
-          <b-form-select required id="rango-repeticion" v-model="Range" :options="options" ></b-form-select>
-        </b-form-group>
-        <b-form-group
-            v-if='status==="accepted"'
-            id="fieldset-from-repeticion"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="Hora en que la tarea inicia en cada repeticion"
-            label-for="desde"
-        >
-          <div >Inicia a las:</div>
-          <b-form-input required id="desde" type="time" v-model="fromHour"></b-form-input>
-        </b-form-group>
-        <b-form-group
-            v-if='status==="accepted"'
-            id="fieldset-to-repeticion"
-            label-cols-sm="4"
-            label-cols-lg="3"
-            description="Hora en que la tarea finaliza en cada repeticion"
-            label-for="hasta"
-        >
-          <div >Y termina a las:</div>
-          <b-form-input required id="hasta" type="time" v-model="toHour"></b-form-input>
-        </b-form-group>
-        <b-form-group id="fieldset-checkboxevent"
-                      label-cols-sm="4"
-                      label-cols-lg="3"
-                      label="Autocheck al terminar "
-                      description="la actividad no tendrá check de hecha">
-
-          <b-form-checkbox
-              id="checkbox-autocheck"
-              v-model="statusEvent"
-              name="checkbox-autocheck"
-              value="accepted"
-              unchecked-value= "not_accepted"
+            <b-form-input id="priority" v-model="tarea.prioridad" type="range" min="1" max="5"></b-form-input>
+          </b-form-group>
+          <!--      campo para etiquetas de tarea-->
+          <b-form-group
+              id="fieldset-etiqueta"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Etiquetas de la tarea separadas por espacios"
+              label="Etiquetas"
+              label-for="etiquetas"
           >
-          </b-form-checkbox>
-        </b-form-group>
+            <b-form-input id="etiquetas" v-model="tarea.etiqueta"></b-form-input>
+          </b-form-group>
+          <!--        Checkbox de rutina-->
+          <b-form-group id="fieldset-checkbox"
+                        label-cols-sm="4"
+                        label-cols-lg="3"
+                        label="Repeticiones"
+                        label-for="recurrency"
+                        description="La actividad puede repetirse">
 
+            <b-form-checkbox
+                id="checkbox-Repetition"
+                v-model="status"
+                name="checkbox-Repetition"
+                value="accepted"
+                unchecked-value= "not_accepted"
+            >
+            </b-form-checkbox>
+          </b-form-group>
+          <!--      campos para fecha de inicio-->
+          <b-form-group
+              v-if="status==='not_accepted'"
+              id="fieldset-start-date"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Fecha y hora en que la tarea inicia"
+              label="Fecha de inicio"
+              label-for="start-date, start-time"
+          >
+            <b-datepicker required id="start-date" value-as-date v-model="tarea.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+            <b-form-timepicker required id="start-time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+          </b-form-group>
+          <!--      campos para fecha de inicio de Repetición-->
+          <b-form-group
+              v-else
+              id="fieldset-start-repetition-date"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Fecha en que las repeticiones inician"
+              label="Fecha de inicio de la repetición"
+              label-for="start-date, start-time"
+          >
+            <b-datepicker required id="start-date" value-as-date v-model="tarea.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+          </b-form-group>
+          <!--      campos para fecha de finalización-->
+          <b-form-group
+              v-if="status==='not_accepted'"
+              id="fieldset-end-date"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Fecha y hora en que la tarea termina"
+              label="Fecha de finalización"
+              label-for="end-date, end-time"
+          >
+            <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+            <b-form-timepicker required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+          </b-form-group>
+          <!--      campos para fecha de finalización de Repetición-->
+          <b-form-group
+              v-else
+              id="fieldset-end-repetition-date"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Fecha en que las repeticiones finalizan"
+              label="Fecha de finalización de la repetición"
+              label-for="end-date, end-time"
+          >
 
+            <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+          </b-form-group>
+          <b-form-group
+              v-if='status==="accepted"'
+              id="fieldset-repetition-recurrency"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="tiempo entre cada repetición"
+              label-for="cada, numero-repeticion, rango-repeticion">
+            <label id="cada">Cada:</label>
+            <b-form-input required id="numero-repeticion" type="number" v-model="numbRep"></b-form-input>
+            <!--      campos para la seleccion de la recurrencia de la actividad-->
+            <b-form-select required id="rango-repeticion" v-model="Range" :options="options" ></b-form-select>
+          </b-form-group>
+          <b-form-group
+              v-if='status==="accepted"'
+              id="fieldset-from-repeticion"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Hora en que la tarea inicia en cada repeticion"
+              label-for="desde"
+          >
+            <div >Inicia a las:</div>
+            <b-form-input required id="desde" type="time" v-model="fromHour"></b-form-input>
+          </b-form-group>
+          <b-form-group
+              v-if='status==="accepted"'
+              id="fieldset-to-repeticion"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Hora en que la tarea finaliza en cada repeticion"
+              label-for="hasta"
+          >
+            <div >Y termina a las:</div>
+            <b-form-input required id="hasta" type="time" v-model="toHour"></b-form-input>
+          </b-form-group>
+          <b-form-group id="fieldset-checkboxevent"
+                        label-cols-sm="4"
+                        label-cols-lg="3"
+                        label="Autocheck al terminar "
+                        description="la actividad no tendrá check de hecha">
 
-      </form>
+            <b-form-checkbox
+                id="checkbox-autocheck"
+                v-model="statusEvent"
+                name="checkbox-autocheck"
+                value="accepted"
+                unchecked-value= "not_accepted"
+            >
+            </b-form-checkbox>
+          </b-form-group>
+        </form>
+      </template>
     </b-modal>
     <!--    Boton de + flotante que muestra el pop up de crear tarea-->
-    <b-button v-b-modal.create-activity size="lg" class="rounded-circle position-fixed">+</b-button>
+    <b-button v-b-modal.create-activity size="lg" @click="newTask" class="rounded-circle position-fixed">+</b-button>
   </div>
 </template>
 
@@ -230,9 +240,14 @@ export default {
         { value: 's'  ,   text: 'semanas'   },
         { value: 'm'  ,   text: 'meses'     },
         { value: 'a'  ,   text: 'años'      }
-      ]
+      ],
+      isEdit:false
     }},
   methods:{
+    newTask(){
+      // this.isEdit=false
+      Object.assign(this.$data, this.$options.data())
+    },
     ok(bvModalEvt){
       //evitar que se oculte cuando no estan completos los campos
       if(!this.$refs.form.checkValidity()){
@@ -310,6 +325,38 @@ export default {
                   this.error=true
                 }
             )}
+        }
+      }
+    },
+    edit(item){
+      this.isEdit=true
+      if(item instanceof Task){
+        this.tarea=item
+        this.status='not_accepted'
+        let options = {
+          hour: 'numeric', minute: 'numeric'
+        };
+        this.startHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaInicio))
+        this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
+      }else{
+        this.tarea=Object.assign(new Task(),item)
+        if( item.recurrencia){
+          this.status='accepted'
+          let recurrencia=item.recurrencia.split(' ')
+          this.numbRep=recurrencia[0]
+          this.Range=recurrencia[1]
+          this.fromHour=recurrencia[2]
+          this.toHour=recurrencia[3]
+        }else{
+          this.status='not_accepted'
+        }
+        if(!(item instanceof Routine)){
+          this.statusEvent='accepted'
+          let options = {
+            hour: 'numeric', minute: 'numeric'
+          };
+          this.startHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaInicio))
+          this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
         }
       }
     }

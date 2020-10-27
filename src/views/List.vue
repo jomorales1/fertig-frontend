@@ -1,6 +1,6 @@
 <template>
   <b-container class="text-right my-5">
-    <CreacionTareas/>
+    <CreacionTareas ref="create" />
 <!--    Boton para reordenar las tareas mostradas-->
     <div class="d-flex justify-content-between">
       <div class="d-flex flex-column justify-content-end">
@@ -39,6 +39,7 @@
           v-bind:key="task.id+task.constructor.name"
           v-bind:listItem="task"
           v-on:etiqueta-filter="filterEtiqueta($event)"
+          v-on:edit="edit($event)"
       />
     </b-list-group>
 <!--    Boton temporal para cerrar sesión-->
@@ -146,13 +147,18 @@ export default {
       })
       //llama al logout del store
       this.$store.dispatch('auth/logout').then(()=>this.$router.push('/Login'))
+    },
+    edit(item){
+      console.log(item)
+      this.$refs.create.edit(item)
+      this.$bvModal.show('create-activity')
     }
   },
   computed:{
     //lista de tareas que se muestra
     tareas(){
       //filtrar las tareas y rutinas que ya hallan finalizado
-      let lista=this.$store.state.DataModule.tareas.filter(task=>new Date(task.fechaFin)>new Date())
+      let lista=this.$store.state.DataModule.tareas//.filter(task=>new Date(task.fechaFin)>new Date())
       //aplicación de filtros
       if(this.priorityFilter!==0){
         lista= lista.filter(task=>task.prioridad===this.priorityFilter)

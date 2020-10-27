@@ -47,7 +47,7 @@
 
               <p class="text-left">{{ listItem.descripcion}}</p>
 <!--Boton para editar tarea por implementar-->
-              <b-button v-b-toggle.collapse-1-inner size="sm">Editar Tarea</b-button>
+              <b-button v-b-toggle.collapse-1-inner @click="$emit('edit',listItem)" size="sm">Editar Tarea</b-button>
               <b-collapse id="collapse-1-inner" class="mt-2">
                 <b-card>Aqui estará la vista de editar!</b-card>
               </b-collapse>

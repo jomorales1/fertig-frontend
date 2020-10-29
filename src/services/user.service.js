@@ -43,6 +43,13 @@ class UserService {
                 headers: authHeader()
             })
     }
+    edit(task,url){
+        return axios.put(API_URL+url+task.id,task,{headers:authHeader()})
+    }
+    delete(task,url){
+        return axios.delete(API_URL+url+task.id,{headers:authHeader()})
+    }
+
 }
 
 export default new UserService()

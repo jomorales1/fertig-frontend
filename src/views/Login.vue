@@ -142,6 +142,9 @@ export default {
             this.loading = false;
           })
     },
+    googleLogout(){
+      this.$gAuth.signOut()
+    },
     handleFacebook(){
       this.loading = true;
       //peticion de inicio de sesión con el token de google

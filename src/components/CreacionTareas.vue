@@ -8,8 +8,9 @@
              title="Crear Actividad"
              @ok="ok"
     >
+<!--      template del footer del dialogo de crear tarea-->
       <template #modal-footer="{ ok, cancel}">
-        <b-button variant="danger" v-if="isEdit">
+        <b-button variant="danger" @click="deleteItem()" v-if="isEdit">
           Eliminar
         </b-button>
         <b-button variant="secondary" @click="cancel()">
@@ -200,6 +201,7 @@ import Task from "@/models/Task";
 import Routine from "@/models/Routine";
 import TEvent from "@/models/TEvent";
 import UserService from "@/services/user.service";
+import ListItem from "@/models/ListItem";
 
 export default {
   name: 'CreacionTareas',
@@ -207,7 +209,8 @@ export default {
   },
   data(){
     return{
-
+      //item a editar
+      listItem:new ListItem(),
       //tarea que se crea
       tarea:new Task(),
       //rutina que se crea
@@ -245,8 +248,11 @@ export default {
     }},
   methods:{
     newTask(){
-      // this.isEdit=false
-      Object.assign(this.$data, this.$options.data())
+      if(!this.error)Object.assign(this.$data, this.$options.data())
+    },
+    deleteItem(){
+      this.$store.dispatch("DataModule/delete",this.listItem).then(()=>this.$store.dispatch("DataModule/update"))
+      this.$bvModal.hide("create-activity")
     },
     ok(bvModalEvt){
       //evitar que se oculte cuando no estan completos los campos
@@ -273,25 +279,21 @@ export default {
           this.rutina.recurrencia=[n, r, fh, th].join(' ')
 
           if(this.statusEvent==="accepted"){
-            //se llama al user service para crear la tarea
+            //se llama al user service para crear la rutina
             UserService.createTEvent(this.rutina).then(
                 ()=>{
                   this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
                   this.error=false
-                  this.tarea=new Task()
-                  this.rutina=new Routine()
                 },()=>{
                   this.error=true
                 }
             )}
           else{
-            //se llama al user service para crear la tarea
+            //se llama al user service para crear el evento con repeticion
             UserService.createRoutine(this.rutina).then(
                 ()=>{
                   this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las rutinas
                   this.error=false
-                  this.tarea=new Task()
-                  this.rutina=new Routine()
                 },()=>{
                   this.error=true
                 }
@@ -306,7 +308,7 @@ export default {
           h=this.startHour.split(":")
           this.tarea.fechaInicio.setHours(h[0],h[1])
           if(this.statusEvent==="accepted"){
-            //se llama al user service para crear la tarea
+            //se llama al user service para crear el evnto simple
             UserService.createTEvent(this.tarea).then(
                 ()=>{
                   this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
@@ -330,6 +332,7 @@ export default {
     },
     edit(item){
       this.isEdit=true
+      this.listItem=item
       if(item instanceof Task){
         this.tarea=item
         this.status='not_accepted'

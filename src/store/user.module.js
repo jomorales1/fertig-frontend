@@ -46,7 +46,7 @@ export const DataModule = {
                                 break
                             }
                             case    'm': {
-                                rutina.next =new Date(new Date(rutina.completada.fecha).getTime()+recurrencia[0]*30*7*24*60*60*1000);
+                                rutina.next =new Date(new Date(rutina.completada.fecha).getTime()+recurrencia[0]*30*24*60*60*1000);
                                 break
                             }
                             case    'a': {
@@ -71,6 +71,20 @@ export const DataModule = {
             return UserService.checkTask(id).then(()=>{},()=>{
                 commit('error')
             })
+        },
+        edit({commit},item){
+            let url
+            if(item instanceof Task) url='/tasks/updateTask/'
+            if(item instanceof Routine) url='/routines/updateRoutine/'
+            else if (item instanceof TEvent) url='/events/updateEvent/'
+            return UserService.edit(item,url).then(()=>commit('edited'),()=>commit('error'))
+        },
+        delete({commit},item){
+            let url
+            if(item instanceof Task) url='/tasks/deleteTask/'
+            if(item instanceof Routine) url='/routines/deleteRoutine/'
+            else if (item instanceof TEvent) url='/events/deleteEvent/'
+            return UserService.delete(item,url).then(()=>commit('edited'),()=>commit('error'))
         }
     },
     mutations:{
@@ -82,6 +96,9 @@ export const DataModule = {
         error(state){
             state.status='Failure'
         },
+        edited(state){
+            state.status='Edited'
+        }
     }
 
 }

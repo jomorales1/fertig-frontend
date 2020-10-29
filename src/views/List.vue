@@ -1,5 +1,6 @@
 <template>
   <b-container class="text-right my-5">
+    <!--    pop up con formulario para crear tarea-->
     <CreacionTareas ref="create" />
 <!--    Boton para reordenar las tareas mostradas-->
     <div class="d-flex justify-content-between">
@@ -33,7 +34,7 @@
     </div>
 
 <!--    Lista de tareas a partir de la variable de tareas del store de vuex-->
-    <b-list-group class="listView">
+    <b-list-group class="listView ">
       <Tarea
           v-for="task in tareas"
           v-bind:key="task.id+task.constructor.name"
@@ -42,28 +43,17 @@
           v-on:edit="edit($event)"
       />
     </b-list-group>
-<!--    Boton temporal para cerrar sesión-->
-    <b-button @click="logout">
-      Cerrar sesión
-    </b-button>
-<!--    componente para api de facebook-->
-    <v-facebook-login-scope app-id="1472299989621414" @sdk-init="handleSdkInit"/>
-    <!--    pop up con formulario para crear tarea-->
   </b-container>
 </template>
 
 <script>
 import Tarea from "@/components/Tarea";
-
 import CreacionTareas from '../components/CreacionTareas.vue'
-
-import { VFBLoginScope as VFacebookLoginScope } from 'vue-facebook-login-component'
 import Routine from "@/models/Routine";
 export default {
   name: "Lista",
   components:{
     Tarea,
-    VFacebookLoginScope,
     CreacionTareas
   },
   data(){
@@ -74,18 +64,18 @@ export default {
           "Más pronta",
           "Menos pronta"
       ],
+      selectedOrder:"Más pronta",
       //opciones de filtro
       filters:["no filtrar",1,2,3,4,5],
       //prioridad por la que se esta filtrando
       priorityFilter:0,
       //variable para filtrar etiquetas
-      etiquetaFilter:"",
-      //objeto de API facebook
-      FB:{}
+      etiquetaFilter:""
     }
   },
   methods:{
     reorder(order){
+      this.selectedOrder=order
       switch (order){
         //funciones para ordenar segun lo que se escoja
         case "Prioridad":
@@ -135,21 +125,7 @@ export default {
     filterEtiqueta(etiqueta){//filtra segun la etiqueta seleccionada
       this.etiquetaFilter=etiqueta;
     },
-    handleSdkInit({ FB}) {
-      this.FB = FB//trae el objeto de facebook desde el sdkInit
-    },
-    logout(){
-      //verifica si esta logeado con facebook y cierra sesión si así es
-      this.FB.getLoginStatus(function (response){
-        if(response.status==='connected'){
-          this.FB.logout()
-        }
-      })
-      //llama al logout del store
-      this.$store.dispatch('auth/logout').then(()=>this.$router.push('/Login'))
-    },
-    edit(item){
-      console.log(item)
+    edit(item){//metodo para mostrar el dialogo de creacion de tarea para edicion
       this.$refs.create.edit(item)
       this.$bvModal.show('create-activity')
     }
@@ -157,6 +133,7 @@ export default {
   computed:{
     //lista de tareas que se muestra
     tareas(){
+      this.reorder(this.selectedOrder)
       //filtrar las tareas y rutinas que ya hallan finalizado
       let lista=this.$store.state.DataModule.tareas//.filter(task=>new Date(task.fechaFin)>new Date())
       //aplicación de filtros
@@ -167,13 +144,11 @@ export default {
         lista= lista.filter(task=>task.etiqueta.includes(this.etiquetaFilter))
       }
       return lista
-
     }
   },
   created(){
     //actualizar la lista de tareas cuando se carga la pagina
     this.$store.dispatch('DataModule/update')
-    this.reorder("Más pronta")
   }
 }
 </script>

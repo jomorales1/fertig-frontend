@@ -1,13 +1,73 @@
 <template>
   <div id="app" >
-      <!--    se llama a la vista de roter para que funcionen los links-->
-      <router-view/>
+<!--    Barra de navgación-->
+    <b-navbar toggleable="lg" type="dark" variant="primary" >
+      <b-navbar-brand @click="$router.push('/')" class="btn">Fertig</b-navbar-brand>
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+      <b-collapse id="nav-collapse" is-nav>
+        <b-navbar-nav class="ml-auto">
+          <b-nav-item variant="primary" v-if="!loggedIn" text="white" @click="$router.push('/SignUp')" >Regístrate</b-nav-item>
+          <b-nav-item variant="primary" v-if="!loggedIn" text="white" @click="$router.push('/Login')" >Inicia sesión</b-nav-item>
+          <b-nav-item variant="primary" v-if="loggedIn" text="white" @click="$router.push('/List')" >Lista de Actividades</b-nav-item>
+          <b-nav-item variant="primary" v-if="loggedIn" text="white" @click="$router.push('/Timer')" >Temporizador</b-nav-item>
+          <b-nav-item-dropdown :text="username" v-if="loggedIn" right>
+            <b-dropdown-item @click="$router.push('/Settings')">Ajustes de cuenta</b-dropdown-item>
+            <b-dropdown-item @click="logout">Cerrar sesión</b-dropdown-item>
+          </b-nav-item-dropdown>
+        </b-navbar-nav>
+      </b-collapse>
+    </b-navbar>
+    <!--    se llama a la vista de roter para que funcionen los links-->
+    <router-view/>
+    <!--    componente para api de facebook-->
+    <v-facebook-login-scope app-id="1472299989621414" @sdk-init="handleSdkInit"/>
   </div>
 </template>
 
 <script>
+import { VFBLoginScope as VFacebookLoginScope } from 'vue-facebook-login-component'
 export default {
-  name: 'App'
+  name: 'App',
+  data(){
+    return{
+    //objeto de API facebook
+    FB:{}
+    }
+  },
+  components:{
+    VFacebookLoginScope
+  },
+  methods:{
+    logout(){
+      //verifica si esta logeado con facebook y cierra sesión si así es
+      this.FB.getLoginStatus(function (response){
+        if(response.status==='connected'){
+          this.FB.logout()
+        }
+      })
+      //llama al logout del store
+      this.$store.dispatch('auth/logout').then(()=>this.$router.push('/Login'))
+    },
+    handleSdkInit({ FB}) {
+      this.FB = FB//trae el objeto de facebook desde el sdkInit
+    }
+  },
+  watch: {
+    '$route' (to) {
+      document.title =  'FertigApp - '+to.name
+    }
+  },
+  computed:{
+    loggedIn(){
+      return this.$store.state.auth.status.loggedIn
+    },
+    username(){
+      return this.loggedIn?this.$store.state.auth.user.name:null
+    }
+  },
+  created() {
+    document.title = 'FertigApp - '+this.$route.name
+  }
 }
 </script>
 
@@ -16,7 +76,7 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
+  /*text-align: center;*/
   color: #2c3e50;
 }
 </style>

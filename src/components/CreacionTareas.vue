@@ -68,7 +68,7 @@
 
           <b-form-checkbox
               id="checkbox-Repetition"
-              v-model="status"
+              v-model="rutinaCheck"
               name="checkbox-Repetition"
               value="accepted"
               unchecked-value= "not_accepted"
@@ -77,7 +77,7 @@
         </b-form-group>
         <!--      campos para fecha de inicio-->
         <b-form-group
-            v-if="status==='not_accepted'"
+            v-if="rutinaCheck==='not_accepted'"
             id="fieldset-start-date"
             label-cols-sm="4"
             label-cols-lg="3"
@@ -99,10 +99,11 @@
             label-for="start-date, start-time"
         >
           <b-datepicker required id="start-date" value-as-date v-model="tarea.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+          <b-form-timepicker required id="start-time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
         </b-form-group>
         <!--      campos para fecha de finalización-->
         <b-form-group
-            v-if="status==='not_accepted'"
+            v-if="rutinaCheck==='not_accepted'"
             id="fieldset-end-date"
             label-cols-sm="4"
             label-cols-lg="3"
@@ -125,9 +126,11 @@
         >
 
           <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+          <b-form-timepicker required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
         </b-form-group>
+        <!--      campos para rangos en Repeticiónes-->
         <b-form-group
-            v-if='status==="accepted"'
+            v-if='rutinaCheck==="accepted"'
             id="fieldset-repetition-recurrency"
             label-cols-sm="4"
             label-cols-lg="3"
@@ -136,10 +139,33 @@
           <label id="cada">Cada:</label>
           <b-form-input required id="numero-repeticion" type="number" v-model="numbRep"></b-form-input>
           <!--      campos para la seleccion de la recurrencia de la actividad-->
-          <b-form-select required id="rango-repeticion" v-model="Range" :options="options" ></b-form-select>
+          <b-form-select required id="rango-repeticion" v-model="Range" :options="optionsRange" ></b-form-select>
+        </b-form-group>
+        <!--      Si es semanas, entonces poner los dias de la semana, si es meses poner los dias del mes-->
+        <b-form-group
+            v-if='rutinaCheck==="accepted"'
+            id="fieldset-repetition-recurrency-p2"
+            label-cols-sm="4"
+            label-cols-lg="3"
+            description="tiempo entre cada repetición"
+            label-for="dias-semana, dias-mes">
+
+          <b-form-checkbox-group
+              v-if='Range==="s"'
+              id="dias-semana"
+              v-model="diasSemana"
+              :options="optionsDiasSemana"
+              name="flavour-1"
+          ></b-form-checkbox-group>
+          <b-form-input
+              v-if='Range==="m"'
+              id="dias-mes"
+              type="number"
+              v-model="diasMes"></b-form-input>
+
         </b-form-group>
         <b-form-group
-            v-if='status==="accepted"'
+            v-if='rutinaCheck==="accepted"'
             id="fieldset-from-repeticion"
             label-cols-sm="4"
             label-cols-lg="3"
@@ -150,15 +176,26 @@
           <b-form-input required id="desde" type="time" v-model="fromHour"></b-form-input>
         </b-form-group>
         <b-form-group
-            v-if='status==="accepted"'
-            id="fieldset-to-repeticion"
+            v-if='rutinaCheck==="accepted"'
+            id="franja-repeticion"
             label-cols-sm="4"
             label-cols-lg="3"
-            description="Hora en que la tarea finaliza en cada repeticion"
-            label-for="hasta"
+            description="Solo se hara la repeticion en esta franja"
+            label-for="desdeFranja, hastaFranja"
         >
-          <div >Y termina a las:</div>
-          <b-form-input required id="hasta" type="time" v-model="toHour"></b-form-input>
+          <b-form-input required id="desdeFranja" type="time" v-model="rutina.franjainicio"></b-form-input>
+          <b-form-input required id="hastaFranja" type="time" v-model="rutina.franjafinal"></b-form-input>
+        </b-form-group>
+        <b-form-group
+            v-if='rutinaCheck==="accepted"'
+            id="fieldset-from-repeticion"
+            label-cols-sm="4"
+            label-cols-lg="3"
+            description="Hora en que la tarea inicia en cada repeticion"
+            label-for="desde"
+        >
+          <div >Inicia a las:</div>
+          <b-form-input required id="desde" type="time" v-model="fromHour"></b-form-input>
         </b-form-group>
         <b-form-group id="fieldset-checkboxevent"
                       label-cols-sm="4"
@@ -168,7 +205,7 @@
 
           <b-form-checkbox
               id="checkbox-autocheck"
-              v-model="statusEvent"
+              v-model="eventoCheck"
               name="checkbox-autocheck"
               value="accepted"
               unchecked-value= "not_accepted"
@@ -219,18 +256,31 @@ export default {
       //campo para guardar la hora de finalizacion de las repeticiones
       toHour:null,
       // seleccionador del cambio de tarea a rutina
-      status: 'not_accepted',
+      rutinaCheck: 'not_accepted',
       // seleccionador del cambio de tarea, o rutina, a evento
-      statusEvent: 'not_accepted',
+      eventoCheck: 'not_accepted',
       // seleccionador del tipo de repeticiones
       Range: null,
-      options: [
+      optionsRange: [
         { value: 'h'  ,   text: 'horas'     },
         { value: 'd'  ,   text: 'dias'      },
         { value: 's'  ,   text: 'semanas'   },
         { value: 'm'  ,   text: 'meses'     },
         { value: 'a'  ,   text: 'años'      }
-      ]
+      ],
+      // seleccionador de los dias a la semana a repetir
+      diasSemana: null,
+      optionsDiasSemana:[
+        { value: 'l'  ,   text: 'Lunes'     },
+        { value: 'm'  ,   text: 'Martes'    },
+        { value: 'x'  ,   text: 'Miercoles' },
+        { value: 'j'  ,   text: 'Jueves'    },
+        { value: 'v'  ,   text: 'Viernes'   },
+        { value: 's'  ,   text: 'Sabado'    },
+        { value: 'd'  ,   text: 'Domingo'   }
+      ],
+      diasMes: null
+
     }},
   methods:{
     ok(bvModalEvt){
@@ -246,7 +296,7 @@ export default {
         this.tarea.estimacion=0
         this.tarea.hecha=0
         this.tarea.recordatorio=0
-        if (this.status==="accepted"){
+        if (this.rutinaCheck==="accepted"){
           // metodo de crear rutina
           //se rellenan los campos que no se muestran en la interfaz
           this.rutina=Object.assign(new Routine(),this.tarea)
@@ -255,9 +305,16 @@ export default {
           let r=this.Range
           let fh=this.fromHour
           let th=this.toHour
-          this.rutina.recurrencia=[n, r, fh, th].join(' ')
+          let ds=this.diasSemana
+          let dm=this.diasMes
+          this.rutina.recurrencia=[n, r, ds, dm, fh, th].join(' ')
+          //se añade las horas a las fechas
+          let h=this.endHour.split(":")
+          this.rutina.fechaFin.setHours(h[0],h[1])
+          h=this.startHour.split(":")
+          this.rutina.fechaInicio.setHours(h[0],h[1])
 
-          if(this.statusEvent==="accepted"){
+          if(this.eventoCheck==="accepted"){
             //se llama al user service para crear la tarea
             UserService.createTEvent(this.rutina).then(
                 ()=>{
@@ -290,7 +347,7 @@ export default {
           this.tarea.fechaFin.setHours(h[0],h[1])
           h=this.startHour.split(":")
           this.tarea.fechaInicio.setHours(h[0],h[1])
-          if(this.statusEvent==="accepted"){
+          if(this.eventoCheck==="accepted"){
             //se llama al user service para crear la tarea
             UserService.createTEvent(this.tarea).then(
                 ()=>{

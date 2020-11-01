@@ -42,6 +42,13 @@ const routes=[
         meta: {
             requiresAuth: true
         }
+    },{
+        path:'/Timer',//ruta (localhost:8080/Timer)
+        name:'Reloj',
+        component:()=>import('@/views/Timer'),//componente que ocupa esa vista a partir de carpeta views
+        meta: {
+            requiresAuth: false
+        }
     }
 ]
 //declracion del router

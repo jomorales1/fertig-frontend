@@ -49,7 +49,6 @@
               <b-button @click="$emit('edit',listItem)" size="sm" class="float-left">+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Editar Tarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Compartir Tarea</b-button>
-
               <b-card bg-variant="light" class="text-left my-2" text-variant="dark" title="Subtareas">
                 <b-card-text>
                   <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
@@ -139,7 +138,7 @@ export default {
     },
     toggleCheck(){
         this.$store.dispatch("DataModule/check",this.listItem.id)
-    }
+    },
   },
   computed:{
     hecho(){
@@ -168,7 +167,8 @@ export default {
         return []
       }
       return this.listItem.etiqueta.trim().split(' ')
-    }
+    },
+
   }
 }
 </script>

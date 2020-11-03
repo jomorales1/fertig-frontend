@@ -86,9 +86,23 @@
             >
             </b-form-checkbox>
           </b-form-group>
+          <!--        Checkbox evento-->
+          <b-form-group id="fieldset-checkboxevent"
+                        label-cols-sm="4"
+                        label-cols-lg="3"
+                        label="Autocheck al terminar "
+                        description="la actividad no tendrá check de hecha">
+
+            <b-form-checkbox
+                id="checkbox-autocheck"
+                v-model="statusEvent"
+                name="checkbox-autocheck"
+            >
+            </b-form-checkbox>
+          </b-form-group>
           <!--      campos para fecha de inicio de Repetición-->
           <b-form-group
-              v-if="status"
+              v-if="status||statusEvent"
               id="fieldset-start-repetition-date"
               label-cols-sm="4"
               label-cols-lg="3"
@@ -120,8 +134,8 @@
               :label="status?'Duración':'Estimación'"
               label-for="estimation"
           >
-            <b-form-input v-if="!status" id="estimation" required v-model="tarea.estimacion"></b-form-input>
-            <b-form-input v-else id="estimation" required v-model="rutina.duracion"></b-form-input>
+            <b-form-input v-if="!status&&!statusEvent" id="estimation" required type="number" v-model="tarea.estimacion"></b-form-input>
+            <b-form-input v-else id="estimation" required type="number" v-model="rutina.duracion"></b-form-input>
           </b-form-group>
           <!--      campo de recurrencia-->
           <b-form-group
@@ -152,7 +166,7 @@
           </b-form-group>
           <!--      campo franja inicio-->
           <b-form-group
-              v-if='status'
+              v-if='status&&Range==="H"'
               id="fieldset-from-repeticion"
               label-cols-sm="4"
               label-cols-lg="3"
@@ -164,7 +178,7 @@
           </b-form-group>
           <!--      campo frnaja fin-->
           <b-form-group
-              v-if='status'
+              v-if='status&&Range==="H"'
               id="fieldset-to-repeticion"
               label-cols-sm="4"
               label-cols-lg="3"
@@ -174,20 +188,7 @@
             <div >Y termina a las:</div>
             <b-form-input required id="hasta" type="time" v-model="rutina.franjaFin"></b-form-input>
           </b-form-group>
-          <!--      check evento-->
-          <b-form-group id="fieldset-checkboxevent"
-                        label-cols-sm="4"
-                        label-cols-lg="3"
-                        label="Autocheck al terminar "
-                        description="la actividad no tendrá check de hecha">
 
-            <b-form-checkbox
-                id="checkbox-autocheck"
-                v-model="statusEvent"
-                name="checkbox-autocheck"
-            >
-            </b-form-checkbox>
-          </b-form-group>
         </form>
       </template>
     </b-modal>
@@ -327,8 +328,13 @@ export default {
           let h=this.endHour.split(":")
           this.tarea.fechaFin.setHours(h[0],h[1])
           if(this.statusEvent){
+            this.evento=Object.assign(new TEvent(),this.tarea)
+            this.evento.duracion=this.rutina.duracion
+            let h=this.startHour.split(":")
+            this.evento.fechaInicio=this.rutina.fechaInicio
+            this.evento.fechaInicio.setHours(h[0],h[1])
             //se llama al user service para crear el evnto simple
-            UserService.createTEvent(this.tarea).then(
+            UserService.createTEvent(this.evento).then(
                 ()=>{
                   this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
                   this.error=false
@@ -354,26 +360,24 @@ export default {
       this.listItem=item
       if(item instanceof Task){
         this.tarea=item
-        this.status='not_accepted'
+        this.status=false
         let options = {
-          hour: 'numeric', minute: 'numeric'
+          hour: 'numeric', minute: 'numeric', milliseconds:'numeric'
         };
-        this.startHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaInicio))
+
         this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
       }else{
         this.tarea=Object.assign(new Task(),item)
+        this.rutina=Object.assign(new Routine(),item)
         if( item.recurrencia){
-          this.status='accepted'
+          this.status=true
           let recurrencia=item.recurrencia.split(' ')
           this.numbRep=recurrencia[0]
           this.Range=recurrencia[1]
-          this.fromHour=recurrencia[2]
-          this.toHour=recurrencia[3]
-        }else{
           this.status='not_accepted'
         }
         if(!(item instanceof Routine)){
-          this.statusEvent='accepted'
+          this.statusEvent=true
           let options = {
             hour: 'numeric', minute: 'numeric'
           };

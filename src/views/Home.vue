@@ -1,5 +1,5 @@
 <template>
-  <div class="align-top">
+  <div class="align-top my-5">
     <div>
       <Jumbotron :imagen="src" titulo="Eventos y tareas en un solo lugar" subtitulo="No busques mas aplicaciones. Fertig te ofrece un hub centralizado para todas tus actividades." ></Jumbotron>
       <InvertJumbotron :imagen="src2" titulo="Fertig te ofrece todo lo que necesitas" subtitulo="To-Do hechas de la manera correcta con todas las propiedades que necesitas" texto="Crea tus rutinas, tareas y eventos y las organizaremos por ti"></InvertJumbotron>

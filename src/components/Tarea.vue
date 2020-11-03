@@ -30,7 +30,7 @@
 <!--    informacion detallada de tarea que se abre cuando se da click en la cabecera-->
           <b-collapse id="collapse-1"  v-model=selected >
             <b-card>
-              <div class="text-left divPrioridad" style="margin-bottom: 1rem">
+              <div v-if="event" class="text-left divPrioridad" style="margin-bottom: 1rem">
                 Desde:
                 {{ longDate(new Date(listItem.fechaInicio)) }}
                 <div class="float-right prioridad"> Prioridad: {{listItem.prioridad}} </div>
@@ -40,14 +40,54 @@
                 Hasta:
                 {{ longDate(new Date(listItem.fechaFin))}}
               </p>
-              <p v-if="event&&listItem.recurrencia!=null" class="text-left ">
-                Cada:
-                {{ recurrencia[0]+" "+timeMesure[recurrencia[1]]+" desde "+recurrencia[2]+" hasta "+recurrencia[3]}}
+              <p v-if="event&&listItem.mensajeRecurrencia!=null" class="text-left ">
+                {{ listItem.mensajeRecurrencia}}
               </p>
 
               <p class="text-left">{{ listItem.descripcion}}</p>
 <!--Boton para editar tarea -->
-              <b-button @click="$emit('edit',listItem)" size="sm">Editar Tarea</b-button>
+              <b-button @click="$emit('edit',listItem)" size="sm" class="float-left">+ Subtarea</b-button>
+              <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Editar Tarea</b-button>
+              <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Compartir Tarea</b-button>
+
+              <b-card bg-variant="light" class="text-left my-2" text-variant="dark" title="Subtareas">
+                <b-card-text>
+                  <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                  <span v-b-toggle.collapse-2>
+                    With supporting text below as a natural lead-in to additional content.
+                    <span class="float-right">01/02/2020</span>
+                  </span>
+                  <b-collapse id="collapse-2">
+                    <b-card bg-variant="light" class="text-left my-2" text-variant="dark" >
+                      <b-card-text>
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales leo augue, in laoreet libero tincidunt non. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+                      </b-card-text>
+                      <b-card-text>
+                        <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                        With supporting text below as a natural lead-in to additional content.
+                      </b-card-text>
+                      <b-card-text>
+                        <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                        With supporting text below as a natural lead-in to additional content.
+                      </b-card-text>
+                      <b-card-text>
+                        <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                        With supporting text below as a natural lead-in to additional content.
+                      </b-card-text>
+                      <!--                <b-button href="#" variant="primary">Go somewhere</b-button>-->
+                    </b-card>
+                  </b-collapse>
+                </b-card-text>
+                <b-card-text>
+                  <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                  With supporting text below as a natural lead-in to additional content.
+                </b-card-text>
+                <b-card-text>
+                  <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                  With supporting text below as a natural lead-in to additional content.
+                </b-card-text>
+<!--                <b-button href="#" variant="primary">Go somewhere</b-button>-->
+              </b-card>
             </b-card>
           </b-collapse>
   </b-list-group-item>
@@ -102,39 +142,17 @@ export default {
     }
   },
   computed:{
-
     hecho(){
-      if (this.routine && this.listItem.completada!=null){
-        let diff =(new Date(this.listItem.completada.fecha).getTime()- (new Date()).getTime()) / (1000*60*60);
-        switch(this.recurrencia[1]){
-          case "h":{
-            return diff<this.recurrencia[0]
-          }
-          case  'd': {
-            return diff<this.recurrencia[0]*24
-          }
-          case    's': {
-            return diff<this.recurrencia[0]*24*7
-          }
-          case    'm': {
-            return diff<this.recurrencia[0]*24*30
-          }
-          case    'a': {
-            return diff<this.recurrencia[0]*24*356
-          }
-          default: return false
-        }
+      if (this.routine){
+        return false
       }
       return this.listItem.hecha
     },
-    recurrencia(){
-      return this.event?this.listItem.recurrencia.split(' '):null
-    } ,
     timeLeft(){
         //calculo del tiempo restante a partir de la fecha de finalización
-        let diff =(new Date(this.listItem.fechaInicio).getTime()- (new Date()).getTime()) / (1000*60*60);
-        if(this.routine && this.listItem.completada!=null){
-          diff=(this.listItem.next.getTime()-(new Date()).getTime()) / (1000*60*60)
+        let diff =(new Date(this.listItem.fechaFin).getTime()- (new Date()).getTime()) / (1000*60*60);
+        if(this.routine){
+          diff=(this.listItem.fecha.getTime()-(new Date()).getTime()) / (1000*60*60)
         }
         let res="en ";
         if(diff>24){

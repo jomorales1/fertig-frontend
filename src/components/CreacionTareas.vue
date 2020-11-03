@@ -83,27 +83,12 @@
                 id="checkbox-Repetition"
                 v-model="status"
                 name="checkbox-Repetition"
-                value="accepted"
-                unchecked-value= "not_accepted"
             >
             </b-form-checkbox>
           </b-form-group>
-          <!--      campos para fecha de inicio-->
-          <b-form-group
-              v-if="status==='not_accepted'"
-              id="fieldset-start-date"
-              label-cols-sm="4"
-              label-cols-lg="3"
-              description="Fecha y hora en que la tarea inicia"
-              label="Fecha de inicio"
-              label-for="start-date, start-time"
-          >
-            <b-datepicker required id="start-date" value-as-date v-model="tarea.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-            <b-form-timepicker required id="start-time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
-          </b-form-group>
           <!--      campos para fecha de inicio de Repetición-->
           <b-form-group
-              v-else
+              v-if="status"
               id="fieldset-start-repetition-date"
               label-cols-sm="4"
               label-cols-lg="3"
@@ -111,48 +96,63 @@
               label="Fecha de inicio de la repetición"
               label-for="start-date, start-time"
           >
-            <b-datepicker required id="start-date" value-as-date v-model="tarea.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+            <b-datepicker required id="start-date" value-as-date v-model="rutina.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+            <b-form-timepicker required id="start-time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
           </b-form-group>
           <!--      campos para fecha de finalización-->
           <b-form-group
-              v-if="status==='not_accepted'"
               id="fieldset-end-date"
               label-cols-sm="4"
               label-cols-lg="3"
-              description="Fecha y hora en que la tarea termina"
-              label="Fecha de finalización"
+              :description="!status?'Fecha y hora en que la tarea termina':'Fecha en que las repeticiones finalizan'"
+              :label="!status?'Fecha de finalización':'Fecha de finalización de la repetición'"
               label-for="end-date, end-time"
           >
             <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-            <b-form-timepicker required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+            <b-form-timepicker v-if="!status" required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
           </b-form-group>
-          <!--      campos para fecha de finalización de Repetición-->
+          <!--      campo para estimacion o duracion de tarea-->
           <b-form-group
-              v-else
-              id="fieldset-end-repetition-date"
+              id="fieldset-estimation"
               label-cols-sm="4"
               label-cols-lg="3"
-              description="Fecha en que las repeticiones finalizan"
-              label="Fecha de finalización de la repetición"
-              label-for="end-date, end-time"
+              :description="!status?'Tiempo estimado de duración de la tarea':'Tiempo de duración de la tarea'"
+              :label="status?'Duración':'Estimación'"
+              label-for="estimation"
           >
-
-            <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
+            <b-form-input v-if="!status" id="estimation" required v-model="tarea.estimacion"></b-form-input>
+            <b-form-input v-else id="estimation" required v-model="rutina.duracion"></b-form-input>
           </b-form-group>
+          <!--      campo de recurrencia-->
           <b-form-group
-              v-if='status==="accepted"'
+              v-if='status'
               id="fieldset-repetition-recurrency"
               label-cols-sm="4"
               label-cols-lg="3"
               description="tiempo entre cada repetición"
-              label-for="cada, numero-repeticion, rango-repeticion">
-            <label id="cada">Cada:</label>
-            <b-form-input required id="numero-repeticion" type="number" v-model="numbRep"></b-form-input>
-            <!--      campos para la seleccion de la recurrencia de la actividad-->
-            <b-form-select required id="rango-repeticion" v-model="Range" :options="options" ></b-form-select>
+              label="Cada:"
+              label-for="numero-repeticion, rango-repeticion">
+            <b-input-group >
+              <b-form-input :state="numbRep>0?null:false" required id="numero-repeticion" type="number" v-model="numbRep" ></b-form-input>
+              <!--      campos para la seleccion de la recurrencia de la actividad-->
+              <b-form-select required id="rango-repeticion" v-model="Range" :options="options" ></b-form-select>
+            </b-input-group>
           </b-form-group>
+          <!--      campo dias de la semana-->
           <b-form-group
-              v-if='status==="accepted"'
+              id="fieldset-week-days"
+              v-if="Range==='S' && status"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Dias de la semana en que se repite la tarea"
+              label-for="week-days"
+              label="Dias de la semana"
+          >
+            <b-checkbox-group id="week-days" class="w-100" buttons :options="weekOptions" v-model="week"/>
+          </b-form-group>
+          <!--      campo franja inicio-->
+          <b-form-group
+              v-if='status'
               id="fieldset-from-repeticion"
               label-cols-sm="4"
               label-cols-lg="3"
@@ -160,10 +160,11 @@
               label-for="desde"
           >
             <div >Inicia a las:</div>
-            <b-form-input required id="desde" type="time" v-model="fromHour"></b-form-input>
+            <b-form-input required id="desde" type="time" v-model="rutina.franjaInicio"></b-form-input>
           </b-form-group>
+          <!--      campo frnaja fin-->
           <b-form-group
-              v-if='status==="accepted"'
+              v-if='status'
               id="fieldset-to-repeticion"
               label-cols-sm="4"
               label-cols-lg="3"
@@ -171,8 +172,9 @@
               label-for="hasta"
           >
             <div >Y termina a las:</div>
-            <b-form-input required id="hasta" type="time" v-model="toHour"></b-form-input>
+            <b-form-input required id="hasta" type="time" v-model="rutina.franjaFin"></b-form-input>
           </b-form-group>
+          <!--      check evento-->
           <b-form-group id="fieldset-checkboxevent"
                         label-cols-sm="4"
                         label-cols-lg="3"
@@ -183,8 +185,6 @@
                 id="checkbox-autocheck"
                 v-model="statusEvent"
                 name="checkbox-autocheck"
-                value="accepted"
-                unchecked-value= "not_accepted"
             >
             </b-form-checkbox>
           </b-form-group>
@@ -192,7 +192,7 @@
       </template>
     </b-modal>
     <!--    Boton de + flotante que muestra el pop up de crear tarea-->
-    <b-button v-b-modal.create-activity size="lg" @click="newTask" class="rounded-circle position-fixed">+</b-button>
+    <b-button v-b-modal.create-activity size="lg" @click="newTask" class="rounded-circle position-fixed cornerBtn">+</b-button>
   </div>
 </template>
 
@@ -205,8 +205,6 @@ import ListItem from "@/models/ListItem";
 
 export default {
   name: 'CreacionTareas',
-  props: {
-  },
   data(){
     return{
       //item a editar
@@ -226,29 +224,39 @@ export default {
       //variable de formulario de creación de tarea incmoleto
       incomplete:false,
       //campo para guardar el tiempo de espera entre las repeticiones
-      numbRep:null,
-      //campo para guardar la hora de inico de las repeticiones
-      fromHour:null,
-      //campo para guardar la hora de finalizacion de las repeticiones
-      toHour:null,
+      numbRep:1,
       // seleccionador del cambio de tarea a rutina
-      status: 'not_accepted',
+      status: false,
       // seleccionador del cambio de tarea, o rutina, a evento
-      statusEvent: 'not_accepted',
+      statusEvent: false,
       // seleccionador del tipo de repeticiones
-      Range: null,
+      Range: 'D',
       options: [
-        { value: 'h'  ,   text: 'horas'     },
-        { value: 'd'  ,   text: 'dias'      },
-        { value: 's'  ,   text: 'semanas'   },
-        { value: 'm'  ,   text: 'meses'     },
-        { value: 'a'  ,   text: 'años'      }
+        { value: 'H'  ,   text: 'horas'     },
+        { value: 'D'  ,   text: 'dias'      },
+        { value: 'S'  ,   text: 'semanas'   },
+        { value: 'M'  ,   text: 'meses'     },
+        { value: 'A'  ,   text: 'años'      }
+      ],
+      //seleccionador de dias de la semana
+      week:[],
+      weekOptions:[
+        { value: 'l'  ,   text: 'L' },
+        { value: 'm'  ,   text: 'M' },
+        { value: 'x'  ,   text: 'X' },
+        { value: 'j'  ,   text: 'J' },
+        { value: 'v'  ,   text: 'V' },
+        { value: 's'  ,   text: 'S' },
+        { value: 'j'  ,   text: 'D' }
       ],
       isEdit:false
     }},
   methods:{
     newTask(){
-      if(!this.error)Object.assign(this.$data, this.$options.data())
+      if(!this.error){
+        Object.assign(this.$data, this.$options.data())
+        this.tarea.prioridad=3
+      }
     },
     deleteItem(){
       this.$store.dispatch("DataModule/delete",this.listItem).then(()=>this.$store.dispatch("DataModule/update"))
@@ -263,22 +271,36 @@ export default {
       else{
         this.incomplete=false
         //se rellenan los campos que no se muestran en la interfaz
-        this.tarea.level=0
-        this.tarea.estimacion=0
-        this.tarea.hecha=0
         this.tarea.recordatorio=0
-        if (this.status==="accepted"){
-          // metodo de crear rutina
+        if (this.status){
+          // metodo de crear rutina o evento con repeticiones
           //se rellenan los campos que no se muestran en la interfaz
-          this.rutina=Object.assign(new Routine(),this.tarea)
+          this.rutina=Object.assign(this.rutina,this.tarea)
+          //adicion de la hora en la fecha de inicio
+          let h=this.startHour.split(":")
+          this.rutina.fechaInicio.setHours(h[0],h[1])
           //se hace la String de Repeticion
-          let n=this.numbRep
-          let r=this.Range
-          let fh=this.fromHour
-          let th=this.toHour
-          this.rutina.recurrencia=[n, r, fh, th].join(' ')
-
-          if(this.statusEvent==="accepted"){
+          if(this.week.length>0){
+            let r='E'
+            this.rutina.recurrencia=[
+              r,
+              this.week.includes('l')?1:0,
+              this.week.includes('m')?1:0,
+              this.week.includes('x')?1:0,
+              this.week.includes('j')?1:0,
+              this.week.includes('v')?1:0,
+              this.week.includes('s')?1:0,
+              this.week.includes('d')?1:0,
+              '.S',
+              this.numbRep
+            ].join('')
+          }else{
+            this.rutina.recurrencia=[
+                this.Range,
+              this.numbRep
+            ].join('')
+          }
+          if(this.statusEvent){
             //se llama al user service para crear la rutina
             UserService.createTEvent(this.rutina).then(
                 ()=>{
@@ -298,16 +320,13 @@ export default {
                   this.error=true
                 }
             )}
-
         }
         else {
           // metodo de crear tarea
-          //se añade las horas a las fechas
+          //se añade las horas a la fecha de finalización
           let h=this.endHour.split(":")
           this.tarea.fechaFin.setHours(h[0],h[1])
-          h=this.startHour.split(":")
-          this.tarea.fechaInicio.setHours(h[0],h[1])
-          if(this.statusEvent==="accepted"){
+          if(this.statusEvent){
             //se llama al user service para crear el evnto simple
             UserService.createTEvent(this.tarea).then(
                 ()=>{
@@ -364,10 +383,6 @@ export default {
       }
     }
   },
-  mounted(){
-    //valor por defecto de prioridad
-    this.tarea.prioridad=3
-  },
   created(){
     //actualizar la lista de tareas cuando se carga la pagina
     this.$store.dispatch('DataModule/update')
@@ -377,9 +392,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.btn{
+.cornerBtn{
 //css para ubicar el boton flotante de +
-bottom: 30px;
+  bottom: 30px;
   right: 10%;
   z-index: 10;
 }

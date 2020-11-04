@@ -2,6 +2,8 @@ import axios from 'axios'
 import authHeader from './auth-header'
 const API_URL = 'http://localhost:8090'
 class UserService {
+    // crear subtask, recibe tarea y el id del padre, parecido a createTask poner url si es tarea o rutina
+    // metodo editar parecido a crear
     getPublicContent() {
         return axios.get(API_URL + 'all')
     }

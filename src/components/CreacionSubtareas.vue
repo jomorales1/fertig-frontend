@@ -4,7 +4,7 @@
     <!--    Alerta cuando hay error al crear tareas-->
     <b-alert :show="error" @dismissed="error=!error" class="text-left" variant="danger" dismissible>Error al crear Tarea</b-alert>
     <!--    pop up con formulario para crear tarea-->
-    <b-modal id="create-activity"
+    <b-modal id="create-subTask"
              title="Crear Subtarea"
              @ok="ok"
     >
@@ -76,87 +76,51 @@
               id="fieldset-end-date"
               label-cols-sm="4"
               label-cols-lg="3"
-              :description="!status?'Fecha y hora en que la tarea termina':'Fecha en que las repeticiones finalizan'"
-              :label="!status?'Fecha de finalización':'Fecha de finalización de la repetición'"
+              description="Fecha y hora en que la subtarea termina"
+              label="Fecha de finalización"
               label-for="end-date, end-time"
           >
             <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-            <b-form-timepicker v-if="!status" required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+            <b-form-timepicker required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
           </b-form-group>
           <!--      campo para estimacion o duracion de tarea-->
           <b-form-group
               id="fieldset-estimation"
               label-cols-sm="4"
               label-cols-lg="3"
-              :description="!status?'Tiempo estimado de duración de la tarea':'Tiempo de duración de la tarea'"
-              :label="status?'Duración':'Estimación'"
+              description="Tiempo de duración de la subtarea"
+              label="Estimación"
               label-for="estimation"
           >
-            <b-form-input v-if="!status&&!statusEvent" id="estimation" required type="number" v-model="tarea.estimacion"></b-form-input>
-            <b-form-input v-else id="estimation" required type="number" v-model="rutina.duracion"></b-form-input>
+            <b-form-input id="estimation" required type="number" v-model="tarea.estimacion"></b-form-input>
           </b-form-group>
 
         </form>
       </template>
     </b-modal>
-    <!--    Boton de + flotante que muestra el pop up de crear tarea-->
-    <b-button v-b-modal.create-activity size="lg" @click="newTask" class="rounded-circle position-fixed cornerBtn">+</b-button>
   </div>
 </template>
 
 <script>
 import Task from "@/models/Task";
-import Routine from "@/models/Routine";
-import TEvent from "@/models/TEvent";
 import UserService from "@/services/user.service";
 import ListItem from "@/models/ListItem";
 
 export default {
   name: 'Creacionsubtareas',
+  props: {'id': {Type: Number, required: true}},
   data(){
     return{
       //item a editar
       listItem:new ListItem(),
       //tarea que se crea
       tarea:new Task(),
-      //rutina que se crea
-      rutina:new Routine(),
-      //evento que se crea
-      evento:new TEvent(),
-      //campo para guardar la hora de inico
-      startHour:null,
       //campo para guardar la hora de finalizacion
       endHour:null,
       //variable error al crear tarea
       error:false,
       //variable de formulario de creación de tarea incmoleto
       incomplete:false,
-      //campo para guardar el tiempo de espera entre las repeticiones
-      numbRep:1,
-      // seleccionador del cambio de tarea a rutina
-      status: false,
-      // seleccionador del cambio de tarea, o rutina, a evento
-      statusEvent: false,
-      // seleccionador del tipo de repeticiones
-      Range: 'D',
-      options: [
-        { value: 'H'  ,   text: 'horas'     },
-        { value: 'D'  ,   text: 'dias'      },
-        { value: 'S'  ,   text: 'semanas'   },
-        { value: 'M'  ,   text: 'meses'     },
-        { value: 'A'  ,   text: 'años'      }
-      ],
-      //seleccionador de dias de la semana
-      week:[],
-      weekOptions:[
-        { value: 'l'  ,   text: 'L' },
-        { value: 'm'  ,   text: 'M' },
-        { value: 'x'  ,   text: 'X' },
-        { value: 'j'  ,   text: 'J' },
-        { value: 'v'  ,   text: 'V' },
-        { value: 's'  ,   text: 'S' },
-        { value: 'j'  ,   text: 'D' }
-      ],
       isEdit:false
     }},
   methods:{
@@ -180,76 +144,10 @@ export default {
         this.incomplete=false
         //se rellenan los campos que no se muestran en la interfaz
         this.tarea.recordatorio=0
-        if (this.status){
-          // metodo de crear rutina o evento con repeticiones
-          //se rellenan los campos que no se muestran en la interfaz
-          this.rutina=Object.assign(this.rutina,this.tarea)
-          //adicion de la hora en la fecha de inicio
-          let h=this.startHour.split(":")
-          this.rutina.fechaInicio.setHours(h[0],h[1])
-          //se hace la String de Repeticion
-          if(this.week.length>0){
-            let r='E'
-            this.rutina.recurrencia=[
-              r,
-              this.week.includes('l')?1:0,
-              this.week.includes('m')?1:0,
-              this.week.includes('x')?1:0,
-              this.week.includes('j')?1:0,
-              this.week.includes('v')?1:0,
-              this.week.includes('s')?1:0,
-              this.week.includes('d')?1:0,
-              '.S',
-              this.numbRep
-            ].join('')
-          }else{
-            this.rutina.recurrencia=[
-              this.Range,
-              this.numbRep
-            ].join('')
-          }
-          if(this.statusEvent){
-            //se llama al user service para crear la rutina
-            UserService.createTEvent(this.rutina).then(
-                ()=>{
-                  this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
-                  this.error=false
-                },()=>{
-                  this.error=true
-                }
-            )}
-          else{
-            //se llama al user service para crear el evento con repeticion
-            UserService.createRoutine(this.rutina).then(
-                ()=>{
-                  this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las rutinas
-                  this.error=false
-                },()=>{
-                  this.error=true
-                }
-            )}
-        }
-        else {
           // metodo de crear tarea
           //se añade las horas a la fecha de finalización
           let h=this.endHour.split(":")
           this.tarea.fechaFin.setHours(h[0],h[1])
-          if(this.statusEvent){
-            this.evento=Object.assign(new TEvent(),this.tarea)
-            this.evento.duracion=this.rutina.duracion
-            let h=this.startHour.split(":")
-            this.evento.fechaInicio=this.rutina.fechaInicio
-            this.evento.fechaInicio.setHours(h[0],h[1])
-            //se llama al user service para crear el evnto simple
-            UserService.createTEvent(this.evento).then(
-                ()=>{
-                  this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
-                  this.error=false
-                },()=>{
-                  this.error=true
-                }
-            )}
-          else{
             //se llama al user service para crear la tarea
             UserService.createTask(this.tarea).then(
                 ()=>{
@@ -258,56 +156,28 @@ export default {
                 },()=>{
                   this.error=true
                 }
-            )}
+            )
         }
-      }
+
     },
     edit(item){
       this.isEdit=true
       this.listItem=item
-      if(item instanceof Task){
-        this.tarea=item
-        this.status=false
-        let options = {
-          hour: 'numeric', minute: 'numeric', milliseconds:'numeric'
-        };
+      this.tarea=item
+      this.status=false
+      let options = {
+        hour: 'numeric', minute: 'numeric', milliseconds:'numeric'
+      };
 
-        this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
-      }else{
-        this.tarea=Object.assign(new Task(),item)
-        this.rutina=Object.assign(new Routine(),item)
-        if( item.recurrencia){
-          this.status=true
-          let recurrencia=item.recurrencia.split(' ')
-          this.numbRep=recurrencia[0]
-          this.Range=recurrencia[1]
-          this.status='not_accepted'
-        }
-        if(!(item instanceof Routine)){
-          this.statusEvent=true
-          let options = {
-            hour: 'numeric', minute: 'numeric'
-          };
-          this.startHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaInicio))
-          this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
-        }
-      }
+      this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
+
     }
-  },
-  created(){
-    //actualizar la lista de tareas cuando se carga la pagina
-    this.$store.dispatch('DataModule/update')
   }
+
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-.cornerBtn{
-  //css para ubicar el boton flotante de +
-  bottom: 30px;
-  right: 10%;
-  z-index: 10;
-}
 
 </style>

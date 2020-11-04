@@ -128,7 +128,7 @@ export default {
     edit(item){//metodo para mostrar el dialogo de creacion de tarea para edicion
       this.$refs.create.edit(item)
       this.$bvModal.show('create-activity')
-    }
+    },
   },
   computed:{
     //lista de tareas que se muestra

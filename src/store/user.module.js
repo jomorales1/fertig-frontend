@@ -51,14 +51,14 @@ export const DataModule = {
             if(item instanceof Routine) url='/routines/updateRoutine/'
             else if (item instanceof TEvent) url='/events/updateEvent/'
             return UserService.edit(item,url).then(()=>commit('edited'),()=>commit('error'))
-        },
+        },//edit parecido, solo con id e item commit subtarea editada
         delete({commit},item){
             let url
             if(item instanceof Task) url='/tasks/deleteTask/'
             if(item instanceof Routine) url='/routines/deleteRoutine/'
             else if (item instanceof TEvent) url='/events/deleteEvent/'
             return UserService.delete(item,url).then(()=>commit('edited'),()=>commit('error'))
-        }
+        }// usar para borrar subtarea
     },
     mutations:{
         //cambios de estado

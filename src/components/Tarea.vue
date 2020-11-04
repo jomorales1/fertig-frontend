@@ -46,14 +46,16 @@
 
               <p class="text-left">{{ listItem.descripcion}}</p>
 <!--Boton para editar tarea -->
-              <b-button @click="$emit('edit',listItem)" size="sm" class="float-left">+ Subtarea</b-button>
+              <b-button @click="addSubTask()" size="sm" class="float-left">+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Editar Tarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Compartir Tarea</b-button>
-              <b-card bg-variant="light" class="text-left my-2" text-variant="dark" title="Subtareas">
+              <b-card v-if="routine || task" bg-variant="light" class="text-left my-2" text-variant="dark" title="Subtareas">
+                <!-- si es tarea o rutina hacer v-for-->
                 <b-card-text>
                   <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
                   <span v-b-toggle.collapse-2>
                     With supporting text below as a natural lead-in to additional content.
+                    <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
                     <span class="float-right">01/02/2020</span>
                   </span>
                   <b-collapse id="collapse-2">
@@ -89,6 +91,7 @@
               </b-card>
             </b-card>
           </b-collapse>
+    <Creacionsubtareas ref="add" :id="idParent"/>
   </b-list-group-item>
 </template>
 
@@ -98,7 +101,9 @@ import ListItem from "@/models/ListItem";
 import Task from '@/models/Task';
 import Routine from "@/models/Routine";
 import TEvent from "@/models/TEvent";
+import Creacionsubtareas from "./CreacionSubtareas";
 export default {
+  components: {Creacionsubtareas},
   props:{
     //variables requerias para crear una vista de tarea
     listItem:{
@@ -108,6 +113,7 @@ export default {
   },
   data(){
     return {
+      idParent: this.listItem.id,
       name: "Tarea",
       //flags para cambios en la vista
       show: true,
@@ -139,6 +145,10 @@ export default {
     toggleCheck(){
         this.$store.dispatch("DataModule/check",this.listItem.id)
     },
+    addSubTask(id){
+        this.parentId = id
+        this.$bvModal.show('create-subTask')
+    }
   },
   computed:{
     hecho(){

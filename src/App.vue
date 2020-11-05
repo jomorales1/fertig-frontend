@@ -29,30 +29,12 @@
         </b-button>
       </div>
       <b-list-group>
-        <b-list-group-item>
+        <b-list-group-item
+            v-for="amigo in [1,2,3,4,5,6,7]"
+            v-bind:key="amigo"
+        >
           <b-avatar></b-avatar>
-          <span> Mi amigo 1</span>
-          <b-button variant="danger" size="sm" class="rounded-circle float-right align-text-bottom my-1" style="white-space: pre"> - </b-button>
-        </b-list-group-item>
-        <b-list-group-item>
-          <b-avatar></b-avatar>
-          <span> Mi amigo 1</span>
-          <b-button variant="danger" size="sm" class="rounded-circle float-right align-text-bottom my-1" style="white-space: pre"> - </b-button>
-        </b-list-group-item><b-list-group-item>
-          <b-avatar></b-avatar>
-          <span> Mi amigo 1</span>
-          <b-button variant="danger" size="sm" class="rounded-circle float-right align-text-bottom my-1" style="white-space: pre"> - </b-button>
-        </b-list-group-item><b-list-group-item>
-          <b-avatar></b-avatar>
-          <span> Mi amigo 1</span>
-          <b-button variant="danger" size="sm" class="rounded-circle float-right align-text-bottom my-1" style="white-space: pre"> - </b-button>
-        </b-list-group-item><b-list-group-item>
-          <b-avatar></b-avatar>
-          <span> Mi amigo 1</span>
-          <b-button variant="danger" size="sm" class="rounded-circle float-right align-text-bottom my-1" style="white-space: pre"> - </b-button>
-        </b-list-group-item><b-list-group-item>
-          <b-avatar></b-avatar>
-          <span> Mi amigo 1</span>
+          <span> Mi amigo {{amigo}}</span>
           <b-button variant="danger" size="sm" class="rounded-circle float-right align-text-bottom my-1" style="white-space: pre"> - </b-button>
         </b-list-group-item>
         <b-list-group-item>

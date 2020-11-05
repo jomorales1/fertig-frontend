@@ -68,6 +68,12 @@ export const DataModule = {
             if(item instanceof Routine) url='/routines/deleteRoutine/'
             else if (item instanceof TEvent) url='/events/deleteEvent/'
             return UserService.delete(item,url).then(()=>commit('edited'),()=>commit('error'))
+        },
+        searchUser({commit}, username){
+            return UserService.searchUser(username).then(null,()=>commit('error'))
+        },
+        getFriends({commit}){
+            return UserService.getFriends().then(null,()=>commit('error'))
         }
     },
     mutations:{

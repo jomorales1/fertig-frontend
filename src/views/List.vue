@@ -84,14 +84,14 @@ export default {
         case "Más pronta":
           this.$store.state.DataModule.tareas.sort((a, b) =>{
             let suborder=function (c,d){
-              if(c.subtareas){
+              if(c.subtareas && c.subtareas.lenght>0){
                 let subtaskssubtask=c.subtareas.filter((t)=>t.hecha===false)
                 subtaskssubtask.sort((e,f)=>new Date(e.fechaFin)-new Date(f.fechaFin))
                 c.fecha=new Date(subtaskssubtask[0].fechaFin)
               }else{
                 c.fecha=new Date(c.fechaFin)
               }
-              if(d.subtareas){
+              if(d.subtareas && d.subtareas.lenght>0){
                 let subtaskssubtask=d.subtareas.filter((t)=>t.hecha===false)
                 subtaskssubtask.sort((e,f)=>new Date(e.fechaFin)-new Date(f.fechaFin))
                 d.fecha=new Date(subtaskssubtask[0].fechaFin)
@@ -101,7 +101,7 @@ export default {
               return c.fecha-d.fecha
             }
             if(!a.recurrencia){
-              if(a.subtareas){
+              if(a.subtareas && a.subtareas.lenght>0){
                 let subtasks=a.subtareas.filter((t)=>t.hecha===false)
                 subtasks.sort(suborder)
                 a.fecha=new Date(subtasks[0].fecha)
@@ -110,7 +110,7 @@ export default {
               }
             }
             if(!b.recurrencia){
-              if(b.subtareas){
+              if(b.subtareas && b.subtareas.lenght>0){
                 let subtasks=b.subtareas.filter((t)=>t.hecha===false)
                 subtasks.sort(suborder)
                 b.fecha=new Date(subtasks[0].fecha)

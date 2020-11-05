@@ -22,6 +22,16 @@ class UserService {
             headers: authHeader()
         })
     }
+    searchUser(user){
+        return axios.get(API_URL+'/users/search/'+user,{
+            headers: authHeader()
+        })
+    }
+    getFriends(){
+        return axios.get(API_URL+'/users/getFriends/',{
+            headers: authHeader()
+        })
+    }
 
     checkTask(url,id){//metodo para cambiar el estado de hecho en tarea en el backend
         return axios.patch(API_URL + url +id // Peticion tipo POST para chequear la tarea

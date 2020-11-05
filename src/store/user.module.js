@@ -35,13 +35,18 @@ export const DataModule = {
             })
             UserService.getTEvents().then(tasks=> {
                 for (let i = 0; i < tasks.data.length; i++) {
-                    listItems.push(Object.assign(new TEvent(), tasks.data[i]));
+                    let event=Object.assign(new TEvent(), tasks.data[i])
+                    if(event.recurrencia)event.fecha=new Date(event.fecha)
+                    listItems.push(event)
                 }
             })
             commit('updated',listItems)
         },
-        check({commit},id){//metodo para cambiar el estado de hecho de una tarea usando user service
-            return UserService.checkTask(id).then(()=>{},()=>{
+        check({commit},item){//metodo para cambiar el estado de hecho de una tarea usando user service
+            let url
+            if(item instanceof Task) url='/tasks/checkTask/'
+            if(item instanceof Routine) url='/routines/checkRoutine/'
+            return UserService.checkTask(url,item.id).then(()=>{},()=>{
                 commit('error')
             })
         },

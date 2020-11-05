@@ -23,8 +23,8 @@ class UserService {
         })
     }
 
-    checkTask(id){//metodo para cambiar el estado de hecho en tarea en el backend
-        return axios.patch(API_URL + '/tasks/checkTask/'+id // Peticion tipo POST para chequear la tarea
+    checkTask(url,id){//metodo para cambiar el estado de hecho en tarea en el backend
+        return axios.patch(API_URL + url +id // Peticion tipo POST para chequear la tarea
             ,null,{
                 headers: authHeader()
             })

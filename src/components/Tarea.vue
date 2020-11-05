@@ -138,7 +138,7 @@ export default {
       return (new Intl.DateTimeFormat('es',options)).format(date)
     },
     toggleCheck(){
-        this.$store.dispatch("DataModule/check",this.listItem.id)
+        this.$store.dispatch("DataModule/check",this.listItem)
     }
   },
   computed:{
@@ -151,7 +151,7 @@ export default {
     timeLeft(){
         //calculo del tiempo restante a partir de la fecha de finalización
         let diff =(new Date(this.listItem.fechaFin).getTime()- (new Date()).getTime()) / (1000*60*60);
-        if(this.routine){
+        if(this.event && this.listItem.recurrencia){
           diff=(this.listItem.fecha.getTime()-(new Date()).getTime()) / (1000*60*60)
         }
         let res="en ";

@@ -50,6 +50,7 @@
 import Tarea from "@/components/Tarea";
 import CreacionTareas from '../components/CreacionTareas.vue'
 import Routine from "@/models/Routine";
+import TEvent from "@/models/TEvent";
 export default {
   name: "Lista",
   components:{
@@ -83,18 +84,18 @@ export default {
           break
         case "Más pronta":
           this.$store.state.DataModule.tareas.sort((a, b) =>{
-            if(a instanceof Routine){
-              if(b instanceof Routine){
-                return a.next-b.next
+            if(a instanceof TEvent && a.recurrencia){
+              if(b instanceof TEvent && b.recurrencia){
+                return a.fecha-b.fecha
               }else{
-                return a.next-new Date(b.fechaInicio)
+                return a.fecha-new Date(b.fechaFin)
               }
             }else{
-              if(b instanceof Routine){
-                return new Date(a.fechaInicio)-b.next
+              if(b instanceof TEvent && b.recurrencia){
+                return new Date(a.fechaFin)-b.fecha
               }
             }
-            return new Date(a.fechaInicio)-new Date(b.fechaInicio)
+            return new Date(a.fechaFin)-new Date(b.fechaFin)
           });
           break
         case "Menos pronta":

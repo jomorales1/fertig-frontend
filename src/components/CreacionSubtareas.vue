@@ -132,7 +132,7 @@ export default {
     },
     deleteItem(){
       this.$store.dispatch("DataModule/delete",this.listItem).then(()=>this.$store.dispatch("DataModule/update"))
-      this.$bvModal.hide("create-activity")
+      this.$bvModal.hide("create-subTask")
     },
     ok(bvModalEvt){
       //evitar que se oculte cuando no estan completos los campos
@@ -149,9 +149,9 @@ export default {
           let h=this.endHour.split(":")
           this.tarea.fechaFin.setHours(h[0],h[1])
             //se llama al user service para crear la tarea
-            UserService.createTask(this.tarea).then(
+            UserService.createSubTask(this.tarea, this.props.id).then(
                 ()=>{
-                  this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las tareas
+                  this.$store.dispatch("DataModule/createSubTask") // Luego de la petición, llamar a la función para obtener las tareas
                   this.error=false
                 },()=>{
                   this.error=true
@@ -171,6 +171,14 @@ export default {
 
       this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
 
+      UserService.editSubTask(this.tarea).then(
+          ()=>{
+            this.$store.dispatch("DataModule/editSubTask") // Luego de la petición, llamar a la función para obtener las tareas
+            this.error=false
+          },()=>{
+            this.error=true
+          }
+      )
     }
   }
 

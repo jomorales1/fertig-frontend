@@ -51,6 +51,39 @@
               <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Compartir Tarea</b-button>
               <b-card v-if="routine || task" bg-variant="light" class="text-left my-2" text-variant="dark" title="Subtareas">
                 <!-- si es tarea o rutina hacer v-for-->
+                <b-list-group>
+                  <b-list-group-item v-for="sb in subTasks" v-bind:key="sb" >
+                      <b-card-text>
+                          <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                          <span v-b-toggle.collapse-2>
+                        {{ sb.nombre }}
+                        <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
+                        <span class="float-right">{{sb.fecha}}</span>
+                        </span>
+                          <b-collapse id="collapse-2">
+                            <b-card bg-variant="light" class="text-left my-2" text-variant="dark" >
+                              <!-- aqui empiezan las subtareas-->
+                              <b-card-text>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales leo augue, in laoreet libero tincidunt non. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+                              </b-card-text>
+                              <b-card-text>
+                                <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                                With supporting text below as a natural lead-in to additional content.
+                              </b-card-text>
+                              <b-card-text>
+                                <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                                With supporting text below as a natural lead-in to additional content.
+                              </b-card-text>
+                              <b-card-text>
+                                <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                                With supporting text below as a natural lead-in to additional content.
+                              </b-card-text>
+                              <!--                <b-button href="#" variant="primary">Go somewhere</b-button>-->
+                            </b-card>
+                          </b-collapse>
+                      </b-card-text>
+                  </b-list-group-item>
+                </b-list-group>
                 <b-card-text>
                   <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
                   <span v-b-toggle.collapse-2>
@@ -91,7 +124,7 @@
               </b-card>
             </b-card>
           </b-collapse>
-    <Creacionsubtareas ref="add" :id="idParent"/>
+    <Creacionsubtareas ref="add" :id="this.idParent"/>
   </b-list-group-item>
 </template>
 
@@ -113,6 +146,7 @@ export default {
   },
   data(){
     return {
+      subTasks: [],
       idParent: this.listItem.id,
       name: "Tarea",
       //flags para cambios en la vista

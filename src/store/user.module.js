@@ -51,14 +51,26 @@ export const DataModule = {
             if(item instanceof Routine) url='/routines/updateRoutine/'
             else if (item instanceof TEvent) url='/events/updateEvent/'
             return UserService.edit(item,url).then(()=>commit('edited'),()=>commit('error'))
-        },//edit parecido, solo con id e item commit subtarea editada
+        },
         delete({commit},item){
             let url
             if(item instanceof Task) url='/tasks/deleteTask/'
             if(item instanceof Routine) url='/routines/deleteRoutine/'
             else if (item instanceof TEvent) url='/events/deleteEvent/'
             return UserService.delete(item,url).then(()=>commit('edited'),()=>commit('error'))
-        }// usar para borrar subtarea
+        },// usar para borrar subtarea
+        createSubTask({commit}, item, parentId){
+            let url
+            if(item instanceof  Task) url = '/tasks/addSubTask/'
+            if(item instanceof  Routine) url = '/routines/addSubtask/'
+            return UserService.createSubTask(item, parentId, url).then(() => commit('subTaskCreated'), ()=>commit('error'))
+        },
+        editSubTask({commit}, item){
+            let url
+            if(item instanceof  Task) url = '/tasks/updateSubtask/'
+            if(item instanceof  Routine) url = '/routines/updateSubtask/'
+            return UserService.editSubTask(item, url).then(()=>commit('edited'),()=>commit('error'))
+        }
     },
     mutations:{
         //cambios de estado
@@ -71,6 +83,9 @@ export const DataModule = {
         },
         edited(state){
             state.status='Edited'
+        },
+        subTaskCreated(state){
+            state.status = 'created'
         }
     }
 

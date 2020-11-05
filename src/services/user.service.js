@@ -29,6 +29,12 @@ class UserService {
                 headers: authHeader()
             })
     }
+    uncheckRoutine(id){//metodo para deschequear las rutinas en el backend
+        return axios.patch(API_URL + '/routines/uncheckRoutine/' +id // Peticion tipo POST para chequear la tarea
+            ,null,{
+                headers: authHeader()
+            })
+    }
 
     createRoutine(routine) {
         return axios.post(API_URL + '/routines/addRoutine' // Peticion tipo POST para agregar la rutina

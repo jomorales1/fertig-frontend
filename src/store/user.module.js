@@ -42,7 +42,12 @@ export const DataModule = {
             })
             commit('updated',listItems)
         },
-        check({commit},item){//metodo para cambiar el estado de hecho de una tarea usando user service
+        uncheckRoutine({commit},item){//metodo para deschequear rutinas con el user service
+            return UserService.uncheckRoutine(item.id).then(()=>{},()=>{
+                commit('error')
+            })
+        },
+        check({commit},item){//metodo para cambiar el estado de hecho de una tarea o rutina usando user service
             let url
             if(item instanceof Task) url='/tasks/checkTask/'
             if(item instanceof Routine) url='/routines/checkRoutine/'

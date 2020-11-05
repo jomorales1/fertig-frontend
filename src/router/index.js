@@ -47,7 +47,7 @@ const routes=[
         name:'Reloj',
         component:()=>import('@/views/Timer'),//componente que ocupa esa vista a partir de carpeta views
         meta: {
-            requiresAuth: false
+            requiresAuth: true
         }
     }
 ]

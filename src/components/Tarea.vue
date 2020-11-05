@@ -50,21 +50,32 @@
               <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Editar Tarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Compartir Tarea</b-button>
               <b-card v-if="routine || task" bg-variant="light" class="text-left my-2" text-variant="dark" title="Subtareas">
-                <!-- si es tarea o rutina hacer v-for-->
+                <!-- si es tarea o rutina hacer v-for, lorem = desripcion prioridad a la derecha, crear boton debajo de decripción, quitar campo etiquetas-->
                 <b-list-group>
-                  <b-list-group-item v-for="sb in subTasks" v-bind:key="sb" >
+                  <b-list-group-item v-for="sb in listItem.subtareas" v-bind:key="sb.id" >
                       <b-card-text>
                           <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                          <span v-b-toggle.collapse-2>
-                        {{ sb.nombre }}
+                          <span>
+                            <span v-b-toggle.collapse-2>
+                              {{ sb.nombre }}
+                            </span>
                         <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
-                        <span class="float-right">{{sb.fecha}}</span>
+                        <span class="float-right">{{subTaskDate(sb.fechaFin)}}</span>
                         </span>
                           <b-collapse id="collapse-2">
                             <b-card bg-variant="light" class="text-left my-2" text-variant="dark" >
                               <!-- aqui empiezan las subtareas-->
                               <b-card-text>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales leo augue, in laoreet libero tincidunt non. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+                                {{sb.descripcion}}
+                                <span class="float-right">
+                                  Prioridad: {{sb.prioridad}}
+                                  <br>
+                                  Estimación: {{sb.estimacion + (sb.estimacion!==1?" horas":" hora")}}
+                                </span>
+                                <br>
+                                <b-button size="sm" class="p-1" variant="white">
+                                  <img alt="add" src="../assets/anadir.svg" style="height: 0.8rem" class="mx-1" > Subtarea
+                                </b-button>
                               </b-card-text>
                               <b-card-text>
                                 <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
@@ -146,7 +157,6 @@ export default {
   },
   data(){
     return {
-      subTasks: [],
       idParent: this.listItem.id,
       name: "Tarea",
       //flags para cambios en la vista
@@ -181,7 +191,12 @@ export default {
     },
     addSubTask(id){
         this.parentId = id
-        this.$bvModal.show('create-subTask')
+        this.$refs.add.newTask()
+    },
+    subTaskDate(taskDate){
+      let options={ year: 'numeric', month: 'numeric', day: 'numeric',
+        hour: 'numeric', minute: 'numeric', hour12:true }
+      return (new Intl.DateTimeFormat('en-GB',options)).format(new Date(taskDate))
     }
   },
   computed:{
@@ -211,7 +226,7 @@ export default {
         return []
       }
       return this.listItem.etiqueta.trim().split(' ')
-    },
+    }
 
   }
 }

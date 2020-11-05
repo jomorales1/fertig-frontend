@@ -59,11 +59,11 @@ export const DataModule = {
             else if (item instanceof TEvent) url='/events/deleteEvent/'
             return UserService.delete(item,url).then(()=>commit('edited'),()=>commit('error'))
         },// usar para borrar subtarea
-        createSubTask({commit}, item, parentId){
+        createSubTask({commit}, data){
             let url
-            if(item instanceof  Task) url = '/tasks/addSubTask/'
-            if(item instanceof  Routine) url = '/routines/addSubtask/'
-            return UserService.createSubTask(item, parentId, url).then(() => commit('subTaskCreated'), ()=>commit('error'))
+            if(data.tarea instanceof  Task) url = '/tasks/addSubTask/'
+            if(data.tarea instanceof  Routine) url = '/routines/addSubtask/'
+            return UserService.createSubTask(data.tarea, data.id, url).then(() => commit('subTaskCreated'), ()=>commit('error'))
         },
         editSubTask({commit}, item){
             let url

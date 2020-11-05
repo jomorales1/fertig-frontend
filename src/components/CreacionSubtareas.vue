@@ -2,7 +2,7 @@
   <!--  template por de fecto de vue para paginas que no se han implementado-->
   <div >
     <!--    Alerta cuando hay error al crear tareas-->
-    <b-alert :show="error" @dismissed="error=!error" class="text-left" variant="danger" dismissible>Error al crear Tarea</b-alert>
+    <b-alert :show="error" @dismissed="error=!error" class="text-left" variant="danger" dismissible>Error al crear subtarea</b-alert>
     <!--    pop up con formulario para crear tarea-->
     <b-modal id="create-subTask"
              title="Crear Subtarea"
@@ -125,6 +125,7 @@ export default {
     }},
   methods:{
     newTask(){
+      this.$bvModal.show('create-subTask')
       if(!this.error){
         Object.assign(this.$data, this.$options.data())
         this.tarea.prioridad=3
@@ -149,9 +150,9 @@ export default {
           let h=this.endHour.split(":")
           this.tarea.fechaFin.setHours(h[0],h[1])
             //se llama al user service para crear la tarea
-            UserService.createSubTask(this.tarea, this.props.id).then(
+            this.$store.dispatch("DataModule/createSubTask", {tarea: this.tarea, id: this.id}).then(
                 ()=>{
-                  this.$store.dispatch("DataModule/createSubTask") // Luego de la petición, llamar a la función para obtener las tareas
+                  this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las tareas
                   this.error=false
                 },()=>{
                   this.error=true

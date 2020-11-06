@@ -70,10 +70,22 @@ export const DataModule = {
             return UserService.delete(item,url).then(()=>commit('edited'),()=>commit('error'))
         },
         searchUser({commit}, username){
-            return UserService.searchUser(username).then(null,()=>commit('error'))
+            return UserService.searchUser(username).then(response=>{
+                return Promise.resolve(response)
+            },()=>{
+                commit('error')
+                return Promise.reject()
+            })
         },
         getFriends({commit}){
-            return UserService.getFriends().then(null,()=>commit('error'))
+            return UserService.getFriends().then(
+                response=>{
+                    return Promise.resolve(response)
+                },()=>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
         }
     },
     mutations:{

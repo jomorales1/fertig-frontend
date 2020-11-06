@@ -59,7 +59,7 @@
                             <span v-b-toggle.collapse-2>
                               {{ sb.nombre }}
                             </span>
-                            <b-button variant="white" @click="editsubTask(task = sb)">
+                            <b-button variant="white" @click="editsubTask(sb)" class="p-1">
                               <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
                             </b-button>
                         <span class="float-right">{{subTaskDate(sb.fechaFin)}}</span>
@@ -83,7 +83,7 @@
                                     <b-card-text>
                                       <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
                                       <span>
-                              <span v-b-toggle.collapse-2>
+                              <span v-b-toggle.collapse-3>
                                 {{ sb1.nombre }}
                               </span>
                                 <b-button variant="white" >
@@ -91,7 +91,7 @@
                               </b-button>
                                 <span class="float-right">{{subTaskDate(sb1.fechaFin)}}</span>
                                 </span>
-                                      <b-collapse id="collapse-2">
+                                      <b-collapse id="collapse-3">
                                         <b-card bg-variant="light" class="text-left my-2" text-variant="dark" >
                                           <!-- aqui empiezan las subtareas-->
                                           <b-card-text>
@@ -182,8 +182,9 @@ export default {
       return (new Intl.DateTimeFormat('en-GB',options)).format(new Date(taskDate))
     },
     editsubTask(item){
-      this.$refs.add.edit(item)
-      this.$bvModal.show('create-subTask')
+        this.$bvModal.show('create-subTask')
+        this.$refs.add.edit(item)
+        console.log(item)
     }
   },
   computed:{

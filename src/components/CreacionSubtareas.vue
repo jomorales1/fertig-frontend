@@ -5,6 +5,7 @@
     <b-alert :show="error" @dismissed="error=!error" class="text-left" variant="danger" dismissible>Error al crear subtarea</b-alert>
     <!--    pop up con formulario para crear tarea-->
     <b-modal id="create-subTask"
+             no-stacking
              title="Crear Subtarea"
              @ok="ok"
     >
@@ -170,15 +171,6 @@ export default {
       };
 
       this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
-
-      this.$store.dispatch("DataModule/editSubTask", this.tarea).then(
-          ()=>{
-            this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las tareas
-            this.error=false
-          },()=>{
-            this.error=true
-          }
-      )
     }
   }
 

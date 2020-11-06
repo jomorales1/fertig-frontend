@@ -2,7 +2,7 @@
   <!--  template por de fecto de vue para paginas que no se han implementado-->
   <div >
     <!--    Alerta cuando hay error al crear tareas-->
-    <b-alert :show="error" @dismissed="error=!error" class="text-left" variant="danger" dismissible>Error al crear Tarea</b-alert>
+    <b-alert :show="error" @dismissed="error=!error" class="text-left" variant="danger" dismissible>{{message}}</b-alert>
     <!--    pop up con formulario para crear tarea-->
     <b-modal id="create-activity"
              title="Crear Actividad"
@@ -16,7 +16,7 @@
         <b-button variant="secondary" @click="cancel()">
           Cancelar
         </b-button>
-        <b-button variant="primary" @click="ok()">
+        <b-button variant="primary" @click="isEdit?save():ok()">
           OK
         </b-button>
       </template>
@@ -83,6 +83,7 @@
                 id="checkbox-Repetition"
                 v-model="status"
                 name="checkbox-Repetition"
+                :disabled="isEdit"
             >
             </b-form-checkbox>
           </b-form-group>
@@ -97,6 +98,7 @@
                 id="checkbox-autocheck"
                 v-model="statusEvent"
                 name="checkbox-autocheck"
+                :disabled="isEdit"
             >
             </b-form-checkbox>
           </b-form-group>
@@ -130,7 +132,7 @@
               id="fieldset-estimation"
               label-cols-sm="4"
               label-cols-lg="3"
-              :description="!status?'Tiempo estimado de duración de la tarea':'Tiempo de duración de la tarea'"
+              :description="!status?'Tiempo estimado de duración en horas de la tarea':'Tiempo de duración en horas de la tarea'"
               :label="status?'Duración':'Estimación'"
               label-for="estimation"
           >
@@ -248,9 +250,10 @@ export default {
         { value: 'j'  ,   text: 'J' },
         { value: 'v'  ,   text: 'V' },
         { value: 's'  ,   text: 'S' },
-        { value: 'j'  ,   text: 'D' }
+        { value: 'd'  ,   text: 'D' }
       ],
-      isEdit:false
+      isEdit:false,
+      message:"Error al crear Tarea"
     }},
   methods:{
     newTask(){
@@ -281,25 +284,20 @@ export default {
           let h=this.startHour.split(":")
           this.rutina.fechaInicio.setHours(h[0],h[1])
           //se hace la String de Repeticion
+          let weekDays =parseInt( [
+            this.week.includes('l')?1:0,
+            this.week.includes('m')?1:0,
+            this.week.includes('x')?1:0,
+            this.week.includes('j')?1:0,
+            this.week.includes('v')?1:0,
+            this.week.includes('s')?1:0,
+            this.week.includes('d')?1:0,
+          ].reverse().join(''),2)
           if(this.week.length>0){
             let r='E'
-            this.rutina.recurrencia=[
-              r,
-              this.week.includes('l')?1:0,
-              this.week.includes('m')?1:0,
-              this.week.includes('x')?1:0,
-              this.week.includes('j')?1:0,
-              this.week.includes('v')?1:0,
-              this.week.includes('s')?1:0,
-              this.week.includes('d')?1:0,
-              '.S',
-              this.numbRep
-            ].join('')
+            this.rutina.recurrencia=[r, weekDays, '.S', this.numbRep].join('')
           }else{
-            this.rutina.recurrencia=[
-                this.Range,
-              this.numbRep
-            ].join('')
+            this.rutina.recurrencia=[this.Range, this.numbRep].join('')
           }
           if(this.statusEvent){
             //se llama al user service para crear la rutina
@@ -358,38 +356,82 @@ export default {
     edit(item){
       this.isEdit=true
       this.listItem=item
+      this.week=[]
+      this.tarea=item
       if(item instanceof Task){
-        this.tarea=item
         this.status=false
         let options = {
           hour: 'numeric', minute: 'numeric', milliseconds:'numeric'
         };
-
+        this.listItem.fechaFin=new Date(this.listItem.fechaFin)
         this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
       }else{
-        this.tarea=Object.assign(new Task(),item)
-        this.rutina=Object.assign(new Routine(),item)
+        //this.tarea=Object.assign(new Task(),item)
+        //this.rutina=Object.assign(new Routine(),item)
+        this.rutina=item
+        let options = {
+          hour: 'numeric', minute: 'numeric'
+        };
+        this.listItem.fechaFin=new Date(this.listItem.fechaFin)
+        this.listItem.fechaInicio=new Date(this.listItem.fechaInicio)
+        this.startHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaInicio))
         if( item.recurrencia){
           this.status=true
-          let recurrencia=item.recurrencia.split(' ')
-          this.numbRep=recurrencia[0]
-          this.Range=recurrencia[1]
-          this.status='not_accepted'
+          if(item.recurrencia[0]==='E'){
+            this.Range='S'
+            let weekDays=parseInt(item.recurrencia.substring(1,item.recurrencia.indexOf('.')),10).toString(2).split('').reverse()
+            for(let i=0;i<weekDays.length;i++){
+              if(weekDays[i]==="1"){
+                this.week.push(this.weekOptions[i].value)
+              }
+            }
+            this.numbRep=item.recurrencia[item.recurrencia.indexOf('.')+2]
+          }else{
+            this.Range=item.recurrencia[0]
+            this.numbRep=item.recurrencia[1]
+
+          }
+          this.status=true
         }
         if(!(item instanceof Routine)){
           this.statusEvent=true
-          let options = {
-            hour: 'numeric', minute: 'numeric'
-          };
-          this.startHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaInicio))
           this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
         }
       }
+    },
+    save(){
+      if (this.listItem instanceof TEvent && this.listItem.recurrencia) {
+        let h=this.startHour.split(":")
+        this.listItem.fechaInicio.setHours(h[0],h[1])
+        //se hace la String de Repeticion
+        let weekDays =parseInt( [
+          this.week.includes('l')?1:0,
+          this.week.includes('m')?1:0,
+          this.week.includes('x')?1:0,
+          this.week.includes('j')?1:0,
+          this.week.includes('v')?1:0,
+          this.week.includes('s')?1:0,
+          this.week.includes('d')?1:0,
+        ].reverse().join(''),2)
+        if(this.week.length>0){
+          let r='E'
+          this.listItem.recurrencia=[r, weekDays, '.S', this.numbRep].join('')
+        }else{
+          this.listItem.recurrencia=[this.Range, this.numbRep].join('')
+        }
+      }
+      this.$store.dispatch('DataModule/edit',this.listItem).then(
+          ()=>{
+            this.$bvModal.hide('create-activity')
+            this.$store.dispatch('DataModule/update')
+          },
+          ()=>{
+            this.error=true
+            this.message="Error al editar Tarea"
+            this.$bvModal.hide('create-activity')
+          }
+      )
     }
-  },
-  created(){
-    //actualizar la lista de tareas cuando se carga la pagina
-    this.$store.dispatch('DataModule/update')
   }
 }
 </script>

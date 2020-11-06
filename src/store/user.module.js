@@ -35,13 +35,23 @@ export const DataModule = {
             })
             UserService.getTEvents().then(tasks=> {
                 for (let i = 0; i < tasks.data.length; i++) {
-                    listItems.push(Object.assign(new TEvent(), tasks.data[i]));
+                    let event=Object.assign(new TEvent(), tasks.data[i])
+                    if(event.recurrencia)event.fecha=new Date(event.fecha)
+                    listItems.push(event)
                 }
             })
             commit('updated',listItems)
         },
-        check({commit},id){//metodo para cambiar el estado de hecho de una tarea usando user service
-            return UserService.checkTask(id).then(()=>{},()=>{
+        uncheckRoutine({commit},item){//metodo para deschequear rutinas con el user service
+            return UserService.uncheckRoutine(item.id).then(()=>{},()=>{
+                commit('error')
+            })
+        },
+        check({commit},item){//metodo para cambiar el estado de hecho de una tarea o rutina usando user service
+            let url
+            if(item instanceof Task) url='/tasks/checkTask/'
+            if(item instanceof Routine) url='/routines/checkRoutine/'
+            return UserService.checkTask(url,item.id).then(()=>{},()=>{
                 commit('error')
             })
         },
@@ -70,6 +80,12 @@ export const DataModule = {
             if(item instanceof  Task) url = '/tasks/updateSubtask/'
             if(item instanceof  Routine) url = '/routines/updateSubtask/'
             return UserService.editSubTask(item, url).then(()=>commit('edited'),()=>commit('error'))
+        },
+        searchUser({commit}, username){
+            return UserService.searchUser(username).then(null,()=>commit('error'))
+        },
+        getFriends({commit}){
+            return UserService.getFriends().then(null,()=>commit('error'))
         }
     },
     mutations:{

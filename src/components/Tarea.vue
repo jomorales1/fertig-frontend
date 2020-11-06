@@ -1,8 +1,8 @@
 <template>
 <!--  item de lista de tareas-->
-  <b-list-group-item class="custom-list-item">
+  <b-list-group-item class=" p-0 border-0">
 <!--        parte de cabecera de la tarea -->
-        <b-list-group-item v-bind:active=selected @click=toggle class="border-bottom-0 pointer  flex-column align-items-start">
+        <b-list-group-item v-bind:active=selected @click=toggle class="border-bottom-0 btn  flex-column align-items-start">
           <div class="d-flex w-100 justify-content-between" >
             <div class="d-inline-block align-top align-text-top">
 <!--              checkbox de hecho-->
@@ -16,7 +16,7 @@
 <!--              lista de etiquetas de la tarea-->
               <b-badge  v-for="etiqueta in etiquetasList"
                        :key="etiqueta"
-                        class="badges"
+                        class="p-1 mx-1"
                         :variant="selected?'secondary':'primary'"
                         @click="$emit('etiqueta-filter',etiqueta)"
               >
@@ -30,13 +30,13 @@
 <!--    informacion detallada de tarea que se abre cuando se da click en la cabecera-->
           <b-collapse id="collapse-1"  v-model=selected >
             <b-card>
-              <div v-if="event" class="text-left divPrioridad" style="margin-bottom: 1rem">
+              <div class="float-right col-md-3"> Prioridad: {{listItem.prioridad}} </div>
+              <p v-if="event" class="text-left mb-2 col-md-9">
                 Desde:
                 {{ longDate(new Date(listItem.fechaInicio)) }}
-                <div class="float-right prioridad"> Prioridad: {{listItem.prioridad}} </div>
-              </div>
+              </p>
 
-              <p class="text-left ">
+              <p class="text-left col-md-9 ">
                 Hasta:
                 {{ longDate(new Date(listItem.fechaFin))}}
               </p>
@@ -46,9 +46,9 @@
 
               <p class="text-left">{{ listItem.descripcion}}</p>
 <!--Boton para editar tarea -->
-              <b-button @click="addSubTask()" size="sm" class="float-left">+ Subtarea</b-button>
-              <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Editar Tarea</b-button>
-              <b-button @click="$emit('edit',listItem)" size="sm" class="mx-2">Compartir Tarea</b-button>
+              <b-button @click="addSubTask()" size="sm" class="float-left my-2" >+ Subtarea</b-button>
+              <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
+              <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Compartir Tarea</b-button>
               <b-card v-if="routine || task" bg-variant="light" class="text-left my-2" text-variant="dark" title="Subtareas">
                 <!-- si es tarea o rutina hacer v-for, lorem = desripcion prioridad a la derecha, crear boton debajo de decripción, quitar campo etiquetas-->
                 <b-list-group>
@@ -146,6 +146,7 @@ export default {
       task: this.listItem instanceof Task,
       routine: this.listItem instanceof Routine,
       event: this.listItem instanceof TEvent,
+      hecho:false,
       timeMesure: {
         'h': 'horas',
         'd': 'dias',
@@ -168,7 +169,8 @@ export default {
       return (new Intl.DateTimeFormat('es',options)).format(date)
     },
     toggleCheck(){
-        this.$store.dispatch("DataModule/check",this.listItem.id)
+      if(this.hecho&&this.routine) this.$store.dispatch("DataModule/uncheckRoutine",this.listItem)
+      else this.$store.dispatch("DataModule/check",this.listItem)
     },
     addSubTask(id){
         this.parentId = id
@@ -185,16 +187,10 @@ export default {
     }
   },
   computed:{
-    hecho(){
-      if (this.routine){
-        return false
-      }
-      return this.listItem.hecha
-    },
     timeLeft(){
         //calculo del tiempo restante a partir de la fecha de finalización
         let diff =(new Date(this.listItem.fechaFin).getTime()- (new Date()).getTime()) / (1000*60*60);
-        if(this.routine){
+        if(this.event && this.listItem.recurrencia){
           diff=(this.listItem.fecha.getTime()-(new Date()).getTime()) / (1000*60*60)
         }
         let res="en ";
@@ -212,37 +208,15 @@ export default {
       }
       return this.listItem.etiqueta.trim().split(' ')
     }
-
+  },mounted() {
+    if(this.task)this.hecho=this.listItem.hecho
   }
 }
 </script>
 
 <style scoped lang="scss">
- .pointer{
-   //estilo de mouse en forma de mano
-   cursor: pointer;
- }
- .custom-list-item{
-   //estilo para quitar bordes y margen a los items dentro del item principal
-   padding: 0;
-   border: none;
- }
  .custom-list-item:last-child {
    //estilo para que el ultimo hijo si tenga borde inferior
    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
  }
- .badges{
-   margin: 2px;
- }
- @media(max-device-width: 768px){
-   .prioridad{
-      float: left !important;
-   }
-   .divPrioridad{
-     display: flex!important;
-     flex-direction: column-reverse!important;
-   }
-
- }
-
 </style>

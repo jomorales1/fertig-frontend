@@ -22,9 +22,25 @@ class UserService {
             headers: authHeader()
         })
     }
+    searchUser(user){
+        return axios.get(API_URL+'/users/search/'+user,{
+            headers: authHeader()
+        })
+    }
+    getFriends(){
+        return axios.get(API_URL+'/users/getFriends/',{
+            headers: authHeader()
+        })
+    }
 
-    checkTask(id){//metodo para cambiar el estado de hecho en tarea en el backend
-        return axios.patch(API_URL + '/tasks/checkTask/'+id // Peticion tipo POST para chequear la tarea
+    checkTask(url,id){//metodo para cambiar el estado de hecho en tarea en el backend
+        return axios.patch(API_URL + url +id // Peticion tipo POST para chequear la tarea
+            ,null,{
+                headers: authHeader()
+            })
+    }
+    uncheckRoutine(id){//metodo para deschequear las rutinas en el backend
+        return axios.patch(API_URL + '/routines/uncheckRoutine/' +id // Peticion tipo POST para chequear la tarea
             ,null,{
                 headers: authHeader()
             })

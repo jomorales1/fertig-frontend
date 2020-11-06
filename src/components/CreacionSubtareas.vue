@@ -103,7 +103,6 @@
 
 <script>
 import Task from "@/models/Task";
-import UserService from "@/services/user.service";
 import ListItem from "@/models/ListItem";
 
 export default {
@@ -172,9 +171,9 @@ export default {
 
       this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
 
-      UserService.editSubTask(this.tarea).then(
+      this.$store.dispatch("DataModule/editSubTask", this.tarea).then(
           ()=>{
-            this.$store.dispatch("DataModule/editSubTask") // Luego de la petición, llamar a la función para obtener las tareas
+            this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener las tareas
             this.error=false
           },()=>{
             this.error=true

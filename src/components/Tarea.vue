@@ -59,7 +59,9 @@
                             <span v-b-toggle.collapse-2>
                               {{ sb.nombre }}
                             </span>
-                        <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
+                            <b-button variant="white" @click="editsubTask(task = sb)">
+                              <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
+                            </b-button>
                         <span class="float-right">{{subTaskDate(sb.fechaFin)}}</span>
                         </span>
                           <b-collapse id="collapse-2">
@@ -73,65 +75,44 @@
                                   Estimación: {{sb.estimacion + (sb.estimacion!==1?" horas":" hora")}}
                                 </span>
                                 <br>
-                                <b-button size="sm" class="p-1" variant="white">
+                                <b-button size="sm" class="p-1" variant="white" @click="addSubTask(idParent = sb.id)" >
                                   <img alt="add" src="../assets/anadir.svg" style="height: 0.8rem" class="mx-1" > Subtarea
                                 </b-button>
+                                <b-list-group>
+                                  <b-list-group-item v-for="sb1 in sb.subtareas" v-bind:key="sb1.id" >
+                                    <b-card-text>
+                                      <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                                      <span>
+                              <span v-b-toggle.collapse-2>
+                                {{ sb1.nombre }}
+                              </span>
+                                <b-button variant="white" >
+                              <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
+                              </b-button>
+                                <span class="float-right">{{subTaskDate(sb1.fechaFin)}}</span>
+                                </span>
+                                      <b-collapse id="collapse-2">
+                                        <b-card bg-variant="light" class="text-left my-2" text-variant="dark" >
+                                          <!-- aqui empiezan las subtareas-->
+                                          <b-card-text>
+                                            {{sb1.descripcion}}
+                                            <span class="float-right">
+                                    Prioridad: {{sb1.prioridad}}
+                                    <br>
+                                    Estimación: {{sb1.estimacion + (sb1.estimacion!==1?" horas":" hora")}}
+                                  </span>
+                                          </b-card-text>
+                                        </b-card>
+                                      </b-collapse>
+                                    </b-card-text>
+                                  </b-list-group-item>
+                                </b-list-group>
                               </b-card-text>
-                              <b-card-text>
-                                <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                                With supporting text below as a natural lead-in to additional content.
-                              </b-card-text>
-                              <b-card-text>
-                                <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                                With supporting text below as a natural lead-in to additional content.
-                              </b-card-text>
-                              <b-card-text>
-                                <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                                With supporting text below as a natural lead-in to additional content.
-                              </b-card-text>
-                              <!--                <b-button href="#" variant="primary">Go somewhere</b-button>-->
                             </b-card>
                           </b-collapse>
-                      </b-card-text>
-                  </b-list-group-item>
-                </b-list-group>
-                <b-card-text>
-                  <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                  <span v-b-toggle.collapse-2>
-                    With supporting text below as a natural lead-in to additional content.
-                    <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
-                    <span class="float-right">01/02/2020</span>
-                  </span>
-                  <b-collapse id="collapse-2">
-                    <b-card bg-variant="light" class="text-left my-2" text-variant="dark" >
-                      <b-card-text>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales leo augue, in laoreet libero tincidunt non. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-                      </b-card-text>
-                      <b-card-text>
-                        <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                        With supporting text below as a natural lead-in to additional content.
-                      </b-card-text>
-                      <b-card-text>
-                        <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                        With supporting text below as a natural lead-in to additional content.
-                      </b-card-text>
-                      <b-card-text>
-                        <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                        With supporting text below as a natural lead-in to additional content.
-                      </b-card-text>
-                      <!--                <b-button href="#" variant="primary">Go somewhere</b-button>-->
-                    </b-card>
-                  </b-collapse>
-                </b-card-text>
-                <b-card-text>
-                  <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                  With supporting text below as a natural lead-in to additional content.
-                </b-card-text>
-                <b-card-text>
-                  <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                  With supporting text below as a natural lead-in to additional content.
-                </b-card-text>
-<!--                <b-button href="#" variant="primary">Go somewhere</b-button>-->
+                        </b-card-text>
+                    </b-list-group-item>
+                  </b-list-group>
               </b-card>
             </b-card>
           </b-collapse>
@@ -197,6 +178,10 @@ export default {
       let options={ year: 'numeric', month: 'numeric', day: 'numeric',
         hour: 'numeric', minute: 'numeric', hour12:true }
       return (new Intl.DateTimeFormat('en-GB',options)).format(new Date(taskDate))
+    },
+    editsubTask(item){
+      this.$refs.add.edit(item)
+      this.$bvModal.show('create-subTask')
     }
   },
   computed:{

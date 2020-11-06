@@ -34,7 +34,7 @@
     </div>
 
 <!--    Lista de tareas a partir de la variable de tareas del store de vuex-->
-    <b-list-group class="listView mb-5">
+    <b-list-group class="mb-5">
       <Tarea
           v-for="task in tareas"
           v-bind:key="task.id+task.constructor.name"
@@ -190,8 +190,5 @@ export default {
   }
   .closeEtq{
     font-size: 1.2rem;
-  }
-  .listView:last-child{
-    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
   }
 </style>

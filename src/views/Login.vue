@@ -105,8 +105,13 @@ export default {
         this.loading = true;
         this.$store.dispatch('auth/login', this.user).then(
             () => {
-              //si inicio sesión redirigir a lista
-              this.$router.push('/List');
+              //si intento entrar antes a otra pagina restringida redirigirlo allá
+              if(this.$route.query.nextUrl != null){
+                this.$router.push(this.$route.query.nextUrl)
+              }else {
+                //si inicio sesión redirigir a lista si no intento acceder a otra pagina
+                this.$router.push('/List');
+              }
             },
             () => {
               //si hubo error mostrarlo en pantalla

@@ -75,6 +75,12 @@ class UserService {
     delete(task,url){//metodo para eliminar tareas rutinas o eventos en el backend
         return axios.delete(API_URL+url+task.id,{headers:authHeader()})
     }
+    getCopy(id,type){
+        return axios.get(API_URL+'/'+type.toLowerCase()+'s/get'+type+'/'+id,{headers:authHeader()})
+    }
+    addCopy(id){
+        return axios.post(API_URL+'/tasks/copyTask/'+id,null,{headers:authHeader()})
+    }
 
 }
 

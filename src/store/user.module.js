@@ -106,6 +106,26 @@ export const DataModule = {
                     return Promise.reject()
                 }
             )
+        },
+        getCopy({commit},data){
+            return UserService.getCopy(data.id,data.type).then(
+                response=>{
+                    return Promise.resolve(response)
+                },()=>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
+        },
+        addCopy({commit},id){
+            return UserService.addCopy(id).then(
+                result=>{
+                    return Promise.resolve(result)
+                },error=>{
+                    commit('error')
+                    return Promise.reject(error)
+                }
+            )
         }
     },
     mutations:{

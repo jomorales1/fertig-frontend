@@ -1,12 +1,12 @@
 <template>
 <!--  item de lista de tareas-->
-  <b-list-group-item class=" p-0 border-0">
+  <b-list-group-item class=" p-0 ">
 <!--        parte de cabecera de la tarea -->
-        <b-list-group-item v-bind:active=selected @click=toggle class="border-bottom-0 btn  flex-column align-items-start">
+        <b-list-group-item v-bind:active=selected @click=toggle class="border-0 btn  flex-column align-items-start">
           <div class="d-flex w-100 justify-content-between" >
             <div class="d-inline-block align-top align-text-top">
 <!--              checkbox de hecho-->
-              <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+              <b-form-checkbox :disabled="visible" @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
 <!--              titulo de tarea-->
               {{ listItem.nombre }}
 <!--              etiqueta de tipo de tarea-->
@@ -28,8 +28,8 @@
           </div>
         </b-list-group-item>
 <!--    informacion detallada de tarea que se abre cuando se da click en la cabecera-->
-          <b-collapse id="collapse-1"  v-model=selected >
-            <b-card>
+          <b-collapse ref="collapse" id="collapse-1" :visible="visible" class="border-0" v-model=selected >
+            <b-card class="border-0">
               <div class="float-right col-md-3"> Prioridad: {{listItem.prioridad}} </div>
               <p v-if="event" class="text-left mb-2 col-md-9">
                 Desde:
@@ -48,8 +48,16 @@
 <!--Boton para editar tarea -->
               <b-button @click="$emit('edit',listItem)" size="sm" class="float-left my-2" >+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
-              <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Compartir Tarea</b-button>
-
+              <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>
+              <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
+                <template #title>Compartir copia de {{task?'tarea':routine?'rutina':'evento'}}</template>
+                <b-input-group prepend="Link:" size="sm">
+                  <b-form-input :value="fullUrl" ref="urlComponent"></b-form-input>
+                  <template #append>
+                    <b-button @click="copy()"><img alt="copiar url" src="../assets/copy.svg" style="height: 1rem"/></b-button>
+                  </template>
+                </b-input-group>
+              </b-popover>
               <b-card bg-variant="light" class="text-left my-2" text-variant="dark" title="Subtareas">
                 <b-card-text>
                   <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
@@ -105,25 +113,23 @@ export default {
     listItem:{
       Type:ListItem,
       required:true
-    }
+    },
+    visible:{
+      Type:Boolean,
+      default:false
+    },
   },
   data(){
     return {
       name: "Tarea",
       //flags para cambios en la vista
       show: true,
-      selected: false,
+      selected: this.visible,
       task: this.listItem instanceof Task,
       routine: this.listItem instanceof Routine,
       event: this.listItem instanceof TEvent,
       hecho:false,
-      timeMesure: {
-        'h': 'horas',
-        'd': 'dias',
-        's': 'semanas',
-        'm': 'meses',
-        'a': 'años'
-      }
+      url: window.location.origin
     }
   },
   methods: {
@@ -141,9 +147,16 @@ export default {
     toggleCheck(){
       if(this.hecho&&this.routine) this.$store.dispatch("DataModule/uncheckRoutine",this.listItem)
       else this.$store.dispatch("DataModule/check",this.listItem)
+    },
+    copy(){
+      this.$refs.urlComponent.select()
+      document.execCommand('copy')
     }
   },
   computed:{
+    fullUrl(){
+      return this.url +'/share/'+(this.task?'Task':this.routine?'Routine':'Event')+'/'+this.listItem.id
+    },
     timeLeft(){
         //calculo del tiempo restante a partir de la fecha de finalización
         let diff =(new Date(this.listItem.fechaFin).getTime()- (new Date()).getTime()) / (1000*60*60);
@@ -172,8 +185,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
- .custom-list-item:last-child {
-   //estilo para que el ultimo hijo si tenga borde inferior
-   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
- }
+
 </style>

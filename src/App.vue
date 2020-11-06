@@ -1,6 +1,6 @@
 <template>
   <div id="app" >
-<!--    Barra de navgación-->
+<!--    Barra de navegación-->
     <b-navbar toggleable="md" type="dark" variant="primary" >
       <b-navbar-brand to="/" class="btn">Fertig</b-navbar-brand>
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -20,6 +20,7 @@
         </b-navbar-nav>
       </b-collapse>
     </b-navbar>
+<!--    componente para la administracion de amigos-->
     <Amigos/>
     <!--    se llama a la vista de roter para que funcionen los links-->
     <router-view/>
@@ -59,6 +60,7 @@ export default {
     }
   },
   watch: {
+    //vigilar la ruta para cambiar el titiulo de la pagina
     '$route' (to) {
       document.title =  'FertigApp - '+to.name
     }
@@ -67,11 +69,11 @@ export default {
     loggedIn(){
       return this.$store.state.auth.status.loggedIn
     },
-    username(){
+    username(){//obtencion del usuario para el dropdown de usuario
       return this.loggedIn?this.$store.state.auth.user.name:null
     }
   },
-  created() {
+  created() {//titulo inicial de la pagina
     document.title = 'FertigApp - '+this.$route.name
   }
 }

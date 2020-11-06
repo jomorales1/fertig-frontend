@@ -159,7 +159,7 @@ export default {
         }
         return res;
     },
-    etiquetasList(){
+    etiquetasList(){//metodo para separar las etiquetas por espacios
       if(this.listItem.etiqueta===""){
         return []
       }

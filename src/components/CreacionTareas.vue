@@ -252,7 +252,9 @@ export default {
         { value: 's'  ,   text: 'S' },
         { value: 'd'  ,   text: 'D' }
       ],
+      //flag de edicion
       isEdit:false,
+      //mendaje de error
       message:"Error al crear Tarea"
     }},
   methods:{
@@ -354,10 +356,12 @@ export default {
       }
     },
     edit(item){
+      //metodo para cargar los datos de una tarea evento o rutina en el componenete
       this.isEdit=true
       this.listItem=item
       this.week=[]
       this.tarea=item
+      //obtencion de los campos de horas dependiendo del tipo
       if(item instanceof Task){
         this.status=false
         let options = {
@@ -366,8 +370,6 @@ export default {
         this.listItem.fechaFin=new Date(this.listItem.fechaFin)
         this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
       }else{
-        //this.tarea=Object.assign(new Task(),item)
-        //this.rutina=Object.assign(new Routine(),item)
         this.rutina=item
         let options = {
           hour: 'numeric', minute: 'numeric'
@@ -375,8 +377,10 @@ export default {
         this.listItem.fechaFin=new Date(this.listItem.fechaFin)
         this.listItem.fechaInicio=new Date(this.listItem.fechaInicio)
         this.startHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaInicio))
+        //obtencion de los datos de recurrencia
         if( item.recurrencia){
           this.status=true
+          //si tiene repeticinoes por dia de la semana
           if(item.recurrencia[0]==='E'){
             this.Range='S'
             let weekDays=parseInt(item.recurrencia.substring(1,item.recurrencia.indexOf('.')),10).toString(2).split('').reverse()
@@ -386,7 +390,7 @@ export default {
               }
             }
             this.numbRep=item.recurrencia[item.recurrencia.indexOf('.')+2]
-          }else{
+          }else{//si es otro tipo de repetición
             this.Range=item.recurrencia[0]
             this.numbRep=item.recurrencia[1]
 
@@ -400,6 +404,7 @@ export default {
       }
     },
     save(){
+      //guardado de los cambios hechos en edicion
       if (this.listItem instanceof TEvent && this.listItem.recurrencia) {
         let h=this.startHour.split(":")
         this.listItem.fechaInicio.setHours(h[0],h[1])
@@ -420,6 +425,7 @@ export default {
           this.listItem.recurrencia=[this.Range, this.numbRep].join('')
         }
       }
+      //llamada al store para enviar la request
       this.$store.dispatch('DataModule/edit',this.listItem).then(
           ()=>{
             this.$bvModal.hide('create-activity')

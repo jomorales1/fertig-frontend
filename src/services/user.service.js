@@ -22,13 +22,23 @@ class UserService {
             headers: authHeader()
         })
     }
-    searchUser(user){
+    searchUser(user){//Funcion para buscar usuarios por username
         return axios.get(API_URL+'/users/search/'+user,{
             headers: authHeader()
         })
     }
-    getFriends(){
+    getFriends(){//metodo para obtener amigos del usuario
         return axios.get(API_URL+'/users/getFriends/',{
+            headers: authHeader()
+        })
+    }
+    addFriend(usuario){//metodo para añadir el amigo por username
+        return axios.put(API_URL+'/users/addFriend/'+usuario,null,{
+            headers: authHeader()
+        })
+    }
+    deleteFriend(usuario){//metodo para eliminar el amigo por username
+        return axios.delete(API_URL+'/users/deleteFriend/'+usuario,{
             headers: authHeader()
         })
     }
@@ -46,24 +56,30 @@ class UserService {
             })
     }
 
-    createRoutine(routine) {
+    createRoutine(routine) {//metodo para crear rutinas en el backend
         return axios.post(API_URL + '/routines/addRoutine' // Peticion tipo POST para agregar la rutina
             ,routine,{
                 headers: authHeader()
             })
     }
 
-    createTEvent(tEvent) {
+    createTEvent(tEvent) {//metodo para crear eventos en el backend
         return axios.post(API_URL + '/events/addEvent' // Peticion tipo POST para agregar el evento
             ,tEvent,{
                 headers: authHeader()
             })
     }
-    edit(task,url){
+    edit(task,url){//metodo para editar tareas rutinas o eventos en el backend
         return axios.put(API_URL+url+task.id,task,{headers:authHeader()})
     }
-    delete(task,url){
+    delete(task,url){//metodo para eliminar tareas rutinas o eventos en el backend
         return axios.delete(API_URL+url+task.id,{headers:authHeader()})
+    }
+    getCopy(id,type){
+        return axios.get(API_URL+'/'+type.toLowerCase()+'s/get'+type+'/'+id,{headers:authHeader()})
+    }
+    addCopy(id){
+        return axios.post(API_URL+'/tasks/copyTask/'+id,null,{headers:authHeader()})
     }
 
     createSubTask(task, parentId, url){

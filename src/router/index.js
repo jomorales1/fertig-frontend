@@ -49,6 +49,13 @@ const routes=[
         meta: {
             requiresAuth: true
         }
+    }, {
+        path: '/Share/:type/:id',//ruta (localhost:8080/Settings)
+        name: 'Copia la tarea',
+        component: () => import('@/views/Share'),//componente que ocupa esa vista a partir de carpeta views
+        meta: {
+            requiresAuth: true
+        }
     }
 ]
 //declracion del router
@@ -67,7 +74,7 @@ router.beforeEach((to, from, next) => {
     // tratando de acceder a una pagina restringida + sesión no iniciada
     if (authRequired && !loggedIn) {
         // redireccion al login
-        next('/Login');
+        next({path:'/Login',query: { nextUrl: to.fullPath }});
     } else {
         next();
     }

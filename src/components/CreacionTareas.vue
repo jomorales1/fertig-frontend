@@ -42,7 +42,7 @@
               description="Descripción de la tarea que deseas crear"
               label="Descripción"
               label-for="description"
-          ><b-form-textarea required
+          ><b-form-textarea
                             id="description"
                             rows="3"
                             max-rows="8"
@@ -92,7 +92,7 @@
                         label-cols-sm="4"
                         label-cols-lg="3"
                         label="Autocheck al terminar "
-                        description="la actividad no tendrá check de hecha">
+                        description="La actividad no tendrá check de hecha">
 
             <b-form-checkbox
                 id="checkbox-autocheck"
@@ -133,7 +133,7 @@
               label-cols-sm="4"
               label-cols-lg="3"
               :description="!status?'Tiempo estimado de duración en horas de la tarea':'Tiempo de duración en horas de la tarea'"
-              :label="status?'Duración':'Estimación'"
+              :label="status||statusEvent?'Duración':'Estimación'"
               label-for="estimation"
           >
             <b-form-input v-if="!status&&!statusEvent" id="estimation" required type="number" v-model="tarea.estimacion"></b-form-input>
@@ -252,7 +252,9 @@ export default {
         { value: 's'  ,   text: 'S' },
         { value: 'd'  ,   text: 'D' }
       ],
+      //flag de edicion
       isEdit:false,
+      //mendaje de error
       message:"Error al crear Tarea"
     }},
   methods:{
@@ -260,6 +262,8 @@ export default {
       if(!this.error){
         Object.assign(this.$data, this.$options.data())
         this.tarea.prioridad=3
+        this.tarea.estimacion=0
+        this.rutina.duracion=0
       }
     },
     deleteItem(){
@@ -354,10 +358,12 @@ export default {
       }
     },
     edit(item){
+      //metodo para cargar los datos de una tarea evento o rutina en el componenete
       this.isEdit=true
       this.listItem=item
       this.week=[]
       this.tarea=item
+      //obtencion de los campos de horas dependiendo del tipo
       if(item instanceof Task){
         this.status=false
         let options = {
@@ -366,8 +372,6 @@ export default {
         this.listItem.fechaFin=new Date(this.listItem.fechaFin)
         this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
       }else{
-        //this.tarea=Object.assign(new Task(),item)
-        //this.rutina=Object.assign(new Routine(),item)
         this.rutina=item
         let options = {
           hour: 'numeric', minute: 'numeric'
@@ -375,8 +379,10 @@ export default {
         this.listItem.fechaFin=new Date(this.listItem.fechaFin)
         this.listItem.fechaInicio=new Date(this.listItem.fechaInicio)
         this.startHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaInicio))
+        //obtencion de los datos de recurrencia
         if( item.recurrencia){
           this.status=true
+          //si tiene repeticinoes por dia de la semana
           if(item.recurrencia[0]==='E'){
             this.Range='S'
             let weekDays=parseInt(item.recurrencia.substring(1,item.recurrencia.indexOf('.')),10).toString(2).split('').reverse()
@@ -386,7 +392,7 @@ export default {
               }
             }
             this.numbRep=item.recurrencia[item.recurrencia.indexOf('.')+2]
-          }else{
+          }else{//si es otro tipo de repetición
             this.Range=item.recurrencia[0]
             this.numbRep=item.recurrencia[1]
 
@@ -400,6 +406,7 @@ export default {
       }
     },
     save(){
+      //guardado de los cambios hechos en edicion
       if (this.listItem instanceof TEvent && this.listItem.recurrencia) {
         let h=this.startHour.split(":")
         this.listItem.fechaInicio.setHours(h[0],h[1])
@@ -420,6 +427,11 @@ export default {
           this.listItem.recurrencia=[this.Range, this.numbRep].join('')
         }
       }
+      if(!(this.listItem instanceof Routine)){
+        let h=this.endHour.split(":")
+        this.listItem.fechaFin.setHours(h[0],h[1])
+      }
+      //llamada al store para enviar la request
       this.$store.dispatch('DataModule/edit',this.listItem).then(
           ()=>{
             this.$bvModal.hide('create-activity')

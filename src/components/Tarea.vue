@@ -137,7 +137,10 @@ import Routine from "@/models/Routine";
 import TEvent from "@/models/TEvent";
 import Creacionsubtareas from "./CreacionSubtareas";
 export default {
-  components: {Creacionsubtareas},
+    //pasar creación subtareas a list y emitir eventos decrear, editar y eliminar con v-on
+    //utilizar atributo disabled con prop de tarea visible
+
+    components: {Creacionsubtareas},
   props:{
     //variables requerias para crear una vista de tarea
     listItem:{

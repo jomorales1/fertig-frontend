@@ -42,7 +42,7 @@
               description="Descripción de la tarea que deseas crear"
               label="Descripción"
               label-for="description"
-          ><b-form-textarea required
+          ><b-form-textarea
                             id="description"
                             rows="3"
                             max-rows="8"
@@ -92,7 +92,7 @@
                         label-cols-sm="4"
                         label-cols-lg="3"
                         label="Autocheck al terminar "
-                        description="la actividad no tendrá check de hecha">
+                        description="La actividad no tendrá check de hecha">
 
             <b-form-checkbox
                 id="checkbox-autocheck"
@@ -133,7 +133,7 @@
               label-cols-sm="4"
               label-cols-lg="3"
               :description="!status?'Tiempo estimado de duración en horas de la tarea':'Tiempo de duración en horas de la tarea'"
-              :label="status?'Duración':'Estimación'"
+              :label="status||statusEvent?'Duración':'Estimación'"
               label-for="estimation"
           >
             <b-form-input v-if="!status&&!statusEvent" id="estimation" required type="number" v-model="tarea.estimacion"></b-form-input>
@@ -262,6 +262,8 @@ export default {
       if(!this.error){
         Object.assign(this.$data, this.$options.data())
         this.tarea.prioridad=3
+        this.tarea.estimacion=0
+        this.rutina.duracion=0
       }
     },
     deleteItem(){
@@ -424,6 +426,10 @@ export default {
         }else{
           this.listItem.recurrencia=[this.Range, this.numbRep].join('')
         }
+      }
+      if(!(this.listItem instanceof Routine)){
+        let h=this.endHour.split(":")
+        this.listItem.fechaFin.setHours(h[0],h[1])
       }
       //llamada al store para enviar la request
       this.$store.dispatch('DataModule/edit',this.listItem).then(

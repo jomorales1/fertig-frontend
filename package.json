@@ -12,6 +12,7 @@
     "bootstrap-vue": "^2.1.0",
     "core-js": "^3.6.5",
     "es6-promise": "^4.2.8",
+    "lodash": "^4.17.20",
     "query-string": "^6.13.4",
     "vee-validate": "^3.4.0",
     "vue": "^2.6.11",

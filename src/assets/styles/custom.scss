@@ -3,8 +3,25 @@ $theme-colors: (
         "primary": #31b40d,
         "secondary": #495057,
         "info":#6F16B5,
-
+        "azul-pagina":#005898
 );
+
+$azul-pagina:#005898;
+$verde-original: #31b40d;
+/* Color Theme Swatches in Hex */
+$In-Working-Order-1-hex: #FACC87;
+$In-Working-Order-2-hex: #EDA639;
+$In-Working-Order-3-hex: #1F4152;
+$In-Working-Order-4-hex: #598BA6;
+$In-Working-Order-5-hex: #BCCFD9;
+/* Color Theme Swatches in Hex */
+$SPACE-ORDER-FORM-1-hex: #4A733F;
+$SPACE-ORDER-FORM-2-hex: #3B7302;
+$SPACE-ORDER-FORM-3-hex: #72A603;
+$SPACE-ORDER-FORM-4-hex: #261E17;
+$SPACE-ORDER-FORM-5-hex: #59493B;
+
+
 @import '~bootstrap/scss/bootstrap.scss';
 @import '~bootstrap-vue/src/index.scss';
 

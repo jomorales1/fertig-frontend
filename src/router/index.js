@@ -16,7 +16,7 @@ const routes=[
         }
     },{
         path:'/Login',//ruta (localhost:8080/Login)
-        name:'Inicio de sesión',
+        name:'Inicio de Sesión',
         component:()=>import('@/views/Login.vue'),
         meta: {
             requiresAuth: true
@@ -30,22 +30,29 @@ const routes=[
         }
     },{
         path:'/List',//ruta (localhost:8080/List)
-        name:'Lista de actividades',
+        name:'Lista de Actividades',
         component:()=>import('@/views/List'),//componente que ocupa esa vista a partir de carpeta views
         meta: {
             requiresAuth: true
         }
     },{
         path:'/Settings',//ruta (localhost:8080/Settings)
-        name:'Ajustes de la cuenta',
+        name:'Ajustes de la Cuenta',
         component:()=>import('@/views/Settings'),//componente que ocupa esa vista a partir de carpeta views
         meta: {
             requiresAuth: true
         }
     },{
-        path:'/Timer',//ruta (localhost:8080/Timer)
-        name:'Reloj',
+        path:'/Timer',//ruta (localhost:8080/Settings)
+        name:'Temporizador',
         component:()=>import('@/views/Timer'),//componente que ocupa esa vista a partir de carpeta views
+        meta: {
+            requiresAuth: true
+        }
+    }, {
+        path: '/Share/:type/:id',//ruta (localhost:8080/Settings)
+        name: 'Copia la tarea',
+        component: () => import('@/views/Share'),//componente que ocupa esa vista a partir de carpeta views
         meta: {
             requiresAuth: true
         }
@@ -67,7 +74,7 @@ router.beforeEach((to, from, next) => {
     // tratando de acceder a una pagina restringida + sesión no iniciada
     if (authRequired && !loggedIn) {
         // redireccion al login
-        next('/Login');
+        next({path:'/Login',query: { nextUrl: to.fullPath }});
     } else {
         next();
     }

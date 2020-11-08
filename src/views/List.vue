@@ -1,6 +1,7 @@
 <template>
   <b-container class="text-right my-5">
-    <CreacionTareas/>
+    <!--    pop up con formulario para crear tarea-->
+    <CreacionTareas ref="create" />
 <!--    Boton para reordenar las tareas mostradas-->
     <div class="d-flex justify-content-between">
       <div class="d-flex flex-column justify-content-end">
@@ -8,20 +9,20 @@
         <b-button variant="outline-secondary"
                   @click="etiquetaFilter=''"
                   v-if="etiquetaFilter!==''"
-                  class="etqButton"
+                  class="etqButton mb-2"
                   size="sm"
         >{{etiquetaFilter}} <strong class="close closeEtq">x</strong> </b-button>
       </div>
       <div>
         <!--    Boton para reordenar las tareas mostradas-->
-        <b-dropdown id="reorder-dropdown" text="Ordenar por" class="m-md-2">
+        <b-dropdown id="reorder-dropdown" text="Ordenar por" class="m-2">
           <b-dropdown-item v-for="order in orders"
                            :key="order"
                            @click="reorder(order)"
           >{{order}}</b-dropdown-item>
         </b-dropdown>
         <!--    Boton para filtrar por prioridad-->
-        <b-dropdown id="filter-dropdown" right text="Filtrar por prioridad" class="m-md-2">
+        <b-dropdown id="filter-dropdown" right text="Filtrar por prioridad" class="m-2">
           <b-dropdown-item v-for="filter in filters"
                            :key="filter"
                            @click="filterTasks(filter)"
@@ -33,36 +34,26 @@
     </div>
 
 <!--    Lista de tareas a partir de la variable de tareas del store de vuex-->
-    <b-list-group class="listView">
+    <b-list-group class="mb-5">
       <Tarea
           v-for="task in tareas"
           v-bind:key="task.id+task.constructor.name"
           v-bind:listItem="task"
           v-on:etiqueta-filter="filterEtiqueta($event)"
+          v-on:edit="edit($event)"
       />
     </b-list-group>
-<!--    Boton temporal para cerrar sesión-->
-    <b-button @click="logout">
-      Cerrar sesión
-    </b-button>
-<!--    componente para api de facebook-->
-    <v-facebook-login-scope app-id="1472299989621414" @sdk-init="handleSdkInit"/>
-    <!--    pop up con formulario para crear tarea-->
   </b-container>
 </template>
 
 <script>
 import Tarea from "@/components/Tarea";
-
 import CreacionTareas from '../components/CreacionTareas.vue'
-
-import { VFBLoginScope as VFacebookLoginScope } from 'vue-facebook-login-component'
-import Routine from "@/models/Routine";
+import TEvent from "@/models/TEvent";
 export default {
   name: "Lista",
   components:{
     Tarea,
-    VFacebookLoginScope,
     CreacionTareas
   },
   data(){
@@ -73,18 +64,18 @@ export default {
           "Más pronta",
           "Menos pronta"
       ],
+      selectedOrder:"Más pronta",
       //opciones de filtro
       filters:["no filtrar",1,2,3,4,5],
       //prioridad por la que se esta filtrando
       priorityFilter:0,
       //variable para filtrar etiquetas
-      etiquetaFilter:"",
-      //objeto de API facebook
-      FB:{}
+      etiquetaFilter:""
     }
   },
   methods:{
     reorder(order){
+      this.selectedOrder=order
       switch (order){
         //funciones para ordenar segun lo que se escoja
         case "Prioridad":
@@ -92,35 +83,60 @@ export default {
           break
         case "Más pronta":
           this.$store.state.DataModule.tareas.sort((a, b) =>{
-            if(a instanceof Routine){
-              if(b instanceof Routine){
-                return a.next-b.next
+            let suborder=function (c,d){
+              if(c.subtareas && c.subtareas.lenght>0){
+                let subtaskssubtask=c.subtareas.filter((t)=>t.hecha===false)
+                subtaskssubtask.sort((e,f)=>new Date(e.fechaFin)-new Date(f.fechaFin))
+                c.fecha=new Date(subtaskssubtask[0].fechaFin)
               }else{
-                return a.next-new Date(b.fechaInicio)
+                c.fecha=new Date(c.fechaFin)
               }
-            }else{
-              if(b instanceof Routine){
-                return new Date(a.fechaInicio)-b.next
+              if(d.subtareas && d.subtareas.lenght>0){
+                let subtaskssubtask=d.subtareas.filter((t)=>t.hecha===false)
+                subtaskssubtask.sort((e,f)=>new Date(e.fechaFin)-new Date(f.fechaFin))
+                d.fecha=new Date(subtaskssubtask[0].fechaFin)
+              }else{
+                d.fecha=new Date(d.fechaFin)
+              }
+              return c.fecha-d.fecha
+            }
+            if(!a.recurrencia){
+              if(a.subtareas && a.subtareas.lenght>0){
+                let subtasks=a.subtareas.filter((t)=>t.hecha===false)
+                subtasks.sort(suborder)
+                a.fecha=new Date(subtasks[0].fecha)
+              }else{
+                a.fecha=new Date(a.fechaFin)
               }
             }
-            return new Date(a.fechaInicio)-new Date(b.fechaInicio)
+            if(!b.recurrencia){
+              if(b.subtareas && b.subtareas.lenght>0){
+                let subtasks=b.subtareas.filter((t)=>t.hecha===false)
+                subtasks.sort(suborder)
+                b.fecha=new Date(subtasks[0].fecha)
+              }else{
+                b.fecha=new Date(b.fechaFin)
+              }
+            }
+            return a.fecha-b.fecha
           });
           break
         case "Menos pronta":
           this.$store.state.DataModule.tareas.sort((a, b) =>{
-            if(a instanceof Routine){
-              if(b instanceof Routine){
-                return b.next-a.next
+            if(a instanceof TEvent && a.recurrencia){
+              if(b instanceof TEvent && b.recurrencia){
+                return b.fecha-a.fecha
               }else{
-                return new Date(b.fechaInicio)-a.next
+                return new Date(b.fechaFin)-a.fecha
               }
             }else{
-              if(b instanceof Routine){
-                return b.next-new Date(a.fechaInicio)
+              if(b instanceof TEvent && b.recurrencia){
+                return b.fecha-new Date(a.fechaFin)
               }
             }
-            return new Date(b.fechaInicio)-new Date(a.fechaInicio)
+            return new Date(b.fechaFin)-new Date(a.fechaFin)
           });
+          break
       }
     },
     filterTasks(filter){ //modifica el filtro por prioridad
@@ -134,25 +150,17 @@ export default {
     filterEtiqueta(etiqueta){//filtra segun la etiqueta seleccionada
       this.etiquetaFilter=etiqueta;
     },
-    handleSdkInit({ FB}) {
-      this.FB = FB//trae el objeto de facebook desde el sdkInit
-    },
-    logout(){
-      //verifica si esta logeado con facebook y cierra sesión si así es
-      this.FB.getLoginStatus(function (response){
-        if(response.status==='connected'){
-          this.FB.logout()
-        }
-      })
-      //llama al logout del store
-      this.$store.dispatch('auth/logout').then(()=>this.$router.push('/Login'))
+    edit(item){//metodo para mostrar el dialogo de creacion de tarea para edicion
+      this.$refs.create.edit(item)
+      this.$bvModal.show('create-activity')
     }
   },
   computed:{
     //lista de tareas que se muestra
     tareas(){
+      this.reorder(this.selectedOrder)
       //filtrar las tareas y rutinas que ya hallan finalizado
-      let lista=this.$store.state.DataModule.tareas.filter(task=>new Date(task.fechaFin)>new Date())
+      let lista=this.$store.state.DataModule.tareas//.filter(task=>new Date(task.fechaFin)>new Date())
       //aplicación de filtros
       if(this.priorityFilter!==0){
         lista= lista.filter(task=>task.prioridad===this.priorityFilter)
@@ -161,13 +169,11 @@ export default {
         lista= lista.filter(task=>task.etiqueta.includes(this.etiquetaFilter))
       }
       return lista
-
     }
   },
   created(){
     //actualizar la lista de tareas cuando se carga la pagina
     this.$store.dispatch('DataModule/update')
-    this.reorder("Más pronta")
   }
 }
 </script>
@@ -181,12 +187,8 @@ export default {
   }
   .etqButton{
     white-space: pre;
-    margin-bottom: 5px;
   }
   .closeEtq{
     font-size: 1.2rem;
-  }
-  .listView{
-    margin-bottom: 5%;
   }
 </style>

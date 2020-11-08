@@ -75,11 +75,12 @@ export const DataModule = {
             if(data.tarea instanceof  Routine) url = '/routines/addSubtask/'
             return UserService.createSubTask(data.tarea, data.id, url).then(() => commit('subTaskCreated'), ()=>commit('error'))
         },
-        editSubTask({commit}, item){
+        editSubTask({commit}, data){
             let url
-            if(item instanceof  Task) url = '/tasks/updateSubtask/'
-            if(item instanceof  Routine) url = '/routines/updateSubtask/'
-            return UserService.editSubTask(item, url).then(()=>commit('edited'),()=>commit('error'))
+            if(data instanceof  Task) url = '/tasks/updateSubtask/'
+            if(data instanceof  Routine) url = '/routines/updateSubtask/'
+            console.log(url)
+            return UserService.editSubTask(data, url).then(()=>commit('edited'),()=>commit('error'))
         },
         searchUser({commit}, username){//metodo para buscar usuarios usando el user service
             return UserService.searchUser(username).then(response=>{

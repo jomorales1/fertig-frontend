@@ -17,7 +17,7 @@
         <b-button variant="secondary" @click="cancel()">
           Cancelar
         </b-button>
-        <b-button variant="primary" @click="ok()">
+        <b-button variant="primary" @click="isEdit?save():ok()">
           OK
         </b-button>
       </template>
@@ -105,6 +105,7 @@
 <script>
 import Task from "@/models/Task";
 import ListItem from "@/models/ListItem";
+//import Routine from "@/models/Routine";
 
 export default {
   name: 'Creacionsubtareas',
@@ -132,7 +133,10 @@ export default {
       }
     },
     deleteItem(){
-      this.$store.dispatch("DataModule/delete",this.listItem).then(()=>this.$store.dispatch("DataModule/update"))
+      this.$store.dispatch("DataModule/delete",this.listItem).then(()=> {
+        console.log(this.listItem)
+        this.$store.dispatch("DataModule/update")
+      })
       this.$bvModal.hide("create-subTask")
     },
     ok(bvModalEvt){
@@ -171,6 +175,24 @@ export default {
       };
 
       this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
+    },
+    save(){
+      // if(!(this.listItem instanceof Routine)){
+      //   let h=this.endHour.split(":")
+      //   this.listItem.fechaFin.setHours(h[0],h[1])
+      // }
+      //llamada al store para enviar la request
+      this.$store.dispatch('DataModule/editSubTask',this.listItem).then(
+          ()=>{
+            this.$bvModal.hide('create-subTask')
+            this.$store.dispatch('DataModule/update')
+          },
+          ()=>{
+            this.error=true
+            this.message="Error al editar Tarea"
+            this.$bvModal.hide('create-subTask')
+          }
+      )
     }
   }
 

@@ -41,23 +41,30 @@
           v-bind:listItem="task"
           v-on:etiqueta-filter="filterEtiqueta($event)"
           v-on:edit="edit($event)"
+          v-on:addSubTask="addSubTask($event)"
+          v-on:editSubTask="editsubTask($event)"
+          v-on:newTask="addTask()"
       />
     </b-list-group>
+    <CreacionSubtareas ref="add" :id="idParent"/>
   </b-container>
 </template>
 
 <script>
 import Tarea from "@/components/Tarea";
+import CreacionSubtareas from "@/components/CreacionSubtareas";
 import CreacionTareas from '../components/CreacionTareas.vue'
 import TEvent from "@/models/TEvent";
 export default {
   name: "Lista",
   components:{
     Tarea,
-    CreacionTareas
+    CreacionTareas,
+    CreacionSubtareas
   },
   data(){
     return {
+      idParent: 'numeric',
       //opciones de ordenes para las tareas
       orders:[
           "Prioridad",
@@ -153,6 +160,18 @@ export default {
     edit(item){//metodo para mostrar el dialogo de creacion de tarea para edicion
       this.$refs.create.edit(item)
       this.$bvModal.show('create-activity')
+    },
+    addSubTask(idParent){
+      this.idParent = idParent
+      this.$refs.add.newTask();
+    },
+    addTask(){
+      this.$refs.create.newTask()
+      this.$bvModal.show('create-activity')
+    },
+    editsubTask(item){
+      this.$bvModal.show('create-subTask')
+      this.$refs.add.edit(item)
     },
   },
   computed:{

@@ -46,7 +46,7 @@
 
               <p class="text-left">{{ listItem.descripcion}}</p>
 <!--Boton para editar tarea -->
-              <b-button @click="addSubTask()" size="sm" class="float-left my-2" >+ Subtarea</b-button>
+              <b-button @click="$emit('newTask')" size="sm" class="float-left my-2" >+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
               <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>
 <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
@@ -54,7 +54,7 @@
                 <b-input-group prepend="Link:" size="sm">
                   <b-form-input :value="fullUrl" ref="urlComponent"></b-form-input>
                   <template #append>
-                    <b-button @click="copy()"><img alt="copiar url" src="../assets/copy.svg" style="height: 1rem"/></b-button>
+                    <b-button @click="copy()" :disabled="visible"><img alt="copiar url" src="../assets/copy.svg" style="height: 1rem"/></b-button>
                   </template>
                 </b-input-group>
               </b-popover>
@@ -68,7 +68,7 @@
                             <span v-b-toggle.collapse-2>
                               {{ sb.nombre }}
                             </span>
-                            <b-button variant="white" @click="editsubTask(sb)" class="p-1">
+                            <b-button variant="white" @click="$emit('editSubTask',  args = sb)" :disabled="visible" class="p-1">
                               <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
                             </b-button>
                         <span class="float-right">{{subTaskDate(sb.fechaFin)}}</span>
@@ -84,7 +84,7 @@
                                   Estimación: {{sb.estimacion + (sb.estimacion!==1?" horas":" hora")}}
                                 </span>
                                 <br>
-                                <b-button size="sm" class="p-1" variant="white" @click="addSubTask(idParent = sb.id)" >
+                                <b-button size="sm" class="p-1" variant="white" :disabled="visible" @click="$emit('addSubTask',idParent = sb.id)" >
                                   <img alt="add" src="../assets/anadir.svg" style="height: 0.8rem" class="mx-1" > Subtarea
                                 </b-button>
                                 <b-list-group>
@@ -95,7 +95,7 @@
                               <span v-b-toggle.collapse-3>
                                 {{ sb1.nombre }}
                               </span>
-                                <b-button variant="white" >
+                                <b-button :disabled="visible" variant="white" @click="$emit('editSubTask', sb1)">
                               <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
                               </b-button>
                                 <span class="float-right">{{subTaskDate(sb1.fechaFin)}}</span>
@@ -125,7 +125,6 @@
               </b-card>
             </b-card>
           </b-collapse>
-    <Creacionsubtareas ref="add" :id="this.idParent"/>
   </b-list-group-item>
 </template>
 
@@ -135,12 +134,9 @@ import ListItem from "@/models/ListItem";
 import Task from '@/models/Task';
 import Routine from "@/models/Routine";
 import TEvent from "@/models/TEvent";
-import Creacionsubtareas from "./CreacionSubtareas";
 export default {
-    //pasar creación subtareas a list y emitir eventos decrear, editar y eliminar con v-on
-    //utilizar atributo disabled con prop de tarea visible
 
-    components: {Creacionsubtareas},
+
   props:{
     //variables requerias para crear una vista de tarea
     listItem:{
@@ -182,19 +178,10 @@ export default {
       if(this.hecho&&this.routine) this.$store.dispatch("DataModule/uncheckRoutine",this.listItem)
       else this.$store.dispatch("DataModule/check",this.listItem)
     },
-    addSubTask(id){
-        this.parentId = id
-        this.$refs.add.newTask()
-    },
     subTaskDate(taskDate){
       let options={ year: 'numeric', month: 'numeric', day: 'numeric',
         hour: 'numeric', minute: 'numeric', hour12:true }
       return (new Intl.DateTimeFormat('en-GB',options)).format(new Date(taskDate))
-    },
-    editsubTask(item){
-        this.$bvModal.show('create-subTask')
-        this.$refs.add.edit(item)
-        console.log(item)
     },
     copy(){
       this.$refs.urlComponent.select()

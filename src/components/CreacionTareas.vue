@@ -205,6 +205,7 @@ import Routine from "@/models/Routine";
 import TEvent from "@/models/TEvent";
 import UserService from "@/services/user.service";
 import ListItem from "@/models/ListItem";
+import cloneDeep from "lodash/cloneDeep";
 
 export default {
   name: 'CreacionTareas',
@@ -360,9 +361,9 @@ export default {
     edit(item){
       //metodo para cargar los datos de una tarea evento o rutina en el componenete
       this.isEdit=true
-      this.listItem=item
+      this.listItem=cloneDeep(item)
       this.week=[]
-      this.tarea=item
+      this.tarea=this.listItem
       //obtencion de los campos de horas dependiendo del tipo
       if(item instanceof Task){
         this.status=false
@@ -372,7 +373,7 @@ export default {
         this.listItem.fechaFin=new Date(this.listItem.fechaFin)
         this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
       }else{
-        this.rutina=item
+        this.rutina=this.listItem
         let options = {
           hour: 'numeric', minute: 'numeric'
         };
@@ -391,10 +392,10 @@ export default {
                 this.week.push(this.weekOptions[i].value)
               }
             }
-            this.numbRep=item.recurrencia[item.recurrencia.indexOf('.')+2]
+            this.numbRep=this.listItem.recurrencia[item.recurrencia.indexOf('.')+2]
           }else{//si es otro tipo de repetición
-            this.Range=item.recurrencia[0]
-            this.numbRep=item.recurrencia[1]
+            this.Range=this.listItem.recurrencia[0]
+            this.numbRep=this.listItem.recurrencia[1]
 
           }
           this.status=true

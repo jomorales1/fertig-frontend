@@ -46,7 +46,7 @@
 
               <p class="text-left">{{ listItem.descripcion}}</p>
 <!--Boton para editar tarea -->
-              <b-button @click="$emit('newTask')" size="sm" class="float-left my-2" >+ Subtarea</b-button>
+              <b-button @click="$emit('addSubTask',idParent)" size="sm" class="float-left my-2" >+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
               <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>
 <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
@@ -68,7 +68,7 @@
                             <span v-b-toggle.collapse-2>
                               {{ sb.nombre }}
                             </span>
-                            <b-button variant="white" @click="$emit('editSubTask',  args = sb)" :disabled="visible" class="p-1">
+                            <b-button variant="white" @click="$emit('editSubTask',  sb)" :disabled="visible" class="p-1">
                               <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
                             </b-button>
                         <span class="float-right">{{subTaskDate(sb.fechaFin)}}</span>

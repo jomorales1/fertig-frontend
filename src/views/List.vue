@@ -43,7 +43,7 @@
           v-on:edit="edit($event)"
           v-on:addSubTask="addSubTask($event)"
           v-on:editSubTask="editsubTask($event)"
-          v-on:newTask="addTask()"
+          v-on:newTask="addTask($event)"
       />
     </b-list-group>
     <CreacionSubtareas ref="add" :id="idParent"/>
@@ -172,7 +172,7 @@ export default {
     editsubTask(item){
       this.$bvModal.show('create-subTask')
       this.$refs.add.edit(item)
-    },
+    }
   },
   computed:{
     //lista de tareas que se muestra

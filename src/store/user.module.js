@@ -67,6 +67,7 @@ export const DataModule = {
             if(item instanceof Task) url='/tasks/deleteTask/'
             if(item instanceof Routine) url='/routines/deleteRoutine/'
             else if (item instanceof TEvent) url='/events/deleteEvent/'
+            console.log(url)
             return UserService.delete(item,url).then(()=>commit('edited'),()=>commit('error'))
         },// usar para borrar subtarea
         createSubTask({commit}, data){
@@ -77,9 +78,9 @@ export const DataModule = {
         },
         editSubTask({commit}, data){
             let url
-            if(data instanceof  Task) url = '/tasks/updateSubtask/'
-            if(data instanceof  Routine) url = '/routines/updateSubtask/'
-            console.log(url)
+            if(data.tarea instanceof  Task) url = '/tasks/updateSubtask/'
+            if(data.tarea instanceof  Routine) url = '/routines/updateSubtask/'
+            console.log(data.tarea)
             return UserService.editSubTask(data, url).then(()=>commit('edited'),()=>commit('error'))
         },
         searchUser({commit}, username){//metodo para buscar usuarios usando el user service

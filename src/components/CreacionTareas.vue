@@ -16,7 +16,7 @@
         <b-button variant="secondary" @click="cancel()">
           Cancelar
         </b-button>
-        <b-button variant="primary" @click="!isEdit?save():ok()">
+        <b-button variant="primary" @click="isEdit?save():ok()">
           OK
         </b-button>
       </template>

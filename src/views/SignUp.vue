@@ -82,12 +82,16 @@
           if(this.Register_form.password === this.Register_form.reviewPassword){
               let dataUser = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name)
              this.$store.dispatch("auth/register", dataUser) // Llamada a la función de axios creada para registro
-                     .then(data => {
-                       alert("Usuario registrado correctamente")
-                       console.log(data)
+                     .then(
+                         ()=> {
+                           this.$bvToast.toast("Usuario registrado correctamente", {
+                             title: `Coerrecto`,
+                             variant: 'light',
+                             solid: true,
+                             toaster:'b-toaster-top-center'
+                           })
                        this.$router.push('/Login') // Cambiar a la ventana login
-                     },error =>{
-                       console.log(error)
+                     },() =>{
                        this.stringError = "Error en registro"
 
                      })
@@ -114,7 +118,3 @@
 
   }
 </script>
-
-<style scoped>
-
-</style>

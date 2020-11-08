@@ -333,7 +333,7 @@ export default {
           if(this.statusEvent){
             this.evento=Object.assign(new TEvent(),this.tarea)
             this.evento.duracion=this.rutina.duracion
-            let h=this.startHour.split(":")
+            h=this.startHour.split(":")
             this.evento.fechaInicio=this.rutina.fechaInicio
             this.evento.fechaInicio.setHours(h[0],h[1])
             //se llama al user service para crear el evnto simple

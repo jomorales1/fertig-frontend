@@ -223,7 +223,7 @@ export default {
       return this.listItem.etiqueta.trim().split(' ')
     }
   },mounted() {
-    if(this.task)this.hecho=this.listItem.hecho
+    if(this.task)this.hecho=this.listItem.hecha
   }
 }
 </script>

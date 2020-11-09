@@ -150,7 +150,38 @@ export const DataModule = {
                     return Promise.reject(error)
                 }
             )
+        },
+        addTime({commit},data){
+            return UserService.addTime(data.id, data.time).then(
+                result=>{
+                    return Promise.resolve(result)
+                },error=>{
+                    commit('error')
+                    return Promise.reject(error)
+                }
+            )
+        },
+        sounds({commit}){
+            return UserService.sounds().then(
+                response=>{
+                    return Promise.resolve(response)
+                },()=>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
+        },
+        addFavorite({commit},titulo){
+            return UserService.addFavorite(titulo).then(()=>{},()=>{
+                commit('error')
+            })
+        },
+        deleteFavorite({commit},titulo){
+            return UserService.deleteFavorite(titulo).then(()=>{},()=>{
+                commit('error')
+            })
         }
+
     },
     mutations:{
         //cambios de estado

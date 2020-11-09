@@ -107,7 +107,6 @@ export default {
       this.$store.dispatch('DataModule/sounds').then(response=>{
         response.data.forEach(valor=>{
           let titles=this.songs.map(item=>item.title)
-          console.log(valor)
           this.songs[titles.indexOf(valor.sonido)].favorita=valor.favorite
         })
       })
@@ -120,7 +119,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-</style>

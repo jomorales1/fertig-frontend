@@ -60,26 +60,16 @@
               {{etiqueta}}
             </b-badge>
           </div>
-          <!--            tiempo restante para que termine la tarea-->
-<!--          <small>{{ timeLeft}}</small>-->
         </div>
 
       </b-list-group-item>
     </b-list-group>
-<!--    <b-form-group v-if="cronometroPausas.length > 0">-->
-<!--      <h2 class="headline font-weight-bold mb-3">Pausas</h2>-->
-<!--      <b-table striped hover-->
-<!--               :fields="cronometroPausasFields"-->
-<!--               :items="cronometroPausas"-->
-<!--      ></b-table>-->
-<!--    </b-form-group>-->
+
   </div>
 </template>
 
 <script>
 
-//import Task from '@/models/Task';
-// import Tarea from "@/components/Tarea";
 
 export default {
   name: "Cronometro",
@@ -198,7 +188,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-
-</style>

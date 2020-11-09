@@ -168,10 +168,6 @@ export default {
       this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
     },
     save(){
-      /*if(!(this.listItem instanceof Routine)){
-         let h=this.endHour.split(":")
-         this.listItem.fechaFin.setHours(h[0],h[1])
-      }*/
       //llamada al store para enviar la request
       this.$store.dispatch('DataModule/editSubTask',{padre: this.listItem, tarea: this.tarea}).then(
           ()=>{
@@ -190,8 +186,3 @@ export default {
 
 }
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-
-</style>

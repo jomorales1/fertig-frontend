@@ -5,19 +5,14 @@
         description="temporizador"
         label-for="horas, numero-horas, minutos, numero-minutos, segundos, numero-segundos">
       <b-input-group>
-<!--        <label id="horas">horas:</label>-->
         <b-form-input placeholder="horas" id="numero-horas" type="number" v-model="h"></b-form-input>
-<!--        <label id="minutos">minutos:</label>-->
         <b-form-input placeholder="minutos" id="numero-minutos" type="number" v-model="m"></b-form-input>
-<!--        <label id="segundos">segundos:</label>-->
         <b-form-input placeholder="segundos" id="numero-segundos" type="number" v-model="s"></b-form-input>
       </b-input-group>
 
 
     </b-form-group>
-<!--    <h1 class="display-3 font-weight-bold mb-3" v-html="formato(timePassed)"></h1>-->
     <h1 class="display-3 font-weight-bold mb-3" v-html="formato(timeLeft)"></h1>
-<!--    <h1 class="display-3 font-weight-bold mb-3" v-html="formato(tiempoLimite)"></h1>-->
     <b-button
         v-if="state === 'inicio'"
         @click="iniciar">
@@ -34,7 +29,7 @@
       Reiniciar
     </b-button>
     <b-button
-        v-if="state === 'fin'"
+        v-if="playing"
         @click="pararmusica">
       Parar Alarma
     </b-button>
@@ -47,9 +42,7 @@
 </template>
 
 <script>
-// import Chilled from "@/assets/audio/chilled.mp3"
-const alarm = require("@/assets/audio/analog-watch-alarm_daniel-simion.mp3")
-// import Routine from "@/models/Routine";
+const alarmFile = require("@/assets/audio/analog-watch-alarm_daniel-simion.mp3")
 export default {
   name: "Temporizador",
   components:{
@@ -64,8 +57,8 @@ export default {
       timePassed: 0,
       timerInterval: null,
       tiempoLimite: 0,
-      //t2
-      alarm:new Audio(alarm)
+        playing: false,
+      alarm:new Audio(alarmFile)
     }
   },
   methods:{
@@ -93,12 +86,16 @@ export default {
 
     iniciar: function() {
       if (this.tiempoLimite2===0){
-        alert("ponga algun tiempo")
+          this.$bvToast.toast("El tiempo tiene que ser mayor a 0", {
+              title: `Advertencia`,
+              variant: 'danger',
+              solid: true,
+              toaster:'b-toaster-top-center'
+          })
       }else{
       this.state = 'corriendo';
       this.tiempoLimite=this.tiempoLimite2
       this.iniciarTemporizador();
-      // alarm.play();
       }
 
     },
@@ -120,6 +117,7 @@ export default {
     },
 
     pararmusica:function (){
+        this.playing = false
       this.alarm.pause();
     },
 
@@ -137,13 +135,12 @@ export default {
     timeLeft(newValue) {
       if (newValue === 0) {
         this.pararTemporizador();
+        this.playing = true
         this.alarm.play();
         this.state = 'fin'
 
       }
     }
-  },
-  mounted() {
   },
   computed: {
     timeLeft() {
@@ -152,12 +149,6 @@ export default {
     tiempoLimite2(){
       return (this.h*60*60*1000+this.m*60*1000+this.s*1000)
     },
-  },
-  created() {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

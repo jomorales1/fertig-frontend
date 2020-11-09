@@ -28,8 +28,6 @@
 </template>
 
 <script>
-// import Tarea from "@/components/Tarea";
-// import Routine from "@/models/Routine";
 import Cronometro from "@/components/Cronometro";
 import Temporizador from "@/components/Temporizador";
 import Chilled from "@/assets/audio/chilled.mp3"
@@ -45,7 +43,6 @@ export default {
   components:{
     Music,
     Temporizador,
-    // Tarea,
     Cronometro
   },
   data() {
@@ -56,29 +53,8 @@ export default {
       staring:Staring,
       world:World
     }
-  },
-  methods: {
-    // toggleSound() {
-    //   let audio = this.$refs.audio;
-    //   if (
-    //       audio.paused &&
-    //       document.querySelector(".toggle-sound").classList.contains("paused")
-    //   ) {
-    //     console.log("play it")
-    //     audio.play();
-    //     document.querySelector(".toggle-sound").classList.remove("paused");
-    //   } else {
-    //     console.log("pause it")
-    //     audio.pause();
-    //     document.querySelector(".toggle-sound").classList.add("paused");
-    //   }
-    // }
   }
 
 
 }
 </script>
-
-<style scoped>
-
-</style>

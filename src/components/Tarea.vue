@@ -63,7 +63,7 @@
                 <b-list-group>
                   <b-list-group-item v-for="sb in listItem.subtareas" v-bind:key="sb.id" >
                       <b-card-text>
-                          <b-form-checkbox @change="toggleCheckSubTask(sb)" v-if="task||routine" v-model=hechoSubTarea1 class="d-inline-block"></b-form-checkbox>
+                          <b-form-checkbox @change="toggleCheckSubTask(sb)" v-if="task||routine" v-model="hechoSubTareas[listItem.subtareas.indexOf(sb)]" class="d-inline-block"></b-form-checkbox>
                           <span>
                             <span v-b-toggle.collapse-2>
                               {{ sb.nombre }}
@@ -90,7 +90,7 @@
                                 <b-list-group>
                                   <b-list-group-item v-for="sb1 in sb.subtareas" v-bind:key="sb1.id" >
                                     <b-card-text>
-                                      <b-form-checkbox @change="toggleCheckSubTask(sb1)" v-if="task||routine" v-model=hechoSubTarea2 class="d-inline-block"></b-form-checkbox>
+                                      <b-form-checkbox @change="toggleCheckSubTask(sb1)" v-if="task||routine" v-model="hechoSubTareas2[sb.subtareas.indexOf(sb1)]" class="d-inline-block"></b-form-checkbox>
                                       <span>
                               <span v-b-toggle.collapse-3>
                                 {{ sb1.nombre }}
@@ -159,8 +159,8 @@ export default {
       routine: this.listItem instanceof Routine,
       event: this.listItem instanceof TEvent,
       hecho:false,
-        hechoSubTarea1: false,
-        hechoSubTarea2: false,
+        hechoSubTareas: [],
+        hechoSubTareas2: [],
       url: window.location.origin
     }
   },
@@ -223,7 +223,18 @@ export default {
       return this.listItem.etiqueta.trim().split(' ')
     }
   },mounted() {
-    if(this.task)this.hecho=this.listItem.hecha
+        if(this.task)this.hecho=this.listItem.hecha
+        if(this.listItem.subtareas){
+            this.hechoSubTareas = this.listItem.subtareas.map(
+                item => {
+                    console.log(item)
+                    if(item.subtareas)this.hechoSubTareas2 = item.subtareas.map(
+                        item2 =>item2.hecha
+                    )
+                    return item.hecha
+                }
+            )
+        }
   }
 }
 </script>

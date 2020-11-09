@@ -85,7 +85,7 @@
                      .then(
                          ()=> {
                            this.$bvToast.toast("Usuario registrado correctamente", {
-                             title: `Coerrecto`,
+                             title: `Correcto`,
                              variant: 'light',
                              solid: true,
                              toaster:'b-toaster-top-center'

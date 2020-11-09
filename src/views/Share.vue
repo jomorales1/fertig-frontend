@@ -54,13 +54,13 @@ export default {
       this.$store.dispatch('DataModule/getCopy',{id,type}).then(
           response=>{
             switch (type){
-              case 'Task':
+              case 'task':
                 this.task=[Object.assign(new Task(),response.data)]
                 break
-              case 'Event':
+              case 'event':
                 this.task=[Object.assign(new TEvent(),response.data)]
                 break
-              case 'Routine':
+              case 'routine':
                 this.task=[Object.assign(new Routine(),response.data)]
                 this.task[0].fecha=new Date(this.task[0].fechaInicio)
                 break
@@ -73,7 +73,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-
-</style>

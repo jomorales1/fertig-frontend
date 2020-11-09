@@ -49,24 +49,24 @@ export const DataModule = {
         },
         check({commit},item){//metodo para cambiar el estado de hecho de una tarea o rutina usando user service
             let url
-            if(item instanceof Task) url='/tasks/checkTask/'
-            if(item instanceof Routine) url='/routines/checkRoutine/'
+            if(item instanceof Task) url='/tasks/check/'
+            if(item instanceof Routine) url='/routines/check/'
             return UserService.checkTask(url,item.id).then(()=>{},()=>{
                 commit('error')
             })
         },
         edit({commit},item){//metodo para editar tareas rutinas y eventos eligiendo el link necesario
             let url
-            if(item instanceof Task) url='/tasks/updateTask/'
-            if(item instanceof Routine) url='/routines/updateRoutine/'
-            else if (item instanceof TEvent) url='/events/updateEvent/'
+            if(item instanceof Task) url='/tasks/update/'
+            if(item instanceof Routine) url='/routines/update/'
+            else if (item instanceof TEvent) url='/events/update/'
             return UserService.edit(item,url).then(()=>commit('edited'),()=>commit('error'))
         },
         delete({commit},item){//metodo para eliminar tareas rutinas o eventos eligiendo el link necesario
             let url
-            if(item instanceof Task) url='/tasks/deleteTask/'
-            if(item instanceof Routine) url='/routines/deleteRoutine/'
-            else if (item instanceof TEvent) url='/events/deleteEvent/'
+            if(item instanceof Task) url='/tasks/delete/'
+            if(item instanceof Routine) url='/routines/delete/'
+            else if (item instanceof TEvent) url='/events/delete/'
             return UserService.delete(item,url).then(()=>commit('edited'),()=>commit('error'))
         },// usar para borrar subtarea
         createSubTask({commit}, data){

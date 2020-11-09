@@ -7,7 +7,7 @@ class UserService {
     }
 
     getTasks() { //Funcion para obtener tareas del usuario
-        return axios.get(API_URL + '/tasks/getTasks', { headers: authHeader() }) // Peticion tipo GET para obtener tareas
+        return axios.get(API_URL + '/task/tasks', { headers: authHeader() }) // Peticion tipo GET para obtener tareas
     }
 
     getRoutines() { //Funcion para obtener rutinas del usuario
@@ -23,22 +23,22 @@ class UserService {
         })
     }
     searchUser(user){//Funcion para buscar usuarios por username
-        return axios.get(API_URL+'/users/search/'+user,{
+        return axios.get(API_URL+'/user/search/'+user,{
             headers: authHeader()
         })
     }
     getFriends(){//metodo para obtener amigos del usuario
-        return axios.get(API_URL+'/users/getFriends/',{
+        return axios.get(API_URL+'/users/friends/',{
             headers: authHeader()
         })
     }
     addFriend(usuario){//metodo para añadir el amigo por username
-        return axios.put(API_URL+'/users/addFriend/'+usuario,null,{
+        return axios.put(API_URL+'/user/add-friend/'+usuario,null,{
             headers: authHeader()
         })
     }
     deleteFriend(usuario){//metodo para eliminar el amigo por username
-        return axios.delete(API_URL+'/users/deleteFriend/'+usuario,{
+        return axios.delete(API_URL+'/user/delete-friend/'+usuario,{
             headers: authHeader()
         })
     }
@@ -76,7 +76,7 @@ class UserService {
         return axios.delete(API_URL+url+task.id,{headers:authHeader()})
     }
     getCopy(id,type){
-        return axios.get(API_URL+'/'+type.toLowerCase()+'s/get'+type+'/'+id,{headers:authHeader()})
+        return axios.get(API_URL+'/'+type+'/'+id,{headers:authHeader()})
     }
     addCopy(id){
         return axios.post(API_URL+'/tasks/copyTask/'+id,null,{headers:authHeader()})

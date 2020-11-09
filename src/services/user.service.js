@@ -81,6 +81,20 @@ class UserService {
     addCopy(id){
         return axios.post(API_URL+'/tasks/copyTask/'+id,null,{headers:authHeader()})
     }
+    addTime(id, time){
+        return axios.put(API_URL+'/task/'+id+'/increase-time/'+time,null,{headers:authHeader()})
+    }
+    sounds(){
+        return axios.get(API_URL+'/sounds',{
+            headers: authHeader()
+        })
+    }
+    addFavorite(id){
+        return axios.post(API_URL+'/sound/add-favorite/'+id,null,{headers:authHeader()})
+    }
+    deleteFavorite(id){
+        return axios.delete(API_URL+'/sound/delete-favorite/'+id,{headers:authHeader()})
+    }
 
 }
 

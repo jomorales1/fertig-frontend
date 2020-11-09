@@ -19,12 +19,8 @@
             </b-tabs>
           </b-form-group>
         </b-card>
-        <div>
-          <h2>music</h2>
-          <audio controls>
-            <source src="@/assets/chilled.mp3" type="audio/mpeg">
-          </audio>
-        </div>
+        <music></music>
+
       </div>
     </b-row>
   </b-container>
@@ -36,36 +32,47 @@
 // import Routine from "@/models/Routine";
 import Cronometro from "@/components/Cronometro";
 import Temporizador from "@/components/Temporizador";
-import chilled from "@/assets/chilled.mp3"
+import Chilled from "@/assets/audio/chilled.mp3"
+import Belonging from "@/assets/audio/Belonging by Muted Artlist.mp3"
+import Dusk from "@/assets/audio/Dusk by IanPost Artlist.mp3"
+import Staring from "@/assets/audio/Staring by Muted Artlist.mp3"
+import World from "@/assets/audio/TheWorldInsideInstrumentalVersion by RodellosMachine Artlist.mp3"
+import Music from "@/components/Music";
+
 
 export default {
   name: "Timer",
   components:{
+    Music,
     Temporizador,
     // Tarea,
     Cronometro
   },
   data() {
     return {
-      src1:chilled,
+      chilled:Chilled,
+      belonging:Belonging,
+      dusk:Dusk,
+      staring:Staring,
+      world:World
     }
   },
   methods: {
-    toggleSound() {
-      let audio = this.$refs.audio;
-      if (
-          audio.paused &&
-          document.querySelector(".toggle-sound").classList.contains("paused")
-      ) {
-        console.log("play it")
-        audio.play();
-        document.querySelector(".toggle-sound").classList.remove("paused");
-      } else {
-        console.log("pause it")
-        audio.pause();
-        document.querySelector(".toggle-sound").classList.add("paused");
-      }
-    }
+    // toggleSound() {
+    //   let audio = this.$refs.audio;
+    //   if (
+    //       audio.paused &&
+    //       document.querySelector(".toggle-sound").classList.contains("paused")
+    //   ) {
+    //     console.log("play it")
+    //     audio.play();
+    //     document.querySelector(".toggle-sound").classList.remove("paused");
+    //   } else {
+    //     console.log("pause it")
+    //     audio.pause();
+    //     document.querySelector(".toggle-sound").classList.add("paused");
+    //   }
+    // }
   }
 
 

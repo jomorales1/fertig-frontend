@@ -256,7 +256,7 @@ export default {
       //flag de edicion
       isEdit:false,
       //mendaje de error
-      message:"Error al crear Tarea"
+      message:"Error al crear Actividad"
     }},
   methods:{
     newTask(){

@@ -67,21 +67,19 @@ export const DataModule = {
             if(item instanceof Task) url='/tasks/deleteTask/'
             if(item instanceof Routine) url='/routines/deleteRoutine/'
             else if (item instanceof TEvent) url='/events/deleteEvent/'
-            console.log(url)
             return UserService.delete(item,url).then(()=>commit('edited'),()=>commit('error'))
         },// usar para borrar subtarea
         createSubTask({commit}, data){
             let url
-            if(data.tarea instanceof  Task) url = '/tasks/addSubTask/'
-            if(data.tarea instanceof  Routine) url = '/routines/addSubtask/'
+            if(data.padre instanceof  Task) url = '/tasks/addSubtask/'
+            if(data.padre instanceof  Routine) url = '/routines/addSubtask/'
             return UserService.createSubTask(data.tarea, data.id, url).then(() => commit('subTaskCreated'), ()=>commit('error'))
         },
         editSubTask({commit}, data){
             let url
-            if(data.tarea instanceof  Task) url = '/tasks/updateSubtask/'
-            if(data.tarea instanceof  Routine) url = '/routines/updateSubtask/'
-            console.log(data.tarea)
-            return UserService.editSubTask(data, url).then(()=>commit('edited'),()=>commit('error'))
+            if(data.padre instanceof  Task) url = '/tasks/updateSubtask/'
+            if(data.padre instanceof  Routine) url = '/routines/updateSubtask/'
+            return UserService.editSubTask(data.tarea, url).then(()=>commit('edited'),()=>commit('error'))
         },
         searchUser({commit}, username){//metodo para buscar usuarios usando el user service
             return UserService.searchUser(username).then(response=>{
@@ -90,6 +88,14 @@ export const DataModule = {
                 commit('error')
                 return Promise.reject()
             })
+        },
+        deleteSubTask({commit},data){
+            let url
+            console.log(data.tarea)
+            if(data.padre instanceof Task) url='/tasks/deleteSubtask/'
+            if(data.padre instanceof Routine) url='/routines/deleteSubtask/'
+            console.log(url)
+            return UserService.deleteSubTask(data.tarea,url).then(()=>commit('edited'),()=>commit('error'))
         },
         getFriends({commit}){//metodo paraobtener los amigos del usuario con el user service
             return UserService.getFriends().then(
@@ -140,6 +146,17 @@ export const DataModule = {
                     return Promise.reject(error)
                 }
             )
+        },
+        getTask({commit}, id){
+            return UserService.getTask(id).then(
+                response=>{
+                    return Promise.resolve(response.data)
+                },error=>{
+                    commit('error')
+                    return Promise.reject(error)
+                }
+            )
+
         }
     },
     mutations:{

@@ -46,7 +46,7 @@
 
               <p class="text-left">{{ listItem.descripcion}}</p>
 <!--Boton para editar tarea -->
-              <b-button @click="$emit('addSubTask',idParent)" size="sm" class="float-left my-2" >+ Subtarea</b-button>
+              <b-button @click="$emit('addSubTask',{id: idParent, padre: listItem})" size="sm" class="float-left my-2" >+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
               <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>
 <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
@@ -68,7 +68,7 @@
                             <span v-b-toggle.collapse-2>
                               {{ sb.nombre }}
                             </span>
-                            <b-button variant="white" @click="$emit('editSubTask',  sb)" :disabled="visible" class="p-1">
+                            <b-button variant="white" @click="$emit('editSubTask',   {tarea: sb, padre: listItem})" :disabled="visible" class="p-1">
                               <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
                             </b-button>
                         <span class="float-right">{{subTaskDate(sb.fechaFin)}}</span>
@@ -84,7 +84,7 @@
                                   Estimación: {{sb.estimacion + (sb.estimacion!==1?" horas":" hora")}}
                                 </span>
                                 <br>
-                                <b-button size="sm" class="p-1" variant="white" :disabled="visible" @click="$emit('addSubTask',idParent = sb.id)" >
+                                <b-button size="sm" class="p-1" variant="white" :disabled="visible" @click="$emit('addSubTask',{id: sb.id, padre: listItem})" >
                                   <img alt="add" src="../assets/anadir.svg" style="height: 0.8rem" class="mx-1" > Subtarea
                                 </b-button>
                                 <b-list-group>
@@ -95,7 +95,7 @@
                               <span v-b-toggle.collapse-3>
                                 {{ sb1.nombre }}
                               </span>
-                                <b-button :disabled="visible" variant="white" @click="$emit('editSubTask', sb1)">
+                                <b-button :disabled="visible" variant="white" @click="$emit('editSubTask', {tarea: sb1, padre: listItem})">
                               <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
                               </b-button>
                                 <span class="float-right">{{subTaskDate(sb1.fechaFin)}}</span>

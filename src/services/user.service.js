@@ -10,6 +10,10 @@ class UserService {
         return axios.get(API_URL + '/tasks/getTasks', { headers: authHeader() }) // Peticion tipo GET para obtener tareas
     }
 
+    getTask(id){
+        return axios.get(API_URL + '/tasks/getTask/'+id, {headers: authHeader()})
+    }
+
     getRoutines() { //Funcion para obtener rutinas del usuario
         return axios.get(API_URL + '/routines/getRoutines', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
     }
@@ -99,6 +103,10 @@ class UserService {
         )
     }
 
+    deleteSubTask(subTask, url) {
+        return axios.delete(API_URL + url + subTask.id
+            , {headers: authHeader()})
+    }
 
 }
 

@@ -2,6 +2,7 @@
   <b-container class="text-right my-5">
     <!--    pop up con formulario para crear tarea-->
     <CreacionTareas ref="create" />
+    <CreacionSubtareas ref="add" :id="idParent"/>
 <!--    Boton para reordenar las tareas mostradas-->
     <div class="d-flex justify-content-between">
       <div class="d-flex flex-column justify-content-end">
@@ -46,7 +47,6 @@
           v-on:newTask="addTask($event)"
       />
     </b-list-group>
-    <CreacionSubtareas ref="add" :id="idParent"/>
   </b-container>
 </template>
 
@@ -161,17 +161,17 @@ export default {
       this.$refs.create.edit(item)
       this.$bvModal.show('create-activity')
     },
-    addSubTask(idParent){
-      this.idParent = idParent
-      this.$refs.add.newTask();
+    addSubTask(data){
+      this.idParent = data.id
+      this.$refs.add.newTask(data.padre); // padre mayor
     },
     addTask(){
       this.$refs.create.newTask()
       this.$bvModal.show('create-activity')
     },
-    editsubTask(item){
+    editsubTask(data){
       this.$bvModal.show('create-subTask')
-      this.$refs.add.edit(item)
+      this.$refs.add.edit(data.tarea, data.padre)
     }
   },
   computed:{

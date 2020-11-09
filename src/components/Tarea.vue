@@ -155,7 +155,7 @@ export default {
   },
   computed:{
     fullUrl(){
-      return this.url +'/share/'+(this.task?'Task':this.routine?'Routine':'Event')+'/'+this.listItem.id
+      return this.url +'/share/'+(this.task?'task':this.routine?'routine':'event')+'/'+this.listItem.id
     },
     timeLeft(){
         //calculo del tiempo restante a partir de la fecha de finalización

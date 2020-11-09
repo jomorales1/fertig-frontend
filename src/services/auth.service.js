@@ -5,7 +5,7 @@ const API_URL = 'http://localhost:8090'
 class AuthService{
     login(user){ // Funcion para login del susuario
         return axios
-            .post(API_URL + '/signin', // request tipo POST para enviar usuario y contraseña
+            .post(API_URL + '/sign-in', // request tipo POST para enviar usuario y contraseña
             {
                 username: user.username,
                 password: user.password,
@@ -53,7 +53,7 @@ class AuthService{
         });
     }
     register(user) { // Funcion de registro
-        return axios.post(API_URL + '/users/addUser', { // Peticion tipo POST con los datos de registro
+        return axios.post(API_URL + '/user/add', { // Peticion tipo POST con los datos de registro
             correo: user.email,
             usuario: user.username,
             password: user.password,
@@ -66,7 +66,7 @@ class AuthService{
     }
 
     getUser(){
-        return axios.get(API_URL + '/users/get',{
+        return axios.get(API_URL + '/user/get',{
             headers: authHeader()
         }).then(response => response)
             .catch(error => error)
@@ -74,7 +74,7 @@ class AuthService{
     }
 
     saveChanges(user){
-        return axios.put(API_URL + '/users/update',{
+        return axios.put(API_URL + '/user/update',{
             correo: user.email,
             usuario: user.username,
             password: user.password,

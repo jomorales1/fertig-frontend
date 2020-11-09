@@ -2,22 +2,19 @@ import axios from 'axios'
 import authHeader from './auth-header'
 const API_URL = 'http://localhost:8090'
 class UserService {
-    getPublicContent() {
-        return axios.get(API_URL + 'all')
-    }
 
     getTasks() { //Funcion para obtener tareas del usuario
         return axios.get(API_URL + '/task/tasks', { headers: authHeader() }) // Peticion tipo GET para obtener tareas
     }
 
     getRoutines() { //Funcion para obtener rutinas del usuario
-        return axios.get(API_URL + '/routines/getRoutines', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
+        return axios.get(API_URL + '/routine/routines', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
     }
     getTEvents() { //Funcion para obtener rutinas del usuario
-        return axios.get(API_URL + '/events/getEvents', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
+        return axios.get(API_URL + '/event/events', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
     }
     createTask(task){ // Funcion para crear tarea
-        return axios.post(API_URL + '/tasks/addTask' // Peticion tipo POST para agregar la tarea
+        return axios.post(API_URL + '/tasks/add-task' // Peticion tipo POST para agregar la tarea
             ,task,{
             headers: authHeader()
         })
@@ -28,7 +25,7 @@ class UserService {
         })
     }
     getFriends(){//metodo para obtener amigos del usuario
-        return axios.get(API_URL+'/users/friends/',{
+        return axios.get(API_URL+'/user/friends/',{
             headers: authHeader()
         })
     }
@@ -50,7 +47,7 @@ class UserService {
             })
     }
     uncheckRoutine(id){//metodo para deschequear las rutinas en el backend
-        return axios.patch(API_URL + '/routines/uncheckRoutine/' +id // Peticion tipo POST para chequear la tarea
+        return axios.patch(API_URL + '/routines/uncheck-routine/' +id // Peticion tipo POST para chequear la tarea
             ,null,{
                 headers: authHeader()
             })
@@ -64,7 +61,7 @@ class UserService {
     }
 
     createTEvent(tEvent) {//metodo para crear eventos en el backend
-        return axios.post(API_URL + '/events/addEvent' // Peticion tipo POST para agregar el evento
+        return axios.post(API_URL + '/events/add-event' // Peticion tipo POST para agregar el evento
             ,tEvent,{
                 headers: authHeader()
             })
@@ -79,7 +76,7 @@ class UserService {
         return axios.get(API_URL+'/'+type+'/'+id,{headers:authHeader()})
     }
     addCopy(id){
-        return axios.post(API_URL+'/tasks/copyTask/'+id,null,{headers:authHeader()})
+        return axios.post(API_URL+'/task/'+id+'/copy/',null,{headers:authHeader()})
     }
     addTime(id, time){
         return axios.put(API_URL+'/task/'+id+'/increase-time/'+time,null,{headers:authHeader()})

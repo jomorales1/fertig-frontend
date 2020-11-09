@@ -49,36 +49,36 @@ export const DataModule = {
         },
         check({commit},item){//metodo para cambiar el estado de hecho de una tarea o rutina usando user service
             let url
-            if(item instanceof Task) url='/tasks/check/'
-            if(item instanceof Routine) url='/routines/check/'
+            if(item instanceof Task) url='/task/check/'
+            if(item instanceof Routine) url='/routine/check/'
             return UserService.checkTask(url,item.id).then(()=>{},()=>{
                 commit('error')
             })
         },
         edit({commit},item){//metodo para editar tareas rutinas y eventos eligiendo el link necesario
             let url
-            if(item instanceof Task) url='/tasks/update/'
-            if(item instanceof Routine) url='/routines/update/'
-            else if (item instanceof TEvent) url='/events/update/'
+            if(item instanceof Task) url='/task/update/'
+            if(item instanceof Routine) url='/routine/update/'
+            else if (item instanceof TEvent) url='/event/update/'
             return UserService.edit(item,url).then(()=>commit('edited'),()=>commit('error'))
         },
         delete({commit},item){//metodo para eliminar tareas rutinas o eventos eligiendo el link necesario
             let url
-            if(item instanceof Task) url='/tasks/delete/'
-            if(item instanceof Routine) url='/routines/delete/'
-            else if (item instanceof TEvent) url='/events/delete/'
+            if(item instanceof Task) url='/task/delete/'
+            if(item instanceof Routine) url='/routine/delete/'
+            else if (item instanceof TEvent) url='/event/delete/'
             return UserService.delete(item,url).then(()=>commit('edited'),()=>commit('error'))
         },// usar para borrar subtarea
         createSubTask({commit}, data){
             let url
-            if(data.padre instanceof  Task) url = '/tasks/addSubtask/'
-            if(data.padre instanceof  Routine) url = '/routines/addSubtask/'
-            return UserService.createSubTask(data.tarea, data.id, url).then(() => commit('subTaskCreated'), ()=>commit('error'))
+            if(data.padre instanceof  Task) url = '/task/'+data.id+'/add-subtask/'
+            if(data.padre instanceof  Routine) url = '/routine/'+data.id+'/add-subtask/'
+            return UserService.createSubTask(data.tarea, url).then(() => commit('subTaskCreated'), ()=>commit('error'))
         },
         editSubTask({commit}, data){
             let url
-            if(data.padre instanceof  Task) url = '/tasks/updateSubtask/'
-            if(data.padre instanceof  Routine) url = '/routines/updateSubtask/'
+            if(data.padre instanceof  Task) url = '/task/'+data.tarea.id+'/update-subtask/'
+            if(data.padre instanceof  Routine) url = '/routine/'+data.tarea.id+'/update-subtask/'
             return UserService.editSubTask(data.tarea, url).then(()=>commit('edited'),()=>commit('error'))
         },
         searchUser({commit}, username){//metodo para buscar usuarios usando el user service
@@ -92,8 +92,8 @@ export const DataModule = {
         deleteSubTask({commit},data){
             let url
             console.log(data.tarea)
-            if(data.padre instanceof Task) url='/tasks/deleteSubtask/'
-            if(data.padre instanceof Routine) url='/routines/deleteSubtask/'
+            if(data.padre instanceof Task) url='/task/'+data.tarea.id+'/delete-subtask/'
+            if(data.padre instanceof Routine) url='/routine/'+data.tarea.id+'/delete-subtask/'
             console.log(url)
             return UserService.deleteSubTask(data.tarea,url).then(()=>commit('edited'),()=>commit('error'))
         },
@@ -146,17 +146,6 @@ export const DataModule = {
                     return Promise.reject(error)
                 }
             )
-        },
-        getTask({commit}, id){
-            return UserService.getTask(id).then(
-                response=>{
-                    return Promise.resolve(response.data)
-                },error=>{
-                    commit('error')
-                    return Promise.reject(error)
-                }
-            )
-
         }
     },
     mutations:{

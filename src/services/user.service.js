@@ -10,10 +10,6 @@ class UserService {
         return axios.get(API_URL + '/task/tasks', { headers: authHeader() }) // Peticion tipo GET para obtener tareas
     }
 
-    getTask(id){
-        return axios.get(API_URL + '/tasks/getTask/'+id, {headers: authHeader()})
-    }
-
     getRoutines() { //Funcion para obtener rutinas del usuario
         return axios.get(API_URL + '/routines/getRoutines', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
     }
@@ -86,8 +82,8 @@ class UserService {
         return axios.post(API_URL+'/tasks/copyTask/'+id,null,{headers:authHeader()})
     }
 
-    createSubTask(task, parentId, url){
-        return axios.post( API_URL + url + parentId
+    createSubTask(task, url){
+        return axios.post( API_URL + url
             ,task, {
                 headers: authHeader()
             }
@@ -96,7 +92,7 @@ class UserService {
     }
 
     editSubTask(subTask,url){
-        return axios.put(API_URL + url + subTask.id
+        return axios.put(API_URL + url
             ,subTask, {
                 headers: authHeader()
             }
@@ -104,7 +100,7 @@ class UserService {
     }
 
     deleteSubTask(subTask, url) {
-        return axios.delete(API_URL + url + subTask.id
+        return axios.delete(API_URL + url
             , {headers: authHeader()})
     }
 

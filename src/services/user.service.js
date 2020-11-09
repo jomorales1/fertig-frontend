@@ -104,6 +104,15 @@ class UserService {
             , {headers: authHeader()})
     }
 
+    checkSubTask(subTask, url){
+        return axios.patch(API_URL + url
+            ,subTask,{
+                headers:authHeader()
+            })
+    }
+
+
+
 }
 
 export default new UserService()

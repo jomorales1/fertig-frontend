@@ -91,11 +91,15 @@ export const DataModule = {
         },
         deleteSubTask({commit},data){
             let url
-            console.log(data.tarea)
             if(data.padre instanceof Task) url='/task/'+data.tarea.id+'/delete-subtask/'
             if(data.padre instanceof Routine) url='/routine/'+data.tarea.id+'/delete-subtask/'
-            console.log(url)
             return UserService.deleteSubTask(data.tarea,url).then(()=>commit('edited'),()=>commit('error'))
+        },
+        checkSubTask({commit},data){
+            let url
+            if(data.padre instanceof Task) url='/task/'+data.tarea.id+'/check-subtask/'
+            if(data.padre instanceof Routine) url='/routine/'+data.tarea.id+'/check-subtask/'
+            return UserService.checkSubTask(data.tarea,url).then(()=>{},()=>commit('error'))
         },
         getFriends({commit}){//metodo paraobtener los amigos del usuario con el user service
             return UserService.getFriends().then(

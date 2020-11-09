@@ -63,7 +63,7 @@
                 <b-list-group>
                   <b-list-group-item v-for="sb in listItem.subtareas" v-bind:key="sb.id" >
                       <b-card-text>
-                          <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                          <b-form-checkbox @change="toggleCheckSubTask(sb)" v-if="task||routine" v-model=hechoSubTarea1 class="d-inline-block"></b-form-checkbox>
                           <span>
                             <span v-b-toggle.collapse-2>
                               {{ sb.nombre }}
@@ -90,7 +90,7 @@
                                 <b-list-group>
                                   <b-list-group-item v-for="sb1 in sb.subtareas" v-bind:key="sb1.id" >
                                     <b-card-text>
-                                      <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
+                                      <b-form-checkbox @change="toggleCheckSubTask(sb1)" v-if="task||routine" v-model=hechoSubTarea2 class="d-inline-block"></b-form-checkbox>
                                       <span>
                               <span v-b-toggle.collapse-3>
                                 {{ sb1.nombre }}
@@ -159,6 +159,8 @@ export default {
       routine: this.listItem instanceof Routine,
       event: this.listItem instanceof TEvent,
       hecho:false,
+        hechoSubTarea1: false,
+        hechoSubTarea2: false,
       url: window.location.origin
     }
   },
@@ -175,9 +177,15 @@ export default {
       return (new Intl.DateTimeFormat('es',options)).format(date)
     },
     toggleCheck(){
-      if(this.hecho&&this.routine) this.$store.dispatch("DataModule/uncheckRoutine",this.listItem)
+      if(this.hecho&&this.routine) {
+          this.$store.dispatch("DataModule/uncheckRoutine",this.listItem)
+      }
       else this.$store.dispatch("DataModule/check",this.listItem)
     },
+      toggleCheckSubTask(subTask){
+          if(!this.hechoSubTarea1 || !this.hechoSubTarea2) this.$store.dispatch("DataModule/checkSubTask",{padre: this.listItem, tarea: subTask})
+          //else this.$store.dispatch("DataModule/check",this.listItem)
+      },
     subTaskDate(taskDate){
       let options={ year: 'numeric', month: 'numeric', day: 'numeric',
         hour: 'numeric', minute: 'numeric', hour12:true }
@@ -188,7 +196,8 @@ export default {
       document.execCommand('copy')
     }
   },
-  computed:{
+
+    computed:{
     fullUrl(){
       return this.url +'/share/'+(this.task?'task':this.routine?'routine':'event')+'/'+this.listItem.id
     },

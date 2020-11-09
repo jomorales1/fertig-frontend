@@ -2,6 +2,7 @@
   <b-container class="text-right my-5">
     <!--    pop up con formulario para crear tarea-->
     <CreacionTareas ref="create" />
+    <CreacionSubtareas ref="add" :id="idParent"/>
 <!--    Boton para reordenar las tareas mostradas-->
     <div class="d-flex justify-content-between">
       <div class="d-flex flex-column justify-content-end">
@@ -41,6 +42,9 @@
           v-bind:listItem="task"
           v-on:etiqueta-filter="filterEtiqueta($event)"
           v-on:edit="edit($event)"
+          v-on:addSubTask="addSubTask($event)"
+          v-on:editSubTask="editsubTask($event)"
+          v-on:newTask="addTask($event)"
       />
     </b-list-group>
   </b-container>
@@ -48,16 +52,19 @@
 
 <script>
 import Tarea from "@/components/Tarea";
+import CreacionSubtareas from "@/components/CreacionSubtareas";
 import CreacionTareas from '../components/CreacionTareas.vue'
 import TEvent from "@/models/TEvent";
 export default {
   name: "Lista",
   components:{
     Tarea,
-    CreacionTareas
+    CreacionTareas,
+    CreacionSubtareas
   },
   data(){
     return {
+      idParent: 'numeric',
       //opciones de ordenes para las tareas
       orders:[
           "Prioridad",
@@ -153,6 +160,18 @@ export default {
     edit(item){//metodo para mostrar el dialogo de creacion de tarea para edicion
       this.$refs.create.edit(item)
       this.$bvModal.show('create-activity')
+    },
+    addSubTask(data){
+      this.idParent = data.id
+      this.$refs.add.newTask(data.padre); // padre mayor
+    },
+    addTask(){
+      this.$refs.create.newTask()
+      this.$bvModal.show('create-activity')
+    },
+    editsubTask(data){
+      this.$bvModal.show('create-subTask')
+      this.$refs.add.edit(data.tarea, data.padre)
     }
   },
   computed:{

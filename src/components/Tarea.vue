@@ -46,55 +46,82 @@
 
               <p class="text-left">{{ listItem.descripcion}}</p>
 <!--Boton para editar tarea -->
-              <b-button @click="$emit('edit',listItem)" size="sm" class="float-left my-2" >+ Subtarea</b-button>
+              <b-button @click="$emit('addSubTask',{id: idParent, padre: listItem})" size="sm" class="float-left my-2" >+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
               <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>
-              <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
+<b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
                 <template #title>Compartir copia de {{task?'tarea':routine?'rutina':'evento'}}</template>
                 <b-input-group prepend="Link:" size="sm">
                   <b-form-input :value="fullUrl" ref="urlComponent"></b-form-input>
                   <template #append>
-                    <b-button @click="copy()"><img alt="copiar url" src="../assets/copy.svg" style="height: 1rem"/></b-button>
+                    <b-button @click="copy()" :disabled="visible"><img alt="copiar url" src="../assets/copy.svg" style="height: 1rem"/></b-button>
                   </template>
                 </b-input-group>
               </b-popover>
-              <b-card bg-variant="light" class="text-left my-2" text-variant="dark" title="Subtareas">
-                <b-card-text>
-                  <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                  <span v-b-toggle.collapse-2>
-                    With supporting text below as a natural lead-in to additional content.
-                    <span class="float-right">01/02/2020</span>
-                  </span>
-                  <b-collapse id="collapse-2">
-                    <b-card bg-variant="light" class="text-left my-2" text-variant="dark" >
+              <b-card v-if="routine || task" bg-variant="light" class="text-left my-2" text-variant="dark" title="Subtareas">
+                <!-- si es tarea o rutina hacer v-for, lorem = desripcion prioridad a la derecha, crear boton debajo de decripción, quitar campo etiquetas-->
+                <b-list-group>
+                  <b-list-group-item v-for="sb in listItem.subtareas" v-bind:key="sb.id" >
                       <b-card-text>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam sodales leo augue, in laoreet libero tincidunt non. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
-                      </b-card-text>
-                      <b-card-text>
-                        <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                        With supporting text below as a natural lead-in to additional content.
-                      </b-card-text>
-                      <b-card-text>
-                        <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                        With supporting text below as a natural lead-in to additional content.
-                      </b-card-text>
-                      <b-card-text>
-                        <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                        With supporting text below as a natural lead-in to additional content.
-                      </b-card-text>
-                      <!--                <b-button href="#" variant="primary">Go somewhere</b-button>-->
-                    </b-card>
-                  </b-collapse>
-                </b-card-text>
-                <b-card-text>
-                  <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                  With supporting text below as a natural lead-in to additional content.
-                </b-card-text>
-                <b-card-text>
-                  <b-form-checkbox @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
-                  With supporting text below as a natural lead-in to additional content.
-                </b-card-text>
-<!--                <b-button href="#" variant="primary">Go somewhere</b-button>-->
+                          <b-form-checkbox @change="toggleCheckSubTask(sb)" v-if="task||routine" v-model="hechoSubTareas[listItem.subtareas.indexOf(sb)]" class="d-inline-block"></b-form-checkbox>
+                          <span>
+                            <span v-b-toggle.collapse-2>
+                              {{ sb.nombre }}
+                            </span>
+                            <b-button variant="white" @click="$emit('editSubTask',   {tarea: sb, padre: listItem})" :disabled="visible" class="p-1">
+                              <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
+                            </b-button>
+                        <span class="float-right">{{subTaskDate(sb.fechaFin)}}</span>
+                        </span>
+                          <b-collapse id="collapse-2">
+                            <b-card bg-variant="light" class="text-left my-2" text-variant="dark" >
+                              <!-- aqui empiezan las subtareas-->
+                              <b-card-text>
+                                {{sb.descripcion}}
+                                <span class="float-right">
+                                  Prioridad: {{sb.prioridad}}
+                                  <br>
+                                  Estimación: {{sb.estimacion + (sb.estimacion!==1?" horas":" hora")}}
+                                </span>
+                                <br>
+                                <b-button size="sm" class="p-1" variant="white" :disabled="visible" @click="$emit('addSubTask',{id: sb.id, padre: listItem})" >
+                                  <img alt="add" src="../assets/anadir.svg" style="height: 0.8rem" class="mx-1" > Subtarea
+                                </b-button>
+                                <b-list-group>
+                                  <b-list-group-item v-for="sb1 in sb.subtareas" v-bind:key="sb1.id" >
+                                    <b-card-text>
+                                      <b-form-checkbox @change="toggleCheckSubTask(sb1)" v-if="task||routine" v-model="hechoSubTareas2[sb.subtareas.indexOf(sb1)]" class="d-inline-block"></b-form-checkbox>
+                                      <span>
+                              <span v-b-toggle.collapse-3>
+                                {{ sb1.nombre }}
+                              </span>
+                                <b-button :disabled="visible" variant="white" @click="$emit('editSubTask', {tarea: sb1, padre: listItem})">
+                              <img alt="Pencil" src="../assets/pencil.svg" style="height: 1rem">
+                              </b-button>
+                                <span class="float-right">{{subTaskDate(sb1.fechaFin)}}</span>
+                                </span>
+                                      <b-collapse id="collapse-3">
+                                        <b-card bg-variant="light" class="text-left my-2" text-variant="dark" >
+                                          <!-- aqui empiezan las subtareas-->
+                                          <b-card-text>
+                                            {{sb1.descripcion}}
+                                            <span class="float-right">
+                                    Prioridad: {{sb1.prioridad}}
+                                    <br>
+                                    Estimación: {{sb1.estimacion + (sb1.estimacion!==1?" horas":" hora")}}
+                                  </span>
+                                          </b-card-text>
+                                        </b-card>
+                                      </b-collapse>
+                                    </b-card-text>
+                                  </b-list-group-item>
+                                </b-list-group>
+                              </b-card-text>
+                            </b-card>
+                          </b-collapse>
+                        </b-card-text>
+                    </b-list-group-item>
+                  </b-list-group>
               </b-card>
             </b-card>
           </b-collapse>
@@ -108,6 +135,8 @@ import Task from '@/models/Task';
 import Routine from "@/models/Routine";
 import TEvent from "@/models/TEvent";
 export default {
+
+
   props:{
     //variables requerias para crear una vista de tarea
     listItem:{
@@ -121,6 +150,7 @@ export default {
   },
   data(){
     return {
+      idParent: this.listItem.id,
       name: "Tarea",
       //flags para cambios en la vista
       show: true,
@@ -129,6 +159,8 @@ export default {
       routine: this.listItem instanceof Routine,
       event: this.listItem instanceof TEvent,
       hecho:false,
+        hechoSubTareas: [],
+        hechoSubTareas2: [],
       url: window.location.origin
     }
   },
@@ -145,15 +177,27 @@ export default {
       return (new Intl.DateTimeFormat('es',options)).format(date)
     },
     toggleCheck(){
-      if(this.hecho&&this.routine) this.$store.dispatch("DataModule/uncheckRoutine",this.listItem)
+      if(this.hecho&&this.routine) {
+          this.$store.dispatch("DataModule/uncheckRoutine",this.listItem)
+      }
       else this.$store.dispatch("DataModule/check",this.listItem)
+    },
+      toggleCheckSubTask(subTask){
+          if(!this.hechoSubTarea1 || !this.hechoSubTarea2) this.$store.dispatch("DataModule/checkSubTask",{padre: this.listItem, tarea: subTask})
+          //else this.$store.dispatch("DataModule/check",this.listItem)
+      },
+    subTaskDate(taskDate){
+      let options={ year: 'numeric', month: 'numeric', day: 'numeric',
+        hour: 'numeric', minute: 'numeric', hour12:true }
+      return (new Intl.DateTimeFormat('en-GB',options)).format(new Date(taskDate))
     },
     copy(){
       this.$refs.urlComponent.select()
       document.execCommand('copy')
     }
   },
-  computed:{
+
+    computed:{
     fullUrl(){
       return this.url +'/share/'+(this.task?'task':this.routine?'routine':'event')+'/'+this.listItem.id
     },
@@ -179,7 +223,18 @@ export default {
       return this.listItem.etiqueta.trim().split(' ')
     }
   },mounted() {
-    if(this.task)this.hecho=this.listItem.hecho
+        if(this.task)this.hecho=this.listItem.hecha
+        if(this.listItem.subtareas){
+            this.hechoSubTareas = this.listItem.subtareas.map(
+                item => {
+                    console.log(item)
+                    if(item.subtareas)this.hechoSubTareas2 = item.subtareas.map(
+                        item2 =>item2.hecha
+                    )
+                    return item.hecha
+                }
+            )
+        }
   }
 }
 </script>

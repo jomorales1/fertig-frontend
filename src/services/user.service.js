@@ -47,21 +47,21 @@ class UserService {
             })
     }
     uncheckRoutine(id){//metodo para deschequear las rutinas en el backend
-        return axios.patch(API_URL + '/routines/uncheck-routine/' +id // Peticion tipo POST para chequear la tarea
+        return axios.patch(API_URL + '/routine/uncheck/' +id // Peticion tipo POST para chequear la tarea
             ,null,{
                 headers: authHeader()
             })
     }
 
     createRoutine(routine) {//metodo para crear rutinas en el backend
-        return axios.post(API_URL + '/routines/addRoutine' // Peticion tipo POST para agregar la rutina
+        return axios.post(API_URL + '/routines/add' // Peticion tipo POST para agregar la rutina
             ,routine,{
                 headers: authHeader()
             })
     }
 
     createTEvent(tEvent) {//metodo para crear eventos en el backend
-        return axios.post(API_URL + '/events/add-event' // Peticion tipo POST para agregar el evento
+        return axios.post(API_URL + '/events/add' // Peticion tipo POST para agregar el evento
             ,tEvent,{
                 headers: authHeader()
             })

@@ -84,9 +84,9 @@
              this.$store.dispatch("auth/register", dataUser) // Llamada a la función de axios creada para registro
                      .then(
                          ()=> {
-                           this.$bvToast.toast("Usuario registrado correctamente", {
+                           this.$root.$bvToast.toast("Usuario registrado correctamente", {
                              title: `Correcto`,
-                             variant: 'light',
+                             variant: 'secondary',
                              solid: true,
                              toaster:'b-toaster-top-center'
                            })

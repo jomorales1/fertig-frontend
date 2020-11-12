@@ -14,7 +14,7 @@ class UserService {
         return axios.get(API_URL + '/event/events', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
     }
     createTask(task){ // Funcion para crear tarea
-        return axios.post(API_URL + '/tasks/add-task' // Peticion tipo POST para agregar la tarea
+        return axios.post(API_URL + '/task/add' // Peticion tipo POST para agregar la tarea
             ,task,{
             headers: authHeader()
         })
@@ -54,14 +54,14 @@ class UserService {
     }
 
     createRoutine(routine) {//metodo para crear rutinas en el backend
-        return axios.post(API_URL + '/routines/add' // Peticion tipo POST para agregar la rutina
+        return axios.post(API_URL + '/routine/add' // Peticion tipo POST para agregar la rutina
             ,routine,{
                 headers: authHeader()
             })
     }
 
     createTEvent(tEvent) {//metodo para crear eventos en el backend
-        return axios.post(API_URL + '/events/add' // Peticion tipo POST para agregar el evento
+        return axios.post(API_URL + '/event/add' // Peticion tipo POST para agregar el evento
             ,tEvent,{
                 headers: authHeader()
             })

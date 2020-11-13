@@ -48,8 +48,12 @@
 <!--Boton para editar tarea -->
               <b-button @click="$emit('addSubTask',{id: idParent, padre: listItem})" size="sm" class="float-left my-2" >+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
-              <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>
-<b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
+              <b-dropdown text="Compartir Tarea" ref="share" variant="primary" size="sm" class="m-2">
+                  <b-dropdown-item-button  size="sm" >Compartir enlace</b-dropdown-item-button>
+                  <b-dropdown-item-button size="sm" >Agregar colaborador</b-dropdown-item-button>
+              </b-dropdown>
+<!--              <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>-->
+              <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
                 <template #title>Compartir copia de {{task?'tarea':routine?'rutina':'evento'}}</template>
                 <b-input-group prepend="Link:" size="sm">
                   <b-form-input :value="fullUrl" ref="urlComponent"></b-form-input>
@@ -124,6 +128,12 @@
                   </b-list-group>
               </b-card>
             </b-card>
+            <h6 class="col-1">Colaboradores</h6>
+            <b-list-group>
+              <b-list-group-item v-for="o in Owners" v-bind:key="o.username">
+                {{o.username}}
+              </b-list-group-item>
+            </b-list-group>
           </b-collapse>
   </b-list-group-item>
 </template>
@@ -161,7 +171,8 @@ export default {
       hecho:false,
         hechoSubTareas: [],
         hechoSubTareas2: [],
-      url: window.location.origin
+      url: window.location.origin,
+      owners: []
     }
   },
   methods: {
@@ -235,6 +246,11 @@ export default {
                 }
             )
         }
+        this.$store.dispatch("DataModule/getOwners", this.listItem.id).then(
+            response =>{
+              this.owners = response.data
+            }
+        )
   }
 }
 </script>

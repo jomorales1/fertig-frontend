@@ -180,6 +180,23 @@ export const DataModule = {
             return UserService.deleteFavorite(titulo).then(()=>{},()=>{
                 commit('error')
             })
+        },
+        addAdmin({commit},data){
+            return UserService.addAdmin(data.id, data.username).then(() => {}, () =>{ commit('error')})
+
+        },
+        addOwner({commit}, data){
+            return UserService.addAdmin(data.id, data.username).then(() => {}, () =>{ commit('error')})
+        },
+        getOwners({commit}, id){
+            return UserService.getOwners(id).then(
+                response =>{
+                    return  Promise.resolve(response)
+                },() =>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
         }
 
     },

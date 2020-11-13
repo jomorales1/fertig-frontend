@@ -122,6 +122,31 @@ class UserService {
             })
     }
 
+    addAdmin(task, user){
+        return axios.post( API_URL + '/task/' + task + '/add-admin/' + user
+            ,null,{
+                headers: authHeader()
+            }
+
+        )
+    }
+
+    addOwner(task, user){
+        return axios.post( API_URL + '/task/' + task + '/add-owner/' + user
+            ,null,{
+                headers: authHeader()
+            }
+
+        )
+    }
+
+    getOwners(task){
+        return axios.get(API_URL + '/task/' + task + '/owners',
+            {
+                headers: authHeader()
+            })
+    }
+
 
 
 }

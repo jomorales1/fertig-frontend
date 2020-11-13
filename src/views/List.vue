@@ -3,6 +3,7 @@
     <!--    pop up con formulario para crear tarea-->
     <CreacionTareas ref="create" />
     <CreacionSubtareas ref="add" :id="idParent"/>
+    <Colaboradores ref="owners"/>
 <!--    Boton para reordenar las tareas mostradas-->
     <div class="d-flex justify-content-between">
       <div class="d-flex flex-column justify-content-end">
@@ -45,6 +46,7 @@
           v-on:addSubTask="addSubTask($event)"
           v-on:editSubTask="editsubTask($event)"
           v-on:newTask="addTask($event)"
+          v-on:showOwners="showOwners($event)"
       />
     </b-list-group>
   </b-container>
@@ -55,12 +57,14 @@ import Tarea from "@/components/Tarea";
 import CreacionSubtareas from "@/components/CreacionSubtareas";
 import CreacionTareas from '../components/CreacionTareas.vue'
 import TEvent from "@/models/TEvent";
+import Colaboradores from "../components/Colaboradores";
 export default {
   name: "Lista",
   components:{
     Tarea,
     CreacionTareas,
-    CreacionSubtareas
+    CreacionSubtareas,
+    Colaboradores
   },
   data(){
     return {
@@ -172,6 +176,10 @@ export default {
     editsubTask(data){
       this.$bvModal.show('create-subTask')
       this.$refs.add.edit(data.tarea, data.padre)
+    },
+    showOwners(id){
+      this.$refs.owners.setIdTask(id)
+      this.$bvModal.show('owners')
     }
   },
   computed:{

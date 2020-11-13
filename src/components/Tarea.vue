@@ -48,9 +48,9 @@
 <!--Boton para editar tarea -->
               <b-button @click="$emit('addSubTask',{id: idParent, padre: listItem})" size="sm" class="float-left my-2" >+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
-              <b-dropdown text="Compartir Tarea" ref="share" variant="primary" size="sm" class="m-2">
-                  <b-dropdown-item-button  size="sm" >Compartir enlace</b-dropdown-item-button>
-                  <b-dropdown-item-button size="sm" >Agregar colaborador</b-dropdown-item-button>
+              <b-dropdown text="Compartir Tarea" variant="primary" size="sm" class="m-2">
+                  <b-dropdown-item-button  size="sm" ref="share">Compartir enlace</b-dropdown-item-button>
+                  <b-dropdown-item-button size="sm" @click="$emit('showOwners',listItem.id)">Agregar colaborador</b-dropdown-item-button>
               </b-dropdown>
 <!--              <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>-->
               <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
@@ -128,10 +128,10 @@
                   </b-list-group>
               </b-card>
             </b-card>
-            <h6 class="col-1">Colaboradores</h6>
+            <h6 class="col-1">Colaboradores:</h6>
             <b-list-group>
-              <b-list-group-item v-for="o in Owners" v-bind:key="o.username">
-                {{o.username}}
+              <b-list-group-item class="col-1 border-0" v-for="o in owners" v-bind:key="o.username">
+                {{o.usuario}}
               </b-list-group-item>
             </b-list-group>
           </b-collapse>
@@ -145,9 +145,7 @@ import Task from '@/models/Task';
 import Routine from "@/models/Routine";
 import TEvent from "@/models/TEvent";
 export default {
-
-
-  props:{
+    props:{
     //variables requerias para crear una vista de tarea
     listItem:{
       Type:ListItem,

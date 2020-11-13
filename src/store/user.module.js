@@ -186,7 +186,7 @@ export const DataModule = {
 
         },
         addOwner({commit}, data){
-            return UserService.addAdmin(data.id, data.username).then(() => {}, () =>{ commit('error')})
+            return UserService.addOwner(data.id, data.username).then(() => {}, () =>{ commit('error')})
         },
         getOwners({commit}, id){
             return UserService.getOwners(id).then(

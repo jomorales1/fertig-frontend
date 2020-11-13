@@ -8,8 +8,8 @@ import TEvent from "@/models/TEvent";
 //obtenemos tareas del store de vuex
 const tareas = JSON.parse(localStorage.getItem('tareas'));
 const initialState = tareas
-    ? { status:'full',tareas:UserService.getTasks()}
-    : { status: 'empty', tareas:[] };
+    ? { status:'full',tareas:UserService.getTasks().data, repetitions:UserService.getRoutinesRepetitions().data}
+    : { status: 'empty', tareas:[],repetitions: [] };
 //estado inicial  tareas obteniendolas del user service
 export const DataModule = {
     namespaced: true,
@@ -41,6 +41,17 @@ export const DataModule = {
                 }
             })
             commit('updated',listItems)
+        },
+        updateRepetitions({commit}){
+            UserService.getRoutinesRepetitions().then(
+                response=>{
+                    commit('repetitionsUpdate',response.data)
+                },
+                ()=>{
+                    commit('error')
+                }
+            )
+
         },
         uncheckRoutine({commit},item){//metodo para deschequear rutinas con el user service
             return UserService.uncheckRoutine(item.id).then(()=>{},()=>{
@@ -188,6 +199,10 @@ export const DataModule = {
         updated(state,tasks){
             state.status='full'
             state.tareas=tasks
+        },
+        repetitionsUpdate(state,repetitions){
+          state.status='repetitions updated'
+          state.repetitions=repetitions
         },
         error(state){
             state.status='Failure'

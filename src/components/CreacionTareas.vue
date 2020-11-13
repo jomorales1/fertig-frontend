@@ -136,8 +136,8 @@
               :label="status||statusEvent?'Duración':'Estimación'"
               label-for="estimation"
           >
-            <b-form-input v-if="!status&&!statusEvent" id="estimation" required type="number" v-model="tarea.estimacion"></b-form-input>
-            <b-form-input v-else id="estimation" required type="number" v-model="rutina.duracion"></b-form-input>
+            <b-form-input v-if="!status&&!statusEvent" step=0.25 id="estimation" required type="number" v-model="tarea.estimacion"></b-form-input>
+            <b-form-input v-else id="estimation" step=0.25 required type="number" v-model="rutina.duracion"></b-form-input>
           </b-form-group>
           <!--      campo de recurrencia-->
           <b-form-group

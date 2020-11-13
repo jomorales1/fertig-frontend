@@ -19,14 +19,14 @@ const routes=[
         name:'Inicio de Sesión',
         component:()=>import('@/views/Login.vue'),
         meta: {
-            requiresAuth: true
+            requiresAuth: false
         }
     },{
         path:'/SignUp',//ruta (localhost:8080/SignUp)
         name:'Crear Cuenta',
         component:()=>import('@/views/SignUp'),//componente que ocupa esa vista a partir de carpeta views
         meta: {
-            requiresAuth: true
+            requiresAuth: false
         }
     },{
         path:'/List',//ruta (localhost:8080/List)
@@ -53,6 +53,14 @@ const routes=[
         path: '/Share/:type/:id',//ruta (localhost:8080/Settings)
         name: 'Copia la tarea',
         component: () => import('@/views/Share'),//componente que ocupa esa vista a partir de carpeta views
+        meta: {
+            requiresAuth: true
+        }
+
+    }, {
+        path: '/Calendar',//ruta (localhost:8080/Settings)
+        name: 'Calendario de actividades',
+        component: () => import('@/views/Calendar'),//componente que ocupa esa vista a partir de carpeta views
         meta: {
             requiresAuth: true
         }

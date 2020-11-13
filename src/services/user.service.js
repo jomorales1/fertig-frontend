@@ -13,6 +13,9 @@ class UserService {
     getTEvents() { //Funcion para obtener rutinas del usuario
         return axios.get(API_URL + '/event/events', { headers: authHeader() }) // Peticion tipo GET para obtener rutinas
     }
+    getRoutinesRepetitions(){
+        return axios.get(API_URL+'/routine/routines-and-repetitions',{ headers: authHeader() })
+    }
     createTask(task){ // Funcion para crear tarea
         return axios.post(API_URL + '/task/add' // Peticion tipo POST para agregar la tarea
             ,task,{

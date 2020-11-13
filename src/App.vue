@@ -10,6 +10,7 @@
           <b-nav-item variant="primary" v-if="!loggedIn" text="white" to="/SignUp" >Regístrate</b-nav-item>
           <b-nav-item variant="primary" v-if="!loggedIn" text="white" to="/Login" >Inicia sesión</b-nav-item>
           <b-nav-item variant="primary" v-if="loggedIn" text="white" to="/List" >Lista de Actividades</b-nav-item>
+          <b-nav-item variant="primary" v-if="loggedIn" text="white" to="/Calendar" >Calendario de Actividades</b-nav-item>
           <b-nav-item variant="primary" v-if="loggedIn" text="white" to="/Timer" >Temporizador</b-nav-item>
 <!--          Dropdown de usuario-->
           <b-nav-item-dropdown :text="username" v-if="loggedIn" right>

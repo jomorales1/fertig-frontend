@@ -130,9 +130,17 @@
             </b-card>
             <h6 class="col-1">Colaboradores:</h6>
             <b-list-group>
-              <b-list-group-item class="col-1 border-0" v-for="o in owners" v-bind:key="o.username">
-                {{o.usuario}}
-              </b-list-group-item>
+                <b-list-group-item class="col-10 border-0" v-for="o in owners" v-bind:key="o.username">
+                  <div class="row align-items-center">
+                    {{o.username}}
+                    <template v-if="o.admin" >
+                      <img alt="Pencil" class="col-1" src="../assets/propietario.svg" style="height: 1rem">
+                    </template>
+                    <template v-if="!o.admin">
+                      <b-button class="col-4" size="sm" style="margin: 1%" @click="addAdminTask(o.username)">Asignar administrador</b-button>
+                    </template>
+                  </div>
+                </b-list-group-item>
             </b-list-group>
           </b-collapse>
   </b-list-group-item>
@@ -203,6 +211,11 @@ export default {
     copy(){
       this.$refs.urlComponent.select()
       document.execCommand('copy')
+    },
+    addAdminTask(user){
+      this.$store.dispatch("DataModule/addAdmin",{id: this.listItem.id, username: user}).then(()=>{
+        this.$store.dispatch('DataModule/update')
+      })
     }
   },
 
@@ -236,7 +249,6 @@ export default {
         if(this.listItem.subtareas){
             this.hechoSubTareas = this.listItem.subtareas.map(
                 item => {
-                    console.log(item)
                     if(item.subtareas)this.hechoSubTareas2 = item.subtareas.map(
                         item2 =>item2.hecha
                     )
@@ -244,11 +256,14 @@ export default {
                 }
             )
         }
-        this.$store.dispatch("DataModule/getOwners", this.listItem.id).then(
-            response =>{
-              this.owners = response.data
-            }
-        )
+        if(this.listItem instanceof Task){
+          this.$store.dispatch("DataModule/getOwners", this.listItem.id).then(
+              response =>{
+                this.owners = response.data
+              }
+          )
+        }
+
   }
 }
 </script>

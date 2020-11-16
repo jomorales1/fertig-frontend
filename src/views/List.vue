@@ -179,8 +179,9 @@ export default {
     },
     showOwners(id){
       this.$refs.owners.setIdTask(id)
+      this.$refs.owners.getOwnersList()
       this.$bvModal.show('owners')
-    }
+    },
   },
   computed:{
     //lista de tareas que se muestra

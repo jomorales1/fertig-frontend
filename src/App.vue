@@ -33,31 +33,90 @@
 <script>
 import { VFBLoginScope as VFacebookLoginScope } from 'vue-facebook-login-component'
 import Amigos from "@/components/Amigos";
+import firebase from 'firebase/app'
+import "firebase/messaging";
+import "firebase/analytics";
+const firebaseConfig = {
+  apiKey: 'AIzaSyDsDa2-gM_KJn9L_AthUXMn-nCXnt4S2A4',
+  authDomain: 'fertigapp-68aa4.firebaseapp.com',
+  databaseURL: 'https://fertigapp-68aa4.firebaseio.com/',
+  projectId: 'fertigapp-68aa4',
+  storageBucket: 'fertigapp-68aa4.appspot.com',
+  messagingSenderId: '23323218827',
+  appId: '1:23323218827:web:c7541412782fd7b3fd158e',
+  measurementId: 'G-4MBLF8M9ES'
+};
+
 export default {
   name: 'App',
   data(){
     return{
     //objeto de API facebook
-    FB:{}
+      FB:{}
     }
   },
   components:{
     Amigos,
     VFacebookLoginScope
   },
-  methods:{
-    logout(){
+  methods: {
+    logout() {
       //verifica si esta logeado con facebook y cierra sesión si así es
-      this.FB.getLoginStatus(function (response){
-        if(response.status==='connected'){
+      this.FB.getLoginStatus(function (response) {
+        if (response.status === 'connected') {
           this.FB.logout()
         }
       })
       //llama al logout del store
-      this.$store.dispatch('auth/logout').then(()=>this.$router.push('/Login'))
+      this.$store.dispatch('auth/logout').then(() => this.$router.push('/Login'))
     },
-    handleSdkInit({ FB}) {
+    handleSdkInit({FB}) {
       this.FB = FB//trae el objeto de facebook desde el sdkInit
+    },
+    enableNotifications() {
+      if (!("Notification" in window)) {
+        this.$root.$bvToast.toast("Tu navegador no soprta las notificaciones", {
+          title: `Notificaciones no soportadas`,
+          variant: 'secondary',
+          solid: true,
+          toaster:'b-toaster-top-center'
+        })
+      } else if (Notification.permission === "granted") {
+        this.initializeFirebase()
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            this.initializeFirebase()
+          }
+        })
+      } else {
+        alert("No permission to send notification")
+      }
+      this.requestPermission = Notification.permission;
+    },
+    initializeFirebase() {
+      if (firebase.messaging.isSupported()) {
+        const messaging = firebase.messaging();
+        messaging.getToken()
+            .then((token) => {
+              console.log(token);
+            })
+            .catch((err) => {
+              console.log('An error occurred while retrieving token. ', err);
+            });
+        messaging.onMessage(function (payload) {
+          console.log("Message received", payload);
+          new Notification(payload.notification.title,{
+            body: payload.notification.body,
+            icon: "https://raw.githubusercontent.com/idoqo/laravel-vue-recipe-pwa/master/public/recipe-book.png",
+            actions:[
+              {action: 'like', title: '👍Like'},
+              {action: 'reply', title: '⤻ Reply'}
+            ],
+            action:'like'
+          })
+        });
+      }
     }
   },
   watch: {
@@ -76,6 +135,10 @@ export default {
   },
   created() {//titulo inicial de la pagina
     document.title = 'FertigApp - '+this.$route.name
+    //inicializar el servicio de firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics()
+    this.enableNotifications()
   }
 }
 </script>

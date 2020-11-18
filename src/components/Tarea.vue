@@ -202,19 +202,47 @@ export default {
       return this.url +'/share/'+(this.task?'task':this.routine?'routine':'event')+'/'+this.listItem.id
     },
     timeLeft(){
-        //calculo del tiempo restante a partir de la fecha de finalización
-        let diff =(new Date(this.listItem.fechaFin).getTime()- (new Date()).getTime()) / (1000*60*60);
-        if(this.event && this.listItem.recurrencia){
-          diff=(this.listItem.fecha.getTime()-(new Date()).getTime()) / (1000*60*60)
-        }
-        let res="en ";
-        if(diff>24){
-          diff /=24;
-          res=res.concat(Math.abs(Math.round(diff)).toString()).concat(" Dias");
+      //calculo del tiempo restante a partir de la fecha de finalización
+      let diff =(new Date(this.listItem.fechaFin).getTime()- (new Date()).getTime()) / (1000*60*60);
+      if(this.event && this.listItem.recurrencia){
+        diff=(this.listItem.fecha.getTime()-(new Date()).getTime()) / (1000*60*60)
+      }
+      let res
+      if(diff>0){
+        res = "en "
+      }else{
+        res = "hace "
+        diff = Math.abs(diff)
+      }
+      if(diff>24){
+        res=res.concat(Math.floor(diff/24).toString());
+        if(Math.round(diff/24) < 2){
+          res=res.concat(" Dia ")
         }else{
-          res=res.concat((Math.round(diff).toString()).concat(" Horas"));
+          res=res.concat(" Dias ")
         }
-        return res;
+      }
+      if(Math.floor(diff%24)!==0){
+        res=res.concat(Math.floor(diff%24).toString())
+        if(Math.floor(diff%24)<2){
+          res = res.concat(" Hora ");
+        }else{
+          res = res.concat(" Horas ");
+        }
+      }
+      if(diff<24 && Math.floor((diff*60)%60)!==0){
+        res=res.concat(Math.floor((diff*60)%60).toString())
+        if((diff*60)%60<2){
+          res = res.concat(" Minuto");
+        }else{
+          res = res.concat(" Minutos");
+        }
+      }else{
+        if(diff<24 && Math.floor((diff*60)%60)===0){
+          res = res.concat(" Ahora");
+        }
+      }
+      return res;
     },
     etiquetasList(){//metodo para separar las etiquetas por espacios
       if(this.listItem.etiqueta===""){
@@ -227,7 +255,6 @@ export default {
         if(this.listItem.subtareas){
             this.hechoSubTareas = this.listItem.subtareas.map(
                 item => {
-                    console.log(item)
                     if(item.subtareas)this.hechoSubTareas2 = item.subtareas.map(
                         item2 =>item2.hecha
                     )
@@ -238,7 +265,3 @@ export default {
   }
 }
 </script>
-
-<style scoped lang="scss">
-
-</style>

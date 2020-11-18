@@ -108,8 +108,8 @@
               id="fieldset-start-repetition-date"
               label-cols-sm="4"
               label-cols-lg="3"
-              description="Fecha en que las repeticiones inician"
-              label="Fecha de inicio de la repetición"
+              :description="status?'Fecha en que las repeticiones inician':'Fecha de inicio'"
+              :label="status?'Fecha de inicio de la repetición':'Fecha de inicio'"
               label-for="start-date, start-time"
           >
             <b-datepicker required id="start-date" value-as-date v-model="rutina.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
@@ -118,6 +118,7 @@
           <!--      campos para fecha de finalización-->
           <b-form-group
               id="fieldset-end-date"
+              v-if="!statusEvent||status"
               label-cols-sm="4"
               label-cols-lg="3"
               :description="!status?'Fecha y hora en que la tarea termina':'Fecha en que las repeticiones finalizan'"
@@ -132,7 +133,7 @@
               id="fieldset-estimation"
               label-cols-sm="4"
               label-cols-lg="3"
-              :description="!status?'Tiempo estimado de duración en horas de la tarea':'Tiempo de duración en horas de la tarea'"
+              :description="!status?'Tiempo estimado de duración en minutos de la tarea':'Tiempo de duración en minutos de la tarea'"
               :label="status||statusEvent?'Duración':'Estimación'"
               label-for="estimation"
           >
@@ -176,9 +177,9 @@
               label-for="desde"
           >
             <div >Inicia a las:</div>
-            <b-form-input required id="desde" type="time" v-model="rutina.franjaInicio"></b-form-input>
+            <b-form-input required id="desde" type="time" @change="formatFranjaInicio" v-model="franjaInicio"></b-form-input>
           </b-form-group>
-          <!--      campo frnaja fin-->
+          <!--      campo franja fin-->
           <b-form-group
               v-if='status&&Range==="H"'
               id="fieldset-to-repeticion"
@@ -188,7 +189,7 @@
               label-for="hasta"
           >
             <div >Y termina a las:</div>
-            <b-form-input required id="hasta" type="time" v-model="rutina.franjaFin"></b-form-input>
+            <b-form-input required id="hasta" type="time" @change="formatFranjaFin" v-model="franjaFin"></b-form-input>
           </b-form-group>
 
         </form>
@@ -223,6 +224,10 @@ export default {
       startHour:null,
       //campo para guardar la hora de finalizacion
       endHour:null,
+      //campo de hora de inicio de la franja
+      franjaInicio:null,
+      //campo de hora de fin de la franja
+      franjaFin:null,
       //variable error al crear tarea
       error:false,
       //variable de formulario de creación de tarea incmoleto
@@ -235,13 +240,6 @@ export default {
       statusEvent: false,
       // seleccionador del tipo de repeticiones
       Range: 'D',
-      options: [
-        { value: 'H'  ,   text: 'horas'     },
-        { value: 'D'  ,   text: 'dias'      },
-        { value: 'S'  ,   text: 'semanas'   },
-        { value: 'M'  ,   text: 'meses'     },
-        { value: 'A'  ,   text: 'años'      }
-      ],
       //seleccionador de dias de la semana
       week:[],
       weekOptions:[
@@ -259,6 +257,14 @@ export default {
       message:"Error al crear Actividad"
     }},
   methods:{
+    formatFranjaInicio(){
+      let h= this.franjaInicio.split(':')
+      this.rutina.franjaInicio = new Date((new Date()).setHours(h[0],h[1],0,0),).toISOString().split('T')[1]
+    },
+    formatFranjaFin(){
+      let h= this.franjaFin.split(':')
+      this.rutina.franjaFin = new Date((new Date()).setHours(h[0],h[1],0,0),).toISOString().split('T')[1]
+    },
     newTask(){
       if(!this.error){
         Object.assign(this.$data, this.$options.data())
@@ -288,18 +294,19 @@ export default {
           //adicion de la hora en la fecha de inicio
           let h=this.startHour.split(":")
           this.rutina.fechaInicio.setHours(h[0],h[1])
+
           //se hace la String de Repeticion
-          let weekDays =parseInt( [
-            this.week.includes('l')?1:0,
-            this.week.includes('m')?1:0,
-            this.week.includes('x')?1:0,
-            this.week.includes('j')?1:0,
-            this.week.includes('v')?1:0,
-            this.week.includes('s')?1:0,
-            this.week.includes('d')?1:0,
-          ].reverse().join(''),2)
           if(this.week.length>0){
             let r='E'
+            let weekDays =parseInt( [
+              this.week.includes('l')?1:0,
+              this.week.includes('m')?1:0,
+              this.week.includes('x')?1:0,
+              this.week.includes('j')?1:0,
+              this.week.includes('v')?1:0,
+              this.week.includes('s')?1:0,
+              this.week.includes('d')?1:0,
+            ].reverse().join(''),2)
             this.rutina.recurrencia=[r, weekDays, '.S', this.numbRep].join('')
           }else{
             this.rutina.recurrencia=[this.Range, this.numbRep].join('')
@@ -444,6 +451,21 @@ export default {
             this.$bvModal.hide('create-activity')
           }
       )
+    }
+  },
+  computed:{
+    options(){
+      let options=[
+        { value: 'H'  ,   text: 'horas'     },
+        { value: 'D'  ,   text: 'dias'      },
+        { value: 'S'  ,   text: 'semanas'   },
+        { value: 'M'  ,   text: 'meses'     },
+        { value: 'A'  ,   text: 'años'      }
+      ]
+      if(this.statusEvent){
+        options.splice(0,1)
+      }
+      return options
     }
   }
 }

@@ -78,7 +78,7 @@
               id="fieldset-estimation"
               label-cols-sm="4"
               label-cols-lg="3"
-              description="Tiempo de duración de la subtarea"
+              description="Tiempo de duración de la subtarea en minutos"
               label="Estimación"
               label-for="estimation"
           >

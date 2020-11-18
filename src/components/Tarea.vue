@@ -53,7 +53,7 @@
                   <b-dropdown-item-button size="sm" @click="$emit('showOwners',listItem.id)">Agregar colaborador</b-dropdown-item-button>
               </b-dropdown>
 <!--              <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>-->
-              <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
+              <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="hover" placement="bottom" variant="secondary">
                 <template #title>Compartir copia de {{task?'tarea':routine?'rutina':'evento'}}</template>
                 <b-input-group prepend="Link:" size="sm">
                   <b-form-input :value="fullUrl" ref="urlComponent"></b-form-input>
@@ -130,7 +130,7 @@
             </b-card>
             <h6 class="col-1">Colaboradores:</h6>
             <b-list-group>
-                <b-list-group-item class="col-10 border-0" v-for="o in owners" v-bind:key="o.username">
+                <b-list-group-item class="col-10 border-0" style="margin-left: 2%" v-for="o in owners" v-bind:key="o.username">
                   <div class="row align-items-center">
                     {{o.username}}
                     <template v-if="o.admin" >

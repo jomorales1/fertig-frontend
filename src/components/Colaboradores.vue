@@ -121,6 +121,7 @@
                     ()=>{
                         this.debouncedFunction()
                         this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
+                        this.$bvModal.hide('owners')
                     },
                     ()=>this.AddFriendError=true
                 )

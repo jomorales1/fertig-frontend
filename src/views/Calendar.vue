@@ -20,23 +20,25 @@
       >
       </vue-cal>
     </div>
-    <b-modal id="eventModal" v-if="current" :title="current.nombre">
+    <b-modal id="eventModal" v-if="current" :title="current.nombre" >
 
-      <div >
-        <span><strong>Descripción: </strong>{{current.descripcion}}</span><br>
-        <span><strong>Duración: </strong>{{current.duracion}} minutos</span><br>
-        <span><strong>Prioridad: </strong>{{current.prioridad}}</span><br>
-        <span><strong>Recurrencia: </strong>{{current.mensajeRecurrencia}}</span><br>
-        <span v-if="current.fechaInicio"><strong >Fecha de inicio: </strong>{{formatFecha(new Date(current.fechaInicio))}}</span><br v-if="current.fechaInicio">
-        <span><strong>Fecha de Finalización: </strong>{{formatFecha(new Date(current.fechaFin))}}</span><br>
-        <span><strong>Proxima repetición: </strong>{{formatFecha(current.fecha) }}</span><br>
-        <span v-if="current.franjaInicio"><strong>Franja Horaria: </strong>{{stringFranja}}</span><br v-if="current.franjaInicio">
-        <span><strong>Etiquetas: </strong><b-badge variant="primary" v-for="etq in current.etiqueta.split(' ')" :key="etq">etq</b-badge> </span>
-        <b-button v-if="routine || task"
-                  @click="addSubTask({id: idParent, padre: current})"
-                  size="sm"
-                  class="float-right my-0" >+ Subtarea</b-button>
-        <br>
+      <div class="d-block">
+        <div><strong>Descripción: </strong>{{current.descripcion}}</div>
+        <div><strong>Duración: </strong>{{current.duracion}} minutos</div>
+        <div><strong>Prioridad: </strong>{{current.prioridad}}</div>
+        <div v-if="!task"><strong>Recurrencia: </strong>{{current.mensajeRecurrencia}}</div>
+        <div v-if="current.fechaInicio"><strong >Inicia el: </strong>{{formatFecha(new Date(current.fechaInicio))}}</div>
+        <div><strong>Finaliza el: </strong>{{formatFecha(new Date(current.fechaFin))}}</div>
+        <div v-if="!task"><strong>Proxima repetición: </strong>{{formatFecha(current.fecha) }}</div>
+        <div v-if="current.franjaInicio"><strong>Franja Horaria: </strong>{{stringFranja}}</div>
+        <div><strong>Etiquetas: </strong><b-badge variant="primary" v-for="etq in current.etiqueta.split(' ')" :key="etq">etq</b-badge>
+          <b-button v-if="routine || task"
+                    @click="addSubTask({id: idParent, padre: current})"
+                    size="sm"
+                    class="float-right my-0" >+ Subtarea</b-button>
+          <br>
+        </div>
+
         <Subtareas
             :list-item="current"
             v-if="routine || task"

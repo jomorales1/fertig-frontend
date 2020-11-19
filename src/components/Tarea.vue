@@ -135,9 +135,14 @@
                     {{o.username}}
                     <template v-if="o.admin" >
                       <img alt="Pencil" class="col-1" src="../assets/propietario.svg" style="height: 1rem">
+                      <b-button class="col-0" variant="white" size="sm" @click="removeAdminTask(o.username)">
+                        <img alt="Delete" class="mx-1" src="../assets/menos.svg" style="height: 1rem">
+                      </b-button>
                     </template>
                     <template v-if="!o.admin">
-                      <b-button class="col-4" size="sm" style="margin: 1%" @click="addAdminTask(o.username)">Asignar administrador</b-button>
+                      <b-button class="col-0" variant="white" size="sm" style="margin: 1%" @click="addAdminTask(o.username)">
+                        <img alt="Upgrade" class="mx-1" src="../assets/flecha-hacia-arriba.svg" style="height: 1rem">
+                      </b-button>
                     </template>
                   </div>
                 </b-list-group-item>
@@ -214,6 +219,11 @@ export default {
     },
     addAdminTask(user){
       this.$store.dispatch("DataModule/addAdmin",{id: this.listItem.id, username: user}).then(()=>{
+        this.$store.dispatch('DataModule/update')
+      })
+    },
+    removeAdminTask(user){
+      this.$store.dispatch("DataModule/removeAdmin",{id: this.listItem.id, username:user}).then(()=> {
         this.$store.dispatch('DataModule/update')
       })
     }

@@ -197,6 +197,12 @@ export const DataModule = {
                     return Promise.reject()
                 }
             )
+        },
+        removeAdmin({commit}, data){
+            return UserService.removeAdmin(data.id, data.username).then(() => {}, () =>{ commit('error')})
+        },
+        deleteOwner({commit}, data){
+            return UserService.deleteOwner(data.id, data.username).then(() => {}, () =>{ commit('error')})
         }
 
     },

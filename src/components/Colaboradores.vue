@@ -27,8 +27,8 @@
                   @{{amigo.username}}
                 </small>
               </div>
-              <!--            boton para eliminar amigo-->
-<!--              <b-button variant="danger" @click="deleteFriend(amigo.usuario)" size="sm" class="rounded-circle align-text-bottom my-1" style="white-space: pre"> - </b-button>-->
+              <!--            boton para eliminar colaborador-->
+              <b-button variant="danger" size="sm" @click="deleteOwner(amigo.username)" class="rounded-circle align-text-bottom my-1" style="white-space: pre"> - </b-button>
             </b-list-group-item>
           </b-list-group>
         </b-tab>
@@ -136,6 +136,14 @@
                   }
               )
             },
+            deleteOwner(user){
+              this.$store.dispatch("DataModule/deleteOwner", {id: this.idTask, username: user}).then(
+                  ()=>{
+                    this.$store.dispatch("DataModule/update") // Luego de la petición, llamar a la función para obtener los eventos
+                    this.$bvModal.hide('owners')
+                  }
+              )
+            }
         },created() {
             //deficnicion de funcion debounced (solo se ejecuta cuando pasen mas de 500ms sin ser llamada)
             let vm=this

@@ -147,6 +147,20 @@ class UserService {
             })
     }
 
+    removeAdmin(task, user){
+        return axios.patch(API_URL + '/task/' + task+'/remove-admin/' + user
+        , null,{
+            headers: authHeader()
+            })
+    }
+
+    deleteOwner(task, user){
+        return axios.delete(API_URL + '/task/' + task + '/delete-owner/' + user
+        ,{
+            headers: authHeader()
+            })
+    }
+
 
 
 }

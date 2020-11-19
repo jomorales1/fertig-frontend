@@ -5,7 +5,6 @@
     <b-alert :show="error" @dismissed="error=!error" class="text-left" variant="danger" dismissible>Error al crear subtarea</b-alert>
     <!--    pop up con formulario para crear tarea-->
     <b-modal id="create-subTask"
-             no-stacking
              title="Crear Subtarea"
              @ok="ok"
     >

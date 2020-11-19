@@ -64,7 +64,7 @@ export default {
   },
   data(){
     return {
-      idParent: 'numeric',
+      idParent: 0,
       //opciones de ordenes para las tareas
       orders:[
           "Prioridad",

@@ -40,6 +40,8 @@ export const DataModule = {
                     listItems.push(event)
                 }
             })
+            dispatch("updateRepetitions")
+            dispatch("updateEventsRepetitions")
             commit('updated',listItems)
         },
         updateRepetitions({commit}){

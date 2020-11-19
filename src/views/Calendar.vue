@@ -1,6 +1,7 @@
 <template>
   <b-container fluid="" class="col-lg-10 mt-5 px-lg-5 d-flex justify-content-around " style="height: 85vh; " >
-    <creacion-tareas></creacion-tareas>
+    <creacion-tareas ref="create" ></creacion-tareas>
+    <CreacionSubtareas ref="add" :id="idParent"/>
     <div class="w-100">
       <vue-cal
                :time-from="0"
@@ -14,16 +15,41 @@
                :min-cell-width="100"
                cellContextmenu
                :on-event-click="onEventClick"
-               :view-change="scrollToCurrent"
-               ref="calendar"
+               @view-change="scrollToCurrent($event)"
+               id="vuecal"
       >
       </vue-cal>
     </div>
-    <b-modal id="eventModal" >
-      <div >
-          {{current}}
-      </div>
+    <b-modal id="eventModal" v-if="current" :title="current.nombre">
 
+      <div >
+        <span><strong>Descripción: </strong>{{current.descripcion}}</span><br>
+        <span><strong>Duración: </strong>{{current.duracion}} minutos</span><br>
+        <span><strong>Prioridad: </strong>{{current.prioridad}}</span><br>
+        <span><strong>Recurrencia: </strong>{{current.mensajeRecurrencia}}</span><br>
+        <span v-if="current.fechaInicio"><strong >Fecha de inicio: </strong>{{formatFecha(new Date(current.fechaInicio))}}</span><br v-if="current.fechaInicio">
+        <span><strong>Fecha de Finalización: </strong>{{formatFecha(new Date(current.fechaFin))}}</span><br>
+        <span><strong>Proxima repetición: </strong>{{formatFecha(current.fecha) }}</span><br>
+        <span v-if="current.franjaInicio"><strong>Franja Horaria: </strong>{{stringFranja}}</span><br v-if="current.franjaInicio">
+        <span><strong>Etiquetas: </strong><b-badge variant="primary" v-for="etq in current.etiqueta.split(' ')" :key="etq">etq</b-badge> </span>
+        <b-button v-if="routine || task"
+                  @click="addSubTask({id: idParent, padre: current})"
+                  size="sm"
+                  class="float-right my-0" >+ Subtarea</b-button>
+        <br>
+        <Subtareas
+            :list-item="current"
+            v-if="routine || task"
+            v-on:addSubTask="addSubTask($event)"
+            v-on:editSubTask="editsubTask($event)"
+            class="mt-3"
+        />
+      </div>
+      <template #modal-footer="{}">
+        <b-button variant="primary" @click="edit" >
+          Editar
+        </b-button>
+      </template>
     </b-modal>
   </b-container>
 </template>
@@ -33,66 +59,78 @@ import VueCal from 'vue-cal'
 import 'vue-cal/dist/i18n/es.js'
 import 'vue-cal/dist/vuecal.css'
 import CreacionTareas from "@/components/CreacionTareas";
+import CreacionSubtareas from "@/components/CreacionSubtareas";
 import Task from "@/models/Task";
 import Routine from "@/models/Routine";
 import TEvent from "@/models/TEvent";
+import Subtareas from "@/components/Subtareas";
 export default {
   name: "Calendar",
-  components:{CreacionTareas, VueCal},
+  components:{Subtareas, CreacionTareas, VueCal, CreacionSubtareas},
   data(){
     return{
-      current:{}
+      calendarEvent:{id:0,type:Task},
+      task:false,
+      routine:false,
+      idParent:0
     }
   },
   methods:{
     onEventClick(event, e){
-      this.current = this.$store.state.DataModule.tareas.filter(task=>{
-        return (task instanceof event.type) && task.id===event.id
-      })[0]
+      this.calendarEvent = event
+      this.task = this.current instanceof Task
+      this.routine = this.current instanceof Routine
       this.$bvModal.show('eventModal')
       e.stopPropagation()
     },
-    scrollToCurrent(emmited){
-      if(emmited.view==='Month'||this.now()<emmited.startDate||this.now()>emmited.endDate)return
-      this.$refs.calendar.scrollTo({
-        top:(this.now.getHours() + this.now.getMinutes() / 60)*100,
-        behavior: 'smooth'
-    })
+    scrollToCurrent(emitted){
+      setTimeout(()=>{
+        if(emitted.view==='Month'||Date.now()<emitted.startDate||Date.now()>emitted.endDate)return
+        let now = new Date()
+        const calendar = document.querySelector('#vuecal .vuecal__bg')
+        calendar.scrollTo({
+          top:(now.getHours()+(now.getMinutes()/60))*200,
+          behavior: 'smooth'
+        })
+      },500)
+    },
+    edit(){//metodo para mostrar el dialogo de creacion de tarea para edicion
+      this.$refs.create.edit(this.current)
+      this.$bvModal.show('create-activity')
+    },
+    addSubTask(data){
+      this.idParent = data.id
+      this.$refs.add.newTask(data.padre); // padre mayor
+    },
+    editsubTask(data){
+      this.$bvModal.show('create-subTask')
+      this.$refs.add.edit(data.tarea, data.padre)
+    },
+    formatFecha(date){
+      let options={ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+        hour: 'numeric', minute: 'numeric', hour12:true }
+      return (new Intl.DateTimeFormat('es',options)).format(date)
     }
   },
   computed:{
+    current(){
+      return this.$store.state.DataModule.tareas.filter(task=>{
+        if(task instanceof Routine)return (this.calendarEvent.type===Routine) && task.id===this.calendarEvent.id
+        return (task instanceof this.calendarEvent.type) && task.id===this.calendarEvent.id
+      })[0]
+    },
+    stringFranja(){
+      let inicio= new Date()
+      let fin= new Date()
+      let franjaInicio = this.current.franjaInicio.split('-')[0].split(':')
+      inicio.setUTCHours(franjaInicio[0],franjaInicio[1],0,0)
+      let franjaFin = this.current.franjaFin.split('-')[0].split(':')
+      fin.setUTCHours(franjaFin[0],franjaFin[1],0,0)
+      let options={ hour: 'numeric', minute: 'numeric', hour12:true }
+      return (new Intl.DateTimeFormat('es',options)).format(inicio)+" - "+(new Intl.DateTimeFormat('es',options)).format(fin)
+    },
     events() {
-      let events = [
-        {
-          start: '2020-11-12',
-          end: '2020-11-12',
-          title: 'Day off!',
-          content: '<i class="v-icon material-icons">beach_access</i>',
-          class: 'yellow-event',
-          allDay: true,
-          background: true
-        },
-        {
-          start: '2020-11-20',
-          end: '2020-11-20',
-          title: 'Need to go shopping',
-          icon: 'shopping_cart', // Custom attribute.
-          content: 'Click to see my shopping list',
-          contentFull: 'My shopping list is rather long:<br><ul><li>Avocados</li><li>Tomatoes</li><li>Potatoes</li><li>Mangoes</li></ul>', // Custom attribute.
-          class: 'leisure',
-          background: true
-        },
-        {
-          start: '2020-11-22 10:00',
-          end: '2020-11-22 15:00',
-          title: 'Golf with John',
-          icon: 'golf_course', // Custom attribute.
-          content: 'Do I need to tell how many holes?',
-          contentFull: 'Okay.<br>It will be a 18 hole golf course.', // Custom attribute.
-          class: 'sport',
-          background: true
-        }
-      ]
+      let events = []
       let tareas = this.$store.state.DataModule.tareas.filter(item => item instanceof Task)
       tareas.forEach(value => {
         events.push({
@@ -120,6 +158,19 @@ export default {
             id: value.id
           })
         })
+        value.completadas.forEach(item=>{
+          events.push({
+            start: new Date(item),
+            end: new Date(new Date(item).addMinutes(value.duracion)),
+            title: value.nombre,
+            content: value.descripcion,
+            allDay: false,
+            class: 'leisure',
+            type: Routine,
+            id: value.id
+          })
+        })
+        if(value.completadas.length>0)events.pop()
       })
       let eventRepetitions = this.$store.state.DataModule.eventsRepetitions
       eventRepetitions.forEach(value => {
@@ -166,7 +217,7 @@ export default {
   }
 }
 .vuecal__event.back {
-  background: repeating-linear-gradient(45deg, transparent, transparent 10px, #f2f2f2 10px, #f2f2f2 20px);/* IE 10+ */
+  background: repeating-linear-gradient(45deg, #fff,  #fff 10px, #f2f2f2 10px, #f2f2f2 20px);/* IE 10+ */
   color: #999;
   .vuecal__event-title {
     font-weight: bold;

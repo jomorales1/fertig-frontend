@@ -21,7 +21,12 @@ jobs:
       - name: Replace Action
         uses: datamonsters/replace-action@v2
         with: 
-          files: 'src/services/user.service.js,src/services/auth.service.js'
+          files: src/services/user.service.js
+          replacements: 'http://localhost:8090=https://fertigbackend.azurewebsites.net/'
+      - name: Replace Action
+        uses: datamonsters/replace-action@v2
+        with: 
+          files: src/services/auth.service.js
           replacements: 'http://localhost:8090=https://fertigbackend.azurewebsites.net/'
       - name: Build And Deploy
         id: builddeploy

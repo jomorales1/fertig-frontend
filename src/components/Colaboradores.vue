@@ -3,7 +3,7 @@
     <b-modal id="owners" title="Colaboradores"  hide-footer @show="initialize">
       <b-tabs content-class="mt-3">
         <b-tab title="Colaboradores" active>
-          <!--        campo de busqueda en mis amigos-->
+          <!--        tab de la lista de colaboradores -->
           <div class="d-flex my-2">
             <b-input placeholder="Buscar" v-model="FriendUsername"></b-input>
           </div>
@@ -13,7 +13,7 @@
           <!--        lista de amigos del usuario-->
           <b-list-group>
             <b-list-group-item
-                v-for="amigo in owners"
+                v-for="amigo in myComputedOwners"
                 v-bind:key="amigo.username"
                 class="d-flex align-items-center"
             >
@@ -33,9 +33,9 @@
           </b-list-group>
         </b-tab>
         <b-tab title="Agregar colaborador" active>
-                <!--        campo de busqueda en mis amigos-->
+                <!--        tab de agregar colaborador -->
                 <div class="d-flex my-2">
-                    <b-input placeholder="Buscar" v-model="FriendUsername"></b-input>
+                    <b-input placeholder="Buscar" v-model="username"></b-input>
                 </div>
                 <!--        alertas de errores en mis amigos-->
                 <b-alert variant="danger" v-model="FriendsError">Error al cargar Amigos</b-alert>
@@ -43,7 +43,7 @@
                 <!--        lista de amigos del usuario-->
                 <b-list-group>
                     <b-list-group-item
-                            v-for="amigo in myComputedFriends"
+                            v-for="amigo in searchedFriends"
                             v-bind:key="amigo.usuario"
                             class="d-flex align-items-center"
                     >
@@ -98,9 +98,8 @@
         },
         computed:{
             //variable computada para filtrar a los amigos por busqueda
-            myComputedFriends(){
-                let ownersTask = this.owners.map(o => o.username)
-                return this.myFriends.filter((friend)=>friend.usuario.includes(this.FriendUsername) && !ownersTask.includes(friend.usuario))
+            myComputedOwners(){
+                return this.owners.filter((friend)=>friend.username.includes(this.FriendUsername) && this.$store.state.auth.user.username!==friend.username)
             }
         },
         methods:{

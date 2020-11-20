@@ -130,22 +130,24 @@
             </b-card>
             <h6 class="col-1">Colaboradores:</h6>
             <b-list-group>
-                <b-list-group-item class="col-10 border-0" style="margin-left: 2%" v-for="o in owners" v-bind:key="o.username">
-                  <div class="row align-items-center">
-                    {{o.username}}
-                    <template v-if="o.admin" >
-                      <img alt="Pencil" class="col-1" src="../assets/propietario.svg" style="height: 1rem">
-                      <b-button class="col-0" variant="white" size="sm" @click="removeAdminTask(o.username)">
-                        <img alt="Delete" class="mx-1" src="../assets/menos.svg" style="height: 1rem">
-                      </b-button>
-                    </template>
-                    <template v-if="!o.admin">
-                      <b-button class="col-0" variant="white" size="sm" style="margin: 1%" @click="addAdminTask(o.username)">
-                        <img alt="Upgrade" class="mx-1" src="../assets/flecha-hacia-arriba.svg" style="height: 1rem">
-                      </b-button>
-                    </template>
+              <div class="row align-items-center">
+                <b-list-group-item class="col-2 border-0" style="margin-left: 2.4%" v-for="o in owners" v-bind:key="o.username" >
+                  <div class="row align-items-center" >
+                      {{o.username}}
+                      <template v-if="o.admin " >
+                        <img alt="Owner" class="mx-1" src="../assets/propietario.svg" style="height: 1rem">
+                        <b-button class="col-0" variant="white" size="sm" @click="removeAdminTask(o.username)">
+                          <img alt="Delete" class="mx-1" src="../assets/menos.svg" style="height: 1rem">
+                        </b-button>
+                      </template>
+                      <template v-if="!o.admin">
+                        <b-button class="col-0" variant="white" size="sm" style="margin: 1%" @click="addAdminTask(o.username)">
+                          <img alt="Upgrade" class="mx-1" src="../assets/flecha-hacia-arriba.svg" style="height: 1rem">
+                        </b-button>
+                      </template>
                   </div>
                 </b-list-group-item>
+              </div>
             </b-list-group>
           </b-collapse>
   </b-list-group-item>
@@ -226,7 +228,8 @@ export default {
       this.$store.dispatch("DataModule/removeAdmin",{id: this.listItem.id, username:user}).then(()=> {
         this.$store.dispatch('DataModule/update')
       })
-    }
+    },
+
   },
 
     computed:{
@@ -269,7 +272,7 @@ export default {
         if(this.listItem instanceof Task){
           this.$store.dispatch("DataModule/getOwners", this.listItem.id).then(
               response =>{
-                this.owners = response.data
+                this.owners = response.data.filter(item => this.$store.state.auth.user.username !== item.username)
               }
           )
         }

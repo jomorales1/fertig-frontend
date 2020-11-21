@@ -90,7 +90,7 @@ export default {
           }
         })
       } else {
-        alert("No permission to send notification")
+        console.log("Notificaciones Denegadas")
       }
       this.requestPermission = Notification.permission;
     },
@@ -100,6 +100,15 @@ export default {
         messaging.getToken()
             .then((token) => {
               console.log(token);
+              this.$store.dispatch("auth/sendToken",token).then(null,()=>
+              {
+                this.$root.$bvToast.toast("Error al activar las notificaciones",{
+                  title: `Error`,
+                  variant: 'danger',
+                  solid: true,
+                  toaster:'b-toaster-top-center'
+                })
+              })
             })
             .catch((err) => {
               console.log('An error occurred while retrieving token. ', err);
@@ -138,7 +147,7 @@ export default {
     //inicializar el servicio de firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics()
-    this.enableNotifications()
+    if(this.loggedIn)this.enableNotifications()
   }
 }
 </script>

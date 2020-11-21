@@ -20,6 +20,14 @@ class AuthService{
                 return response.data // Devuelve los datos del usuario en respuesta
             });
     }
+    sendToken(token){
+        return axios.post(API_URL+'/notification/add-token',
+            {
+                token:token
+            }, {
+                headers: authHeader()
+            })
+    }
     logout() { // Funcion para cerrar sesión
         localStorage.removeItem('user'); // Remueve el usuario de memoria
         localStorage.removeItem('googleUser');//Remueve el usuario de google de la memoria

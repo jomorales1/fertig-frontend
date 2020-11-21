@@ -85,6 +85,9 @@ export const auth = {
                 }
             );
         },
+        sendToken(token){
+            return AuthService.sendToken(token)
+        }
         },
     mutations: {
         //funciones de cambio de estado

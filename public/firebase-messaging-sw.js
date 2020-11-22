@@ -16,13 +16,12 @@ firebase.initializeApp(config);
 const messaging = firebase.messaging();
 messaging.setBackgroundMessageHandler(function (payload) {
     console.log(' Received background message ', payload);
-    const title = 'Recipe PWA'
     const options = {
-            body: "New Recipe Alert",
-            icon: "https://raw.githubusercontent.com/idoqo/laravel-vue-recipe-pwa/master/public/recipe-book.png"
+            body: payload.notification.body,
+            icon: payload.notification.icon
         };
     return self.registration.showNotification(
-        title,
+        payload.notification.title,
         options
     );
 });

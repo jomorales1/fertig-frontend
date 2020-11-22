@@ -191,7 +191,34 @@
             <div >Y termina a las:</div>
             <b-form-input required id="hasta" type="time" @change="formatFranjaFin" v-model="franjaFin"></b-form-input>
           </b-form-group>
+          <b-form-group id="fieldset-checkbox-notification"
+                        label-cols-sm="4"
+                        label-cols-lg="3"
+                        label="Notificaciones"
+                        description="¿Desea recibir una notificación antes de que el evento empiece?"
+                        label-for="checkbox-notification">
+            <b-form-checkbox
+                id="checkbox-notification"
+                v-model="statusNotification"
+                name="checkbox-notification"
+                @change="tarea.recordatorio=null"
+            >
+            </b-form-checkbox>
+          </b-form-group>
+          <b-form-group
+              v-if="statusNotification"
+              id="fieldset-notification"
+              label-cols-sm="4"
+              label-cols-lg="3"
+              description="Momento en que quiere que le llegue recordatorio de la actividad"
+              label-for="notification"
+              label="Tiempo de recordatorio"
+          >
+            <b-input-group append="minutos antes">
+              <b-form-input type="number" required v-model="tarea.recordatorio"/>
+            </b-input-group>
 
+          </b-form-group>
         </form>
       </template>
     </b-modal>
@@ -238,6 +265,8 @@ export default {
       status: false,
       // seleccionador del cambio de tarea, o rutina, a evento
       statusEvent: false,
+      // sleccionador recordatorio
+      statusNotification:false,
       // seleccionador del tipo de repeticiones
       Range: 'D',
       //seleccionador de dias de la semana
@@ -285,8 +314,6 @@ export default {
       }
       else{
         this.incomplete=false
-        //se rellenan los campos que no se muestran en la interfaz
-        this.tarea.recordatorio=0
         if (this.status){
           // metodo de crear rutina o evento con repeticiones
           //se rellenan los campos que no se muestran en la interfaz
@@ -401,6 +428,16 @@ export default {
             }
             this.numbRep=this.listItem.recurrencia[item.recurrencia.indexOf('.')+2]
           }else{//si es otro tipo de repetición
+            if(item.franjaInicio){
+              let franjaInicio=this.listItem.franjaInicio.split('Z')[0].split(':')
+              let inicio = new Date(new Date().setUTCHours(franjaInicio[0],franjaInicio[1],0,0))
+              this.franjaInicio = new Intl.DateTimeFormat('es',{hour: '2-digit', minute: 'numeric', hour12: false}).format(inicio)
+              if(inicio.getHours()<10)this.franjaInicio='0'+this.franjaInicio
+              let franjaFin=this.listItem.franjaFin.split('Z')[0].split(':')
+              let fin = new Date(new Date().setUTCHours(franjaFin[0],franjaFin[1],0,0))
+              this.franjaFin = new Intl.DateTimeFormat('es',{hour: '2-digit', minute: 'numeric', hour12: false}).format(fin)
+              if(fin.getHours()<10)this.franjaFin='0'+this.franjaFin
+            }
             this.Range=this.listItem.recurrencia[0]
             this.numbRep=this.listItem.recurrencia[1]
 
@@ -411,6 +448,7 @@ export default {
           this.statusEvent=true
           this.endHour=new Intl.DateTimeFormat( 'es',options).format(new Date(item.fechaFin))
         }
+        if(item.recordatorio)this.statusNotification=true
       }
     },
     save(){

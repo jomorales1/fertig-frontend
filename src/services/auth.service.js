@@ -20,9 +20,31 @@ class AuthService{
                 return response.data // Devuelve los datos del usuario en respuesta
             });
     }
+    sendToken(token){
+        return axios.post(API_URL+'/notification/add-token',querystring.stringify(
+            {
+                token:token
+            }), {
+                headers: authHeader()
+            })
+    }
     logout() { // Funcion para cerrar sesión
-        localStorage.removeItem('user'); // Remueve el usuario de memoria
-        localStorage.removeItem('googleUser');//Remueve el usuario de google de la memoria
+        let token = localStorage.getItem("token")
+        let headers= {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        headers.Authorization=authHeader().Authorization
+        return axios.delete(API_URL+"/notification/delete-token",{
+            data: querystring.stringify({
+                id:token
+            }),
+            headers: headers
+        }).then(()=>{
+            localStorage.removeItem('user'); // Remueve el usuario de memoria
+            localStorage.removeItem('googleUser');//Remueve el usuario de google de la memoria
+            localStorage.removeItem("token")
+        })
+
     }
     googleLogin(googleToken){//metodo para enviar token de google y obtener token propio
          return axios.post(API_URL+'/login/oauth2/code/google',querystring.stringify({

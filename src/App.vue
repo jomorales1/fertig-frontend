@@ -90,7 +90,7 @@ export default {
           }
         })
       } else {
-        alert("No permission to send notification")
+        console.log("Notificaciones Denegadas")
       }
       this.requestPermission = Notification.permission;
     },
@@ -99,7 +99,20 @@ export default {
         const messaging = firebase.messaging();
         messaging.getToken()
             .then((token) => {
-              console.log(token);
+              let status = localStorage.getItem("token")
+              if(!status) {
+                this.$store.dispatch("auth/sendToken", token).then(
+                    () => {
+                      localStorage.setItem("token", token)
+                    }, () => {
+                      this.$root.$bvToast.toast("Error al activar las notificaciones", {
+                        title: `Error`,
+                        variant: 'danger',
+                        solid: true,
+                        toaster: 'b-toaster-top-center'
+                      })
+                    })
+              }
             })
             .catch((err) => {
               console.log('An error occurred while retrieving token. ', err);
@@ -108,7 +121,7 @@ export default {
           console.log("Message received", payload);
           new Notification(payload.notification.title,{
             body: payload.notification.body,
-            icon: "https://raw.githubusercontent.com/idoqo/laravel-vue-recipe-pwa/master/public/recipe-book.png",
+            icon: payload.notification.icon,
             actions:[
               {action: 'like', title: '👍Like'},
               {action: 'reply', title: '⤻ Reply'}
@@ -138,7 +151,7 @@ export default {
     //inicializar el servicio de firebase
     firebase.initializeApp(firebaseConfig);
     firebase.analytics()
-    this.enableNotifications()
+    if(this.loggedIn)this.enableNotifications()
   }
 }
 </script>

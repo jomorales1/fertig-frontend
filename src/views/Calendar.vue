@@ -124,9 +124,9 @@ export default {
     stringFranja(){
       let inicio= new Date()
       let fin= new Date()
-      let franjaInicio = this.current.franjaInicio.split('-')[0].split(':')
+      let franjaInicio = this.current.franjaInicio.split('Z')[0].split(':')
       inicio.setUTCHours(franjaInicio[0],franjaInicio[1],0,0)
-      let franjaFin = this.current.franjaFin.split('-')[0].split(':')
+      let franjaFin = this.current.franjaFin.split('Z')[0].split(':')
       fin.setUTCHours(franjaFin[0],franjaFin[1],0,0)
       let options={ hour: 'numeric', minute: 'numeric', hour12:true }
       return (new Intl.DateTimeFormat('es',options)).format(inicio)+" - "+(new Intl.DateTimeFormat('es',options)).format(fin)
@@ -197,6 +197,7 @@ export default {
     this.$store.dispatch('DataModule/update')
     this.$store.dispatch('DataModule/updateRepetitions')
     this.$store.dispatch('DataModule/updateEventsRepetitions')
+    console.log(this.$)
   }
 }
 </script>

@@ -85,6 +85,15 @@ export const auth = {
                 }
             );
         },
+        sendToken({ commit },token){
+            return AuthService.sendToken(token).then(
+                response => {
+                    return Promise.resolve(response.data);
+                }, error=>{
+                commit('changesFailure')
+                return Promise.reject(error);
+            })
+        }
         },
     mutations: {
         //funciones de cambio de estado

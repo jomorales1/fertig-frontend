@@ -106,12 +106,7 @@ export default {
         this.$store.dispatch('auth/login', this.user).then(
             () => {
               //si intento entrar antes a otra pagina restringida redirigirlo allá
-              if(this.$route.query.nextUrl != null){
-                this.$router.push(this.$route.query.nextUrl)
-              }else {
-                //si inicio sesión redirigir a lista si no intento acceder a otra pagina
-                this.$router.push('/List');
-              }
+              this.nextPage()
             },
             () => {
               //si hubo error mostrarlo en pantalla
@@ -132,7 +127,7 @@ export default {
                   //guardar el token en el storage para inicio de sesión automatico
                   localStorage.setItem("googleUser",JSON.stringify(user.getAuthResponse().id_token))
                   //si inicio sesión redirigir a lista
-                  this.$router.push('/List');
+                  this.nextPage()
                 },
                 (error) => {
                   //si hubo error mostrarlo en pantalla
@@ -155,8 +150,7 @@ export default {
       //peticion de inicio de sesión con el token de google
       this.$store.dispatch("auth/facebookLogin",this.FB.getAccessToken()).then(
           () => {
-            //si inicio sesión redirigir a lista
-            this.$router.push('/List');
+            this.nextPage()
           },
           (error) => {
             //si hubo error mostrarlo en pantalla
@@ -164,6 +158,16 @@ export default {
             this.loading = false;
           }
       );
+    },
+    nextPage(){
+      this.$parent.enableNotifications()
+      //si intento entrar antes a otra pagina restringida redirigirlo allá
+      if(this.$route.query.nextUrl != null){
+        this.$router.push(this.$route.query.nextUrl)
+      }else {
+        //si inicio sesión redirigir a lista si no intento acceder a otra pagina
+        this.$router.push('/List');
+      }
     }
   },
   mounted(){

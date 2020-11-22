@@ -100,19 +100,19 @@ export default {
         messaging.getToken()
             .then((token) => {
               let status = localStorage.getItem("token")
-              if(!status)
-              this.$store.dispatch("auth/sendToken",token).then(
-                  ()=>{
-                    localStorage.setItem("token",token)
-                  },()=>
-                  {
-                    this.$root.$bvToast.toast("Error al activar las notificaciones",{
-                      title: `Error`,
-                      variant: 'danger',
-                      solid: true,
-                      toaster:'b-toaster-top-center'
+              if(!status) {
+                this.$store.dispatch("auth/sendToken", token).then(
+                    () => {
+                      localStorage.setItem("token", token)
+                    }, () => {
+                      this.$root.$bvToast.toast("Error al activar las notificaciones", {
+                        title: `Error`,
+                        variant: 'danger',
+                        solid: true,
+                        toaster: 'b-toaster-top-center'
+                      })
                     })
-                  })
+              }
             })
             .catch((err) => {
               console.log('An error occurred while retrieving token. ', err);

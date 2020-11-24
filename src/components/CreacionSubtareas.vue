@@ -93,6 +93,7 @@
 <script>
 import Task from "@/models/Task";
 import ListItem from "@/models/ListItem";
+import cloneDeep from "lodash/cloneDeep";
 //import Routine from "@/models/Routine";
 
 export default {
@@ -158,7 +159,7 @@ export default {
     edit(item,padre){
       this.isEdit=true
       this.listItem=padre
-      this.tarea=item
+      this.tarea=cloneDeep(item)
       this.status=false
       let options = {
         hour: 'numeric', minute: 'numeric', milliseconds:'numeric'

@@ -64,6 +64,13 @@ const routes=[
         meta: {
             requiresAuth: true
         }
+    },{
+        path:'/Progress',//ruta (localhost:8080/Settings)
+        name:'Progreso',
+        component:()=>import('@/views/Progress'),//componente que ocupa esa vista a partir de carpeta views
+        meta: {
+            requiresAuth: true
+        }
     }
 ]
 //declracion del router

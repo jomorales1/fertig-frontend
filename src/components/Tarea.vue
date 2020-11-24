@@ -48,8 +48,12 @@
 <!--Boton para editar tarea -->
               <b-button v-if="routine || task" @click="$emit('addSubTask',{id: idParent, padre: listItem})" size="sm" class="float-left my-2" >+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
-              <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>
-<b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="focus" placement="bottom" variant="secondary">
+              <b-dropdown text="Compartir Tarea" variant="primary" size="sm" class="m-2">
+                  <b-dropdown-item-button  size="sm" ref="share">Compartir enlace</b-dropdown-item-button>
+                  <b-dropdown-item-button size="sm" @click="$emit('showOwners',listItem.id)">Agregar colaborador</b-dropdown-item-button>
+              </b-dropdown>
+<!--              <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>-->
+              <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="hover" placement="bottom" variant="secondary">
                 <template #title>Compartir copia de {{task?'tarea':routine?'rutina':'evento'}}</template>
                 <b-input-group prepend="Link:" size="sm">
                   <b-form-input :value="fullUrl" ref="urlComponent"></b-form-input>
@@ -66,6 +70,27 @@
                   v-on:editSubTask="$emit('editSubTask', $event)"
               />
             </b-card>
+            <h6 class="col-1">Colaboradores:</h6>
+            <b-list-group>
+              <div class="row align-items-center">
+                <b-list-group-item class="col-2 border-0" style="margin-left: 2.4%" v-for="o in owners" v-bind:key="o.username" >
+                  <div class="row align-items-center" >
+                      {{o.username}}
+                      <template v-if="o.admin " >
+                        <img alt="Owner" class="mx-1" src="../assets/propietario.svg" style="height: 1rem">
+                        <b-button class="col-0" variant="white" size="sm" @click="removeAdminTask(o.username)">
+                          <img alt="Delete" class="mx-1" src="../assets/menos.svg" style="height: 1rem">
+                        </b-button>
+                      </template>
+                      <template v-if="!o.admin">
+                        <b-button class="col-0" variant="white" size="sm" style="margin: 1%" @click="addAdminTask(o.username)">
+                          <img alt="Upgrade" class="mx-1" src="../assets/flecha-hacia-arriba.svg" style="height: 1rem">
+                        </b-button>
+                      </template>
+                  </div>
+                </b-list-group-item>
+              </div>
+            </b-list-group>
           </b-collapse>
   </b-list-group-item>
 </template>
@@ -101,7 +126,8 @@ export default {
       routine: this.listItem instanceof Routine,
       event: this.listItem instanceof TEvent,
       hecho:false,
-      url: window.location.origin
+      url: window.location.origin,
+      owners: []
     }
   },
   methods: {
@@ -125,7 +151,18 @@ export default {
     copy(){
       this.$refs.urlComponent.select()
       document.execCommand('copy')
-    }
+    },
+    addAdminTask(user){
+      this.$store.dispatch("DataModule/addAdmin",{id: this.listItem.id, username: user}).then(()=>{
+        this.$store.dispatch('DataModule/update')
+      })
+    },
+    removeAdminTask(user){
+      this.$store.dispatch("DataModule/removeAdmin",{id: this.listItem.id, username:user}).then(()=> {
+        this.$store.dispatch('DataModule/update')
+      })
+    },
+
   },
 
     computed:{
@@ -193,6 +230,14 @@ export default {
                 }
             )
         }
+        if(this.listItem instanceof Task){
+          this.$store.dispatch("DataModule/getOwners", this.listItem.id).then(
+              response =>{
+                this.owners = response.data.filter(item => this.$store.state.auth.user.username !== item.username)
+              }
+          )
+        }
+
   }
 }
 </script>

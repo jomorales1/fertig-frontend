@@ -128,6 +128,45 @@ class UserService {
             })
     }
 
+    addAdmin(task, user){
+        return axios.post( API_URL + '/task/' + task + '/add-admin/' + user
+            ,null,{
+                headers: authHeader()
+            }
+
+        )
+    }
+
+    addOwner(task, user){
+        return axios.post( API_URL + '/task/' + task + '/add-owner/' + user
+            ,null,{
+                headers: authHeader()
+            }
+
+        )
+    }
+
+    getOwners(task){
+        return axios.get(API_URL + '/task/' + task + '/owners',
+            {
+                headers: authHeader()
+            })
+    }
+
+    removeAdmin(task, user){
+        return axios.patch(API_URL + '/task/' + task+'/remove-admin/' + user
+        , null,{
+            headers: authHeader()
+            })
+    }
+
+    deleteOwner(task, user){
+        return axios.delete(API_URL + '/task/' + task + '/delete-owner/' + user
+        ,{
+            headers: authHeader()
+            })
+    }
+
 
 
 }

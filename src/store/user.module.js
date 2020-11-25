@@ -225,6 +225,66 @@ export const DataModule = {
         },
         deleteOwner({commit}, data){
             return UserService.deleteOwner(data.id, data.username).then(() => {}, () =>{ commit('error')})
+        },
+        getReportWeek({commit}, date){
+            return UserService.getReportWeek(date).then(
+                response =>{
+                    return Promise.resolve(response)
+                },() =>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
+        },
+        getReportMonth({commit}, date){
+            return UserService.getReportMonth(date).then(
+                response =>{
+                    return Promise.resolve(response)
+                },() =>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
+        },
+        getReportYear({commit}, date){
+            return UserService.getReportYear(date).then(
+                response =>{
+                    return Promise.resolve(response)
+                },() =>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
+        },
+        getGraphicWeek({commit},date){
+            return UserService.getGraphicWeek(date).then(
+                response =>{
+                    return Promise.resolve(response)
+                },() =>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
+        },
+        getGraphicMonth({commit},date){
+            return UserService.getGraphicMonth(date).then(
+                response =>{
+                    return Promise.resolve(response)
+                },() =>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
+        },
+        getGraphicYear({commit},date){
+            return UserService.getGraphicYear(date).then(
+                response =>{
+                    return Promise.resolve(response)
+                },() =>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
         }
 
     },

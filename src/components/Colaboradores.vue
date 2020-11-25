@@ -150,7 +150,6 @@
                 if(vm.username!=="")vm.$store.dispatch('DataModule/searchUser',vm.username).then((response)=>{
                     //generacion de lista de usuarios de amigos
                     let friends=vm.myFriends.map(item=>item.usuario)
-                    //let ownersTask = vm.owners.map(o => o.username)
                     //filtrado del response excluyendo amigos y el usuario actual
                     vm.searchedFriends=response.data.filter(item=>friends.includes(item.usuario)&&this.$store.state.auth.user.username!==item.usuario)
                 },()=>{

@@ -1,5 +1,6 @@
 import axios from 'axios'
 import authHeader from './auth-header'
+// import querystring from "query-string";
 const API_URL = 'http://localhost:8090'
 class UserService {
 
@@ -164,6 +165,90 @@ class UserService {
         return axios.delete(API_URL + '/task/' + task + '/delete-owner/' + user
         ,{
             headers: authHeader()
+            })
+    }
+
+    getReportWeek(date){
+        let headers= {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        headers.Authorization=authHeader().Authorization
+        return axios.get(API_URL + '/report/week'
+        , {
+                params: {
+                    fecha:date
+                },
+                headers:headers
+        })
+    }
+
+    getReportMonth(date){
+        let headers= {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        headers.Authorization=authHeader().Authorization
+        return axios.get(API_URL + '/report/month'
+            , {
+                params: {
+                    fecha:date
+                },
+                headers:headers
+            })
+    }
+
+    getReportYear(date){
+        let headers= {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        headers.Authorization=authHeader().Authorization
+        return axios.get(API_URL + '/report/year'
+            , {
+                params: {
+                    fecha:date
+                },
+                headers:headers
+            })
+    }
+
+    getGraphicWeek(date){
+        let headers= {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        headers.Authorization=authHeader().Authorization
+        return axios.get(API_URL + '/graphic/week'
+            , {
+                params: {
+                    fecha:date
+                },
+                headers:headers
+            })
+    }
+
+    getGraphicMonth(date){
+        let headers= {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        headers.Authorization=authHeader().Authorization
+        return axios.get(API_URL + '/graphic/month'
+            , {
+                params: {
+                    fecha:date
+                },
+                headers:headers
+            })
+    }
+
+    getGraphicYear(date){
+        let headers= {
+            "Content-Type": "application/x-www-form-urlencoded"
+        }
+        headers.Authorization=authHeader().Authorization
+        return axios.get(API_URL + '/graphic/year'
+            , {
+                params: {
+                    fecha:date
+                },
+                headers:headers
             })
     }
 

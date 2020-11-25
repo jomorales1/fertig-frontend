@@ -4,9 +4,9 @@
     <b-tabs>
       <b-tab title="Semana" active>
         <div>
-          <div class="row justify-content-center">
+          <div class="row justify-content-center my-5">
             <b-button variant="primary" style="margin-right: 5%" @click="restWeek()">-</b-button>
-            {{longDate(fecha1)}}
+            {{longDateWeek(fecha1)}}
             <b-button variant="primary" style="margin-left: 5%" @click="addWeek()">+</b-button>
           </div>
           <header style="font-size: 300%">Horas Completadas</header>
@@ -19,9 +19,9 @@
       </b-tab>
       <b-tab title="Mes" lazy>
         <div>
-          <div class="row justify-content-center">
+          <div class="row justify-content-center my-5">
             <b-button variant="primary" style="margin-right: 5%" @click="restMonth()">-</b-button>
-            {{longDate(fecha2)}}
+            {{longDateMonth(fecha2)}}
             <b-button variant="primary" style="margin-left: 5%" @click="addMonth()">+</b-button>
           </div>
           <header style="font-size: 300%">Horas Completadas</header>
@@ -36,9 +36,9 @@
       </b-tab>
       <b-tab title="Año" lazy>
         <div>
-          <div class="row justify-content-center">
+          <div class="row justify-content-center my-5">
             <b-button variant="primary" style="margin-right: 5%" @click="restYear()">-</b-button>
-            {{longDate(fecha3)}}
+            {{longDateYear(fecha3)}}
             <b-button variant="primary" style="margin-left: 5%" @click="addYear()">+</b-button>
           </div>
           <header style="font-size: 300%">Horas Completadas</header>
@@ -208,10 +208,20 @@ export default {
 
 
     },
-    longDate(date){
+    longDateWeek(date){
       //formateo de la fecha para mostrar
       let options={ weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
         hour: 'numeric', minute: 'numeric', hour12:true }
+      return (new Intl.DateTimeFormat('es',options)).format(date)
+    },
+    longDateMonth(date){
+      //formateo de la fecha para mostrar
+      let options={ year: 'numeric', month: 'long', day: 'numeric'}
+      return (new Intl.DateTimeFormat('es',options)).format(date)
+    },
+    longDateYear(date){
+      //formateo de la fecha para mostrar
+      let options={ year: 'numeric', month: 'long'}
       return (new Intl.DateTimeFormat('es',options)).format(date)
     },
     shortDate(date){

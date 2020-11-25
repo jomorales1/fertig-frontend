@@ -1,7 +1,6 @@
 <template>
   <div class="align-self-center my-5">
-      <b-container> <!-- Contenedor titulo y formulario de registro !-->
-        <b-row  class ="justify-content-md-center ">
+      <b-container class ="justify-content-md-center flex-row d-flex"> <!-- Contenedor titulo y formulario de registro !-->
           <div class="col-md-6" >
             <h1>Fertig</h1>
               <b-card header="Sign Up"
@@ -33,12 +32,15 @@
                       <b-form-input type="password" id="password" required placeholder="Ingrese la contraseña" v-model="Register_form.password"></b-form-input>
                     </div>
                   </b-form-group>
-                    <b-form-group><!-- Campo repetir contraseña !-->
-                    <div class="form-row">
-                        <label class="col-form-label">Repetir contraseña: </label>
-                        <b-form-input type="password" id="reviewPassword" required placeholder="Confirme la contraseña" v-model="Register_form.reviewPassword"></b-form-input>
-                    </div>
-                    </b-form-group>
+                  <b-form-group><!-- Campo repetir contraseña !-->
+                  <div class="form-row">
+                      <label class="col-form-label">Repetir contraseña: </label>
+                      <b-form-input type="password" id="reviewPassword" required placeholder="Confirme la contraseña" v-model="Register_form.reviewPassword"></b-form-input>
+                  </div>
+                  </b-form-group>
+
+
+                    <b-form-checkbox class="my-2" v-model="franjas">¿Desea que le ofrescamos sugerencias de sus tareas pendientes en sus horas libres?</b-form-checkbox>
                   <b-form-group><!-- Botones de registrar y vaciar !-->
                     <div class="form-row " >
                       <b-button type="submit" class="col-md-4 text-center" variant="primary" v-model="onSubmit">Registrar</b-button>
@@ -51,7 +53,6 @@
                 </b-form>
               </b-card>
           </div>
-        </b-row>
       </b-container>
   </div>
 </template>

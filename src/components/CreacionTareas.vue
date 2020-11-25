@@ -113,7 +113,7 @@
               label-for="start-date, start-time"
           >
             <b-datepicker required id="start-date" value-as-date v-model="rutina.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-            <b-form-timepicker required id="start-time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+            <b-form-input required id="start-time" type="time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-input>
           </b-form-group>
           <!--      campos para fecha de finalización-->
           <b-form-group
@@ -126,7 +126,7 @@
               label-for="end-date, end-time"
           >
             <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-            <b-form-timepicker v-if="!status" required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
+            <b-form-input type="time" v-if="!status" required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-input>
           </b-form-group>
           <!--      campo para estimacion o duracion de tarea-->
           <b-form-group

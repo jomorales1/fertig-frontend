@@ -119,7 +119,7 @@ export default {
               labels: this.labels12,
               datasets: [
                 {
-                  label: 'Horas Completadas',
+                  label: 'Tareas Completadas',
                   backgroundColor: '#f87979',
                   data: this.data2
                 }
@@ -156,7 +156,7 @@ export default {
               labels: this.labels34,
               datasets: [
                 {
-                  label: 'Horas Completadas',
+                  label: 'Tareas Completadas',
                   backgroundColor: '#f87979',
                   data: this.data4
                 }
@@ -195,7 +195,7 @@ export default {
               labels: this.labels56,
               datasets: [
                 {
-                  label: 'Horas Completadas',
+                  label: 'Tareas Completadas',
                   backgroundColor: '#f87979',
                   data: this.data6
                 }

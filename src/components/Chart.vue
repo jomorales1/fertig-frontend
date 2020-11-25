@@ -11,14 +11,18 @@ export default {
     Type:Array,
       required: true,
       default: null
-    }},
+    },labelString:{
+        Type: String,
+        required: true,
+    },
+  },
   data(){
     return{
       chartdata: {
         labels: this.labelsSet,
         datasets: [
           {
-            label: 'Data One',
+            label: this.labelString,
             backgroundColor: '#f87979',
             data: this.dataSet
           }

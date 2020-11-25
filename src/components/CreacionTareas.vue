@@ -431,11 +431,11 @@ export default {
             if(item.franjaInicio){
               let franjaInicio=this.listItem.franjaInicio.split('Z')[0].split(':')
               let inicio = new Date(new Date().setUTCHours(franjaInicio[0],franjaInicio[1],0,0))
-              this.franjaInicio = new Intl.DateTimeFormat('es',{hour: '2-digit', minute: 'numeric', hour12: false}).format(inicio)
+              this.franjaInicio = new Intl.DateTimeFormat('es',{hour: 'numeric', minute: 'numeric', hour12: false}).format(inicio)
               if(inicio.getHours()<10)this.franjaInicio='0'+this.franjaInicio
               let franjaFin=this.listItem.franjaFin.split('Z')[0].split(':')
               let fin = new Date(new Date().setUTCHours(franjaFin[0],franjaFin[1],0,0))
-              this.franjaFin = new Intl.DateTimeFormat('es',{hour: '2-digit', minute: 'numeric', hour12: false}).format(fin)
+              this.franjaFin = new Intl.DateTimeFormat('es',{hour: 'numeric', minute: 'numeric', hour12: false}).format(fin)
               if(fin.getHours()<10)this.franjaFin='0'+this.franjaFin
             }
             this.Range=this.listItem.recurrencia[0]

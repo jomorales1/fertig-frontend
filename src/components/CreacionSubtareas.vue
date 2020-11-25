@@ -72,18 +72,6 @@
             <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
             <b-form-timepicker required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
           </b-form-group>
-          <!--      campo para estimacion o duracion de tarea-->
-          <b-form-group
-              id="fieldset-estimation"
-              label-cols-sm="4"
-              label-cols-lg="3"
-              description="Tiempo de duración de la subtarea en minutos"
-              label="Estimación"
-              label-for="estimation"
-          >
-            <b-form-input id="estimation" required type="number" v-model="tarea.estimacion"></b-form-input>
-          </b-form-group>
-
         </form>
       </template>
     </b-modal>

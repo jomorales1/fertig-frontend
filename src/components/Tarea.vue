@@ -41,7 +41,7 @@
                 {{ longDate(new Date(listItem.fechaFin))}}
               </p>
               <p v-if="event&&listItem.mensajeRecurrencia!=null" class="text-left ">
-                {{ listItem.mensajeRecurrencia}}
+                {{ listItem.mensajeRecurrencia }}
               </p>
 
               <p class="text-left">{{ listItem.descripcion}}</p>
@@ -213,7 +213,7 @@ export default {
       return res;
     },
     etiquetasList(){//metodo para separar las etiquetas por espacios
-      if(this.listItem.etiqueta===""){
+      if(this.listItem.etiqueta=== "" ||this.listItem.etiqueta=== null){
         return []
       }
       return this.listItem.etiqueta.trim().split(' ')

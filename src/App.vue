@@ -13,7 +13,7 @@
           <b-nav-item variant="primary" v-if="loggedIn" text="white" to="/Calendar" >Calendario de Actividades</b-nav-item>
           <b-nav-item variant="primary" v-if="loggedIn" text="white" to="/Timer" >Temporizador</b-nav-item>
           <b-nav-item variant="primary" v-if="loggedIn" text="white" to="/Progress" >Progreso</b-nav-item>
-<!--          Dropdown de usuario-->
+<!--          Dropdown de usuario-->-
           <b-nav-item-dropdown :text="username" v-if="loggedIn" right>
             <b-dropdown-item v-b-modal.friends >Amigos</b-dropdown-item>
             <b-dropdown-item to="/Settings">Ajustes de cuenta</b-dropdown-item>

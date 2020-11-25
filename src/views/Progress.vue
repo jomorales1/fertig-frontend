@@ -10,73 +10,33 @@
             <b-button variant="primary" style="margin-left: 5%" @click="addWeek()">+</b-button>
           </div>
           <header style="font-size: 300%">Horas Completadas</header>
-          <br/>
-          <br/>
-          <Chart id="chart-1" :labels-set="labels12" :data-set="data1" v-if="flags[0]" />
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
+          <Chart id="chart-1" :labels-set="labels12" :data-set="data1"  v-if="flag" class="my-5"/>
           <header style="font-size: 300%">Tareas Completadas</header>
-          <br/>
-          <br/>
-          <Chart id="chart-2" :labels-set="labels12" :data-set="data2" v-if="flags[0]"/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <p style="font-size: 100%">Número de minutos Completadas</p>{{horasAnnio}}
-          <p style="font-size: 100%">Número de tareas Completadas</p>{{tareasAnnio}}
+          <Chart id="chart-2" class="my-5" :labels-set="labels12" :data-set="data2" v-if="flag"/>
+          <p style="font-size: 100%">Número de minutos Completadas</p>{{horasSemana}}
+          <p style="font-size: 100%">Número de tareas Completadas</p>{{tareasSemana}}
         </div>
       </b-tab>
-      <b-tab title="Mes" active>
+      <b-tab title="Mes" lazy>
         <div>
           <header style="font-size: 300%">Horas Completadas</header>
-          <br/>
-          <br/>
-          <Chart id="chart-3" :labels-set="labels34" :data-set="data3" v-if="flags[1]"/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
+          <Chart id="chart-3" :labels-set="labels34" :data-set="data3" v-if="flag2" class="my-5" />
           <header style="font-size: 300%">Tareas Completados</header>
-          <br/>
-          <br/>
-          <Chart id="chart-4" :labels-set="labels34" :data-set="data4" v-if="flags[1]"/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
+
+          <Chart id="chart-4" :labels-set="labels34" :data-set="data4" v-if="flag2" class="my-5" />
+
           <p style="font-size: 100%">Número de minutos Completados</p>{{horasMes}}
           <p style="font-size: 100%">Número de tareas Completadas</p>{{tareasMes}}
         </div>
       </b-tab>
-      <b-tab title="Año" active>
+      <b-tab title="Año" lazy>
         <div>
           <header style="font-size: 300%">Horas Completadas</header>
-          <br/>
-          <br/>
-          <Chart id="chart-5" :labels-set="labels56" :data-set="data5" v-if="flags[2]"/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
+          <Chart id="chart-5" :labels-set="labels56" :data-set="data5" v-if="flag3" class="my-5" />
           <header style="font-size: 300%">Tareas Completadas</header>
-          <br/>
-          <br/>
-          <Chart id="chart-6" :labels-set="labels56" :data-set="data6" v-if="flags[2]"/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <br/>
-          <p style="font-size: 100%">Número de minutos Completados</p>{{horasSemana}}
-          <p style="font-size: 100%">Número de tareas Completadas</p>{{tareasSemana}}
+          <Chart id="chart-6" :labels-set="labels56" :data-set="data6" v-if="flag3" class="my-5" />
+          <p style="font-size: 100%">Número de minutos Completados</p>{{horasAnnio}}
+          <p style="font-size: 100%">Número de tareas Completadas</p>{{tareasAnnio}}
         </div>
       </b-tab>
     </b-tabs>
@@ -109,7 +69,9 @@ export default {
       fecha: new Date(),
       //2020, 11, 1
       prueba: [],
-      flags: [false, false, false]
+      flag:false,
+      flag2:false,
+      flag3:false
     }
 
   },
@@ -153,23 +115,23 @@ export default {
           this.labels12 = response.data.fechas
           this.data1 = response.data.minutos
           this.data2=response.data.tareas
-          this.flags[0]=true
+          this.flag = true
         }
     )
     this.$store.dispatch("DataModule/getGraphicMonth",this.fecha).then(
         response=>{
           this.labels34 = response.data.fechas
           this.data3 = response.data.minutos
-              this.data4 =response.data.tareas
-          this.flags[1]=true
+          this.data4 =response.data.tareas
+          this.flag2=true
         }
     )
     this.$store.dispatch("DataModule/getGraphicYear",this.fecha).then(
         response=>{
           this.labels56 = response.data.fechas
           this.data5 = response.data.minutos
-              this.data6 =response.data.tareas
-          this.flags[2]=true
+          this.data6 =response.data.tareas
+          this.flag3=true
         }
     )
   }

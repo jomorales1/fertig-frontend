@@ -1,10 +1,8 @@
 <script>
-import { Line, mixins } from 'vue-chartjs'
-const { reactiveData } = mixins
+import { Line} from 'vue-chartjs'
 export default {
   name: 'Chart',
   extends: Line,
-  mixins: [reactiveData],
   props:{labelsSet:{
     Type: Array,
       required: true,
@@ -16,6 +14,16 @@ export default {
     }},
   data(){
     return{
+      chartdata: {
+        labels: this.labelsSet,
+        datasets: [
+          {
+            label: 'Data One',
+            backgroundColor: '#f87979',
+            data: this.dataSet
+          }
+        ]
+      },
       options: {
         scales: {
           yAxes: [{
@@ -44,7 +52,7 @@ export default {
 
   },
   mounted () {
-    this.renderChart(this.datacollection, this.options)
+    this.renderChart(this.chartdata, this.options)
   },
   computed:{
   }

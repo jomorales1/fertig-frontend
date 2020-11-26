@@ -52,7 +52,6 @@
                   <b-dropdown-item-button  size="sm" ref="share">Compartir enlace</b-dropdown-item-button>
                   <b-dropdown-item-button size="sm" @click="$emit('showOwners',listItem.id)">Agregar colaborador</b-dropdown-item-button>
               </b-dropdown>
-<!--              <b-button ref="share" size="sm" class="m-2">Compartir Tarea</b-button>-->
               <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="hover" placement="bottom" variant="secondary">
                 <template #title>Compartir copia de {{task?'tarea':routine?'rutina':'evento'}}</template>
                 <b-input-group prepend="Link:" size="sm">

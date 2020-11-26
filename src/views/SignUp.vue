@@ -37,10 +37,10 @@
                       <label class="col-form-label">Repetir contraseña: </label>
                       <b-form-input type="password" id="reviewPassword" required placeholder="Confirme la contraseña" v-model="Register_form.reviewPassword"></b-form-input>
                   </div>
-                  </b-form-group>
+                  </b-form-group  >
 
 
-                    <b-form-checkbox class="my-2" v-model="franjas">¿Desea que le ofrescamos sugerencias de sus tareas pendientes en sus horas libres?</b-form-checkbox>
+                    <b-form-checkbox v-if="franjas" class="my-2" v-model="franjas">¿Desea que le ofrescamos sugerencias de sus tareas pendientes en sus horas libres?</b-form-checkbox>
                   <b-form-group><!-- Botones de registrar y vaciar !-->
                     <div class="form-row " >
                       <b-button type="submit" class="col-md-4 text-center" variant="primary" v-model="onSubmit">Registrar</b-button>
@@ -75,7 +75,8 @@
         // String del error
         stringError: '',
         isInit: false,
-        isSignIn: false
+        isSignIn: false,
+        franja:false
       }
     },
     methods:{

@@ -31,13 +31,13 @@
         <div><strong>Finaliza el: </strong>{{formatFecha(new Date(current.fechaFin))}}</div>
         <div v-if="!task"><strong>Proxima repetición: </strong>{{formatFecha(current.fecha) }}</div>
         <div v-if="current.franjaInicio"><strong>Franja Horaria: </strong>{{stringFranja}}</div>
-        <div><strong>Etiquetas: </strong><b-badge variant="primary" v-for="etq in current.etiqueta.split(' ')" :key="etq">etq</b-badge>
+        <div v-if="current.etiqueta!==null"><strong>Etiquetas: </strong><b-badge variant="primary" v-for="etq in current.etiqueta.split(' ')" :key="etq">etq</b-badge></div>
           <b-button v-if="routine || task"
                     @click="addSubTask({id: idParent, padre: current})"
                     size="sm"
                     class="float-right my-0" >+ Subtarea</b-button>
           <br>
-        </div>
+
 
         <Subtareas
             :list-item="current"

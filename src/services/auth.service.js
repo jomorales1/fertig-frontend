@@ -31,9 +31,9 @@ class AuthService{
     logout() { // Funcion para cerrar sesión
         let token = localStorage.getItem("token")
         let headers= {
-            "Content-Type": "application/x-www-form-urlencoded"
+            "Content-Type": "application/x-www-form-urlencoded",
+            ...authHeader()
         }
-        headers.Authorization=authHeader().Authorization
         return axios.delete(API_URL+"/notification/delete-token",{
             data: querystring.stringify({
                 id:token

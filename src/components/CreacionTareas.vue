@@ -113,7 +113,7 @@
               label-for="start-date, start-time"
           >
             <b-datepicker required id="start-date" value-as-date v-model="rutina.fechaInicio" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-            <b-form-input required id="start-time" type="time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-input>
+            <b-form-timepicker required id="start-time" v-model="startHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
           </b-form-group>
           <!--      campos para fecha de finalización-->
           <b-form-group
@@ -126,7 +126,7 @@
               label-for="end-date, end-time"
           >
             <b-datepicker required id="end-date" value-as-date v-model="tarea.fechaFin" :locale="'es'" placeholder="Ninguna Fecha seleccionada"></b-datepicker>
-            <b-form-input type="time" v-if="!status" required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-input>
+            <b-form-timepicker v-if="!status" required id="end-time" v-model="endHour" placeholder="Ninguna hora seleccionada"></b-form-timepicker>
           </b-form-group>
           <!--      campo para estimacion o duracion de tarea-->
           <b-form-group
@@ -137,8 +137,8 @@
               :label="status||statusEvent?'Duración':'Estimación'"
               label-for="estimation"
           >
-            <b-form-input v-if="!status&&!statusEvent" step=0.25 id="estimation" required type="number" v-model="tarea.estimacion"></b-form-input>
-            <b-form-input v-else id="estimation" step=0.25 required type="number" v-model="rutina.duracion"></b-form-input>
+            <b-form-input v-if="!status&&!statusEvent" id="estimation" required type="number" v-model="tarea.estimacion"></b-form-input>
+            <b-form-input v-else id="estimation" required type="number" v-model="rutina.duracion"></b-form-input>
           </b-form-group>
           <!--      campo de recurrencia-->
           <b-form-group
@@ -303,7 +303,13 @@ export default {
       }
     },
     deleteItem(){
-      this.$store.dispatch("DataModule/delete",this.listItem).then(()=>this.$store.dispatch("DataModule/update"))
+      this.$store.dispatch("DataModule/delete",this.listItem).then(
+          ()=>this.$store.dispatch("DataModule/update"),
+          ()=>{
+            this.message="Usted no tiene permiso para editar la tarea o hay un error en el servidor"
+            this.error=true
+          }
+      )
       this.$bvModal.hide("create-activity")
     },
     ok(bvModalEvt){

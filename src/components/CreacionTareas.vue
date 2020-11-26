@@ -303,7 +303,13 @@ export default {
       }
     },
     deleteItem(){
-      this.$store.dispatch("DataModule/delete",this.listItem).then(()=>this.$store.dispatch("DataModule/update"))
+      this.$store.dispatch("DataModule/delete",this.listItem).then(
+          ()=>this.$store.dispatch("DataModule/update"),
+          ()=>{
+            this.message="Usted no tiene permiso para editar la tarea o hay un error en el servidor"
+            this.error=true
+          }
+      )
       this.$bvModal.hide("create-activity")
     },
     ok(bvModalEvt){

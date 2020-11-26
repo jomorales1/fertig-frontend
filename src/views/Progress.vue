@@ -2,7 +2,7 @@
   <div>
     <div class="sm">
     <b-tabs>
-      <b-tab title="Semana" active>
+      <b-tab title="Semana" active lazy>
         <div>
           <div class="row justify-content-center my-5">
             <b-button variant="primary" style="margin-right: 5%" @click="restWeek()">-</b-button>

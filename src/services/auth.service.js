@@ -48,7 +48,7 @@ class AuthService{
     }
     googleLogin(googleToken){//metodo para enviar token de google y obtener token propio
          return axios.post(API_URL+'/login/oauth2/code/google',querystring.stringify({
-             Token:googleToken
+             token:googleToken
          }),{
              headers:{
                  "Content-Type": "application/x-www-form-urlencoded"
@@ -62,7 +62,7 @@ class AuthService{
     }
     facebookLogin(facebookToken){//metodo para enviar token de facebook y obtener token propio
         return axios.post(API_URL+'/login/oauth2/code/facebook',querystring.stringify({
-            Token:facebookToken
+            token:facebookToken
         }),{
             headers:{
                 "Content-Type": "application/x-www-form-urlencoded"

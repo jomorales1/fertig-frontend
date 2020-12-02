@@ -1,60 +1,97 @@
 <template>
-<div>
+<div >
   <main>
-    <b-form-group >
-      <h2 >{{ current.title }}</h2>
-      <div >
-        <b-button
-            v-if="reproduciendo===false"
-            @click="reproducir">
-          Reproducir
+    <div>
+      <b-form-group >
+      <b-form-group >
+        <h2 >{{ current.title }}</h2>
+        <div >
+          <b-img
+              v-if="reproduciendo===false"
+              @click="reproducir"
+              src="../assets/botones/play.png"
+              height="50px"
+              width="auto">
+          </b-img>
+          <b-img
+              v-if="reproduciendo===true"
+              @click="pausar"
+              src="../assets/botones/stop.png"
+              height="50px"
+              width="auto">
+            Pausar
+          </b-img>
+          <b-img
+              v-if="current.favorita===true"
+              @click="quitar"
+              src="../assets/botones/favourite.png"
+              height="50px"
+              width="auto"
+              >
+            quitar favoritas
+          </b-img>
+          <b-img
+              v-if="current.favorita===false"
+              @click="anadir"
+              src="../assets/botones/notfavourite.png"
+              height="50px"
+              width="auto">
+            añadir a favoritas
+          </b-img>
+        </div>
+      </b-form-group>
+      <h3>Canciones:</h3>
+      <div
+          title="Music"
+          class="box">
+        <b-form-group>
+          <b-button
+            block
+            variant="warning"
+            v-for="song in songs.filter(s=>s.favorita===true)"
+            :key="song.src"
+            @click="reproducir(song)">
+            <div class="d-flex">
+              <div class="mr-auto">
+                {{ song.title }}
+              </div>
+              <b-img  class="googleIcon"  src="../assets/botones/favourite.png"></b-img>
+            </div>
+
         </b-button>
-        <b-button
-            v-if="reproduciendo===true"
-            @click="pausar">
-          Pausar
+          <b-button
+            block
+            variant="primary"
+            v-for="song in songs.filter(s=>s.favorita===false)"
+            :key="song.src"
+            @click="reproducir(song)">
+
+            <div class="d-flex">
+              <div class="mr-auto">
+                {{ song.title }}
+              </div>
+              <img  class="googleIcon" src="../assets/botones/notfavourite.png">
+            </div>
         </b-button>
-        <b-button
-            v-if="current.favorita===true"
-            @click="quitar">
-          quitar favoritas
-        </b-button>
-        <b-button
-            v-if="current.favorita===false"
-            @click="anadir">
-          añadir a favoritas
-        </b-button>
+          <p class="my-4" v-for="i in 20" :key="i">
+            Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+            in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+          </p>
+      </b-form-group>
       </div>
     </b-form-group>
-    <b-form-group>
-      <h3>Canciones:</h3>
-      <h4>Favoritas</h4>
-
-      <b-button
-          v-for="song in songs.filter(s=>s.favorita===true)"
-          :key="song.src"
-          @click="reproducir(song)">
-        {{ song.title }}
-
-      </b-button>
-      </b-form-group>
-      <h4>Otras</h4>
-      <b-button
-          v-for="song in songs.filter(s=>s.favorita===false)"
-          :key="song.src"
-          @click="reproducir(song)">
-        {{ song.title }}
-
-      </b-button>
+    </div>
   </main>
 </div>
 </template>
 
 <script>
+import play from '../assets/botones/play.png';
 export default {
   name: "Music",
   data () {
     return {
+      playbtn: play,
       current: {},
       index: 0,
       reproduciendo: false,
@@ -119,3 +156,16 @@ export default {
   }
 }
 </script>
+
+<style>
+
+.box{
+  overflow-y: scroll;
+  height: 512px;
+}
+.googleIcon{
+  height: 1.5rem;
+  justify-content: flex-end;
+  margin-left: 0.5rem;
+}
+</style>

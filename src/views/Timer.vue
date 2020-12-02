@@ -1,30 +1,33 @@
 <template>
-  <div class="align-self-center my-5">
-  <b-container> <!-- Contenedor titulo y formulario de registro !-->
-    <b-row  class ="justify-content-md-center ">
-      <div class="col-md-10" >
-        <h1>Fertig</h1>
-        <b-card header="Timer"
-                border-variant="primary"
-                header-bg-variant="primary"
-                header-text-variant="white">
-          <b-form-group>
-            <b-tabs card>
-              <b-tab title="Cronometro" active>
-                <Cronometro></Cronometro>
-              </b-tab>
-              <b-tab title="Temporizador">
-                <Temporizador>  </Temporizador>
-              </b-tab>
-            </b-tabs>
-          </b-form-group>
-        </b-card>
-        <music></music>
+  <b-container class=" my-10" fluid="lg">
 
-      </div>
-    </b-row>
+        <h1>Fertig</h1>
+        <b-row >
+          <b-col><b-card class=" mx-2" header="Reloj"
+                         border-variant="primary"
+                         header-bg-variant="primary"
+                         header-text-variant="white">
+            <b-form-group>
+              <b-tabs card>
+                <b-tab title="Cronometro">
+                  <Cronometro></Cronometro>
+                </b-tab>
+                <b-tab title="Temporizador" >
+                  <Temporizador></Temporizador>
+                </b-tab>
+              </b-tabs>
+            </b-form-group>
+          </b-card></b-col>
+          <b-col><b-card class=" mx-2" header="Musica"
+                         border-variant="primary"
+                         header-bg-variant="primary"
+                         header-text-variant="white">
+            <music></music>
+          </b-card></b-col>
+
+        </b-row>
+
   </b-container>
-  </div>
 </template>
 
 <script>

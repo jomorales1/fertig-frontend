@@ -36,7 +36,8 @@
         limpiar seleccion
       </b-button>
     </b-form-group>
-    <b-list-group>
+    <div class="tareasbox">
+      <b-list-group>
       <b-list-group-item
           class="btn  flex-column align-items-start"
           v-for="tarea in lista"
@@ -65,6 +66,11 @@
       </b-list-group-item>
     </b-list-group>
 
+      <p class="my-4" v-for="i in 20" :key="i">
+        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
+        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
+      </p>
+    </div>
   </div>
 </template>
 
@@ -188,3 +194,11 @@ export default {
   }
 }
 </script>
+
+<style scoped lang="scss">
+.tareasbox{
+  overflow-y: scroll;
+  height: 400px;
+
+}
+</style>

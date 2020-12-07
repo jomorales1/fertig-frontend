@@ -71,6 +71,13 @@ const routes=[
         meta: {
             requiresAuth: true
         }
+    }, {
+        path: '/Privacy',//ruta (localhost:8080/Privacy)
+        name: 'Politica de privacidad',
+        component: () => import('@/views/PrivacyPolicy'),//componente que ocupa esa vista a partir de carpeta views
+        meta: {
+            requiresAuth: false
+        }
     }
 ]
 //declracion del router
@@ -82,7 +89,7 @@ const router = new VueRouter({
 //metodo para redirigir a Login si se intenta acceder a una pagina que requiere iniciar sesión
 //sin haber iniciado sesión
 router.beforeEach((to, from, next) => {
-    const publicPages = ['/Login', '/SignUp', '/'];
+    const publicPages = ['/Login', '/SignUp', '/','/Privacy'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = localStorage.getItem('user');
 

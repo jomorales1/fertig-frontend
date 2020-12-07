@@ -44,9 +44,12 @@
                   <b-form-input type="password" id="reviewNewPassword" required placeholder="Confirme la contraseña" v-model="Settings_form.reviewNewPassword" :disabled="changePassword"></b-form-input>
                 </div>
               </b-form-group>
+              <b-form-group>
+                <b-form-checkbox class="my-2" v-model="privacy">¿Acepta nuestra <router-link to="/Privacy">politica de privacidad</router-link>?</b-form-checkbox>
+              </b-form-group>
               <b-form-group><!-- Botones de registrar y vaciar !-->
                 <div class="form-row " >
-                  <b-button type="submit" class="col text-center" variant="primary">Cambiar datos</b-button>
+                  <b-button :disabled="!privacy" type="submit" class="col text-center" variant="primary">Cambiar datos</b-button>
                 </div>
               </b-form-group>
               <!-- Alert en caso de error y éxito en registro !-->
@@ -80,6 +83,7 @@
         changePassword: true,
         registerSuccess: false,
         failSuccess: false,
+        privacy:false
       }
     },
     methods:{

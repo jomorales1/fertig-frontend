@@ -70,7 +70,7 @@
               <div class="mr-auto">
                 {{ song.title }}
               </div>
-              <img  class="googleIcon" src="../assets/botones/notfavourite.png">
+              <b-img  class="googleIcon" src="../assets/botones/notfavourite.png"></b-img>
             </div>
         </b-button>
           <p class="my-4" v-for="i in 20" :key="i">

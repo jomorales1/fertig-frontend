@@ -82,8 +82,8 @@ class UserService {
     getCopy(id,type){
         return axios.get(API_URL+'/'+type+'/'+id,{headers:authHeader()})
     }
-    addCopy(id){
-        return axios.post(API_URL+'/task/'+id+'/copy/',null,{headers:authHeader()})
+    addCopy(id,type){
+        return axios.post(API_URL+'/'+type+'/'+id+'/copy/',null,{headers:authHeader()})
     }
     addTime(id, time){
         return axios.put(API_URL+'/task/'+id+'/increase-time/'+time,null,{headers:authHeader()})
@@ -251,7 +251,12 @@ class UserService {
                 headers:headers
             })
     }
-
+    getFranjas(){
+        return axios.get(API_URL+'/franja-activa/franjas',
+            {
+                headers:authHeader()
+            })
+    }
 
 
 }

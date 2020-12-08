@@ -171,8 +171,8 @@ export const DataModule = {
                 }
             )
         },
-        addCopy({commit},id){
-            return UserService.addCopy(id).then(
+        addCopy({commit},data){
+            return UserService.addCopy(data.id,data.type).then(
                 result=>{
                     return Promise.resolve(result)
                 },error=>{
@@ -293,6 +293,12 @@ export const DataModule = {
                     return Promise.reject()
                 }
             )
+        },
+        getFranjas({commit}){
+            return UserService.getFranjas().then(response=>{
+                commit('franjas',response.data)
+                return Promise.resolve(response)
+            })
         }
 
     },
@@ -318,6 +324,9 @@ export const DataModule = {
         },
         subTaskCreated(state){
             state.status = 'created'
+        },
+        franjas(state,franjas){
+            state.franjas = franjas
         }
     }
 

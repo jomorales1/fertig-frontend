@@ -1,6 +1,6 @@
 <template>
 <div class="container my-5">
-  <b-button @click="addCopy" v-if="task.length>0" size="lg" class="mb-5 "> Añadir {{dic[$route.params.type]}} a mi lista de actividades</b-button>
+  <b-button @click="addCopy($route.params.id,$route.params.type)" v-if="task.length>0" size="lg" class="mb-5 "> Añadir {{dic[$route.params.type]}} a mi lista de actividades</b-button>
   <b-list-group v-if="task.length>0" class="text-right">
     <Tarea ref="tarea" v-on:edit="makeToast()" v-for="result in task" :list-item="result" :visible="true" :key="result.id"/>
   </b-list-group>
@@ -28,8 +28,8 @@ export default {
     }
   },
   methods:{
-    addCopy(){
-      this.$store.dispatch('DataModule/addCopy',this.task[0].id).then(
+    addCopy(id,type){
+      this.$store.dispatch('DataModule/addCopy',{id,type}).then(
           ()=>{
             this.$router.push('/List')
           },error=>{

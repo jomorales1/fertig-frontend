@@ -48,11 +48,15 @@
 <!--Boton para editar tarea -->
               <b-button v-if="routine || task" @click="$emit('addSubTask',{id: idParent, padre: listItem})" size="sm" class="float-left my-2" >+ Subtarea</b-button>
               <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
-              <b-dropdown text="Compartir Tarea" variant="primary" size="sm" class="m-2">
-                  <b-dropdown-item-button  size="sm" ref="share">Compartir enlace</b-dropdown-item-button>
-                  <b-dropdown-item-button size="sm" @click="$emit('showOwners',listItem.id)">Agregar colaborador</b-dropdown-item-button>
-              </b-dropdown>
-              <b-popover v-if="selected" :target="$refs.share" :container="$refs.collapse" triggers="hover" placement="bottom" variant="secondary">
+              <b-button-group ref="shareGroup">
+                <b-button  size="sm" ref="share"  variant="primary">
+                  <b-img src="../assets/share.svg" alt="Compartir enlace" style="height: 1rem"/>
+                </b-button>
+                <b-button v-if="task" size="sm" @click="$emit('showOwners',listItem.id)"  variant="primary">
+                  <b-img src="../assets/add-user.svg" alt="Agregar colaborador" style="height: 1rem"/>
+                </b-button>
+              </b-button-group>
+              <b-popover v-if="render" :target="$refs.share" :container="$refs.shareGroup" triggers="hover" placement="bottom" variant="secondary">
                 <template #title>Compartir copia de {{task?'tarea':routine?'rutina':'evento'}}</template>
                 <b-input-group prepend="Link:" size="sm">
                   <b-form-input :value="fullUrl" ref="urlComponent"></b-form-input>
@@ -69,7 +73,7 @@
                   v-on:editSubTask="$emit('editSubTask', $event)"
               />
             </b-card>
-            <h6 class="col-1">Colaboradores:</h6>
+            <h6 class="col-1" v-if="task && owners.length>0">Colaboradores:</h6>
             <b-list-group>
               <div class="row align-items-center">
                 <b-list-group-item class="col-2 border-0" style="margin-left: 2.4%" v-for="o in owners" v-bind:key="o.username" >
@@ -126,7 +130,8 @@ export default {
       event: this.listItem instanceof TEvent,
       hecho:false,
       url: window.location.origin,
-      owners: []
+      owners: [],
+      render:false
     }
   },
   methods: {
@@ -236,6 +241,7 @@ export default {
               }
           )
         }
+        setTimeout(()=>{this.render=true},500)
 
   }
 }

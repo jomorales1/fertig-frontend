@@ -161,6 +161,7 @@ export default {
     },
     nextPage(){
       this.$parent.enableNotifications()
+      this.$store.dispatch('DataModule/getFranjas')
       //si intento entrar antes a otra pagina restringida redirigirlo allá
       if(this.$route.query.nextUrl != null){
         this.$router.push(this.$route.query.nextUrl)

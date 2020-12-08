@@ -178,9 +178,10 @@ export default {
 
       this.$store.dispatch("DataModule/getGraphicYear",this.fecha3).then(
           response=>{
-            this.labels56 = response.data.fechas
-            this.data5 = response.data.minutos
-            this.data6 =response.data.tareas
+            //this.labels56 = response.data.fechas
+            this.labels56 = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+            this.data5 = response.data.minutosMes
+            this.data6 =response.data.tareasMes
             this.chartData5 = {
               labels: this.labels56,
               datasets: [

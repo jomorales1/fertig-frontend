@@ -73,7 +73,7 @@
                   v-on:editSubTask="$emit('editSubTask', $event)"
               />
             </b-card>
-            <h6 class="col-1" v-if="task && owners.length>0">Colaboradores:</h6>
+            <h6 class="col-1">{{task?'Colaboradores:':''}}</h6>
             <b-list-group>
               <div class="row align-items-center">
                 <b-list-group-item class="col-2 border-0" style="margin-left: 2.4%" v-for="o in owners" v-bind:key="o.username" >

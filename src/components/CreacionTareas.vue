@@ -368,12 +368,11 @@ export default {
         else {
           // metodo de crear tarea
           //se añade las horas a la fecha de finalización
-          let h=this.endHour.split(":")
-          this.tarea.fechaFin.setHours(h[0],h[1])
+
           if(this.statusEvent){
             this.evento=Object.assign(new TEvent(),this.tarea)
             this.evento.duracion=this.rutina.duracion
-            h=this.startHour.split(":")
+            let h=this.startHour.split(":")
             this.evento.fechaInicio=this.rutina.fechaInicio
             this.evento.fechaInicio.setHours(h[0],h[1])
             //se llama al user service para crear el evnto simple
@@ -386,6 +385,8 @@ export default {
                 }
             )}
           else{
+            let h=this.endHour.split(":")
+            this.tarea.fechaFin.setHours(h[0],h[1])
             //se llama al user service para crear la tarea
             UserService.createTask(this.tarea).then(
                 ()=>{

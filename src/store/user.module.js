@@ -36,7 +36,11 @@ export const DataModule = {
             UserService.getTEvents().then(tasks=> {
                 for (let i = 0; i < tasks.data.length; i++) {
                     let event=Object.assign(new TEvent(), tasks.data[i])
-                    if(event.recurrencia)event.fecha=new Date(event.fecha)
+                    if(event.recurrencia){
+                        event.fecha=new Date(event.fecha)
+                    }else {
+                        event.fechaFin=event.fechaInicio
+                    }
                     listItems.push(event)
                 }
             })

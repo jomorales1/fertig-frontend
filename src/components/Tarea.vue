@@ -3,7 +3,7 @@
   <b-list-group-item class=" p-0 ">
 <!--        parte de cabecera de la tarea -->
         <b-list-group-item v-bind:active=selected @click=toggle class="border-0 btn  flex-column align-items-start">
-          <div class="d-flex w-100 justify-content-between" >
+          <div class="d-flex w-100 justify-content-between" :style="hecho?'text-decoration: line-through':''" >
             <div class="d-inline-block align-top align-text-top">
 <!--              checkbox de hecho-->
               <b-form-checkbox :disabled="visible" @change="toggleCheck" v-if="task||routine" v-model=hecho class="d-inline-block"></b-form-checkbox>
@@ -36,7 +36,7 @@
                 {{ longDate(new Date(listItem.fechaInicio)) }}
               </p>
 
-              <p class="text-left col-md-9 ">
+              <p class="text-left col-md-9 " v-if="!(event&&listItem.recurrencia===null)">
                 Hasta:
                 {{ longDate(new Date(listItem.fechaFin))}}
               </p>

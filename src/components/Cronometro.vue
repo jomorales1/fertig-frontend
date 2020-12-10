@@ -26,7 +26,7 @@
     <b-form-group>
       <b-button
 
-          v-if="state === 'pausa' && tareaSeleccionada!==''"
+          v-if="state === 'pausa' && tareaSeleccionada!=='' && !enviado"
           @click="guardar">
         guardar tiempo
       </b-button>
@@ -123,6 +123,7 @@ export default {
         { text: 'tiempo desde el inicio', value: 'tiempo' }],
       cronometroPausas: [],
       tareaSeleccionada:'',
+      enviado:false
     }
   },
   methods:{
@@ -163,6 +164,7 @@ export default {
       this.cronometroPausas = [];
       this.vueltas = [];
       this.tiempodePausa = 0;
+      this.enviado=false;
     },
     pararC: function() {
       this.pararCronometro();
@@ -186,6 +188,7 @@ export default {
       this.iniciarCronometro();
     },
     guardar: function (){
+      this.enviado=true
       this.$store.dispatch("DataModule/addTime",{id:this.tareaSeleccionada, time:this.tiempoenMinutos})
       },
     actualizarTiempoC() {

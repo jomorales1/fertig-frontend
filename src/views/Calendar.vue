@@ -29,7 +29,7 @@
         <div v-if="!task"><strong>Recurrencia: </strong>{{current.mensajeRecurrencia}}</div>
         <div v-if="current.fechaInicio"><strong >Inicia el: </strong>{{formatFecha(new Date(current.fechaInicio))}}</div>
         <div><strong>Finaliza el: </strong>{{formatFecha(new Date(current.fechaFin))}}</div>
-        <div v-if="!task"><strong>Proxima repetición: </strong>{{formatFecha(current.fecha) }}</div>
+        <div v-if="current.recurrencia"><strong>Proxima repetición: </strong>{{formatFecha(current.fecha) }}</div>
         <div v-if="current.franjaInicio"><strong>Franja Horaria: </strong>{{stringFranja}}</div>
         <div v-if="current.etiqueta!==null"><strong>Etiquetas: </strong><b-badge variant="primary" v-for="etq in current.etiqueta.split(' ')" :key="etq">etq</b-badge></div>
           <b-button v-if="routine || task"

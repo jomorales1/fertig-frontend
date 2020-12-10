@@ -38,9 +38,36 @@
     </b-form-group>
     <div class="tareasbox">
       <b-list-group>
-      <b-list-group-item
+        <b-list-group-item
+            class="btn  flex-column align-items-start"
+            v-for="tarea in lista.filter(s=>s.recomendada===true)"
+            :key="tarea.id"
+        >
+          <div class="flex-row w-100 justify-content-between"
+          style="background-color: #31b40d">
+            <div class="d-inline-block align-top align-text-top">
+              <b-radio
+                  class="d-inline-block"
+                  v-model="tareaSeleccionada"
+                  :value="tarea.id">
+                {{tarea.nombre}}
+              </b-radio>
+              <b-badge
+                  v-for="etiqueta in tarea.etiqueta.split(' ')"
+                  :key="etiqueta"
+                  class="p-1 mx-1 d-inline-block"
+                  :variant="'primary'"
+
+              >
+                {{etiqueta}}
+              </b-badge>
+            </div>
+          </div>
+
+        </b-list-group-item>
+        <b-list-group-item
           class="btn  flex-column align-items-start"
-          v-for="tarea in lista"
+          v-for="tarea in lista.filter(s=>s.recomendada===false)"
           :key="tarea.id"
       >
         <div class="flex-row w-100 justify-content-between" >
@@ -56,7 +83,6 @@
                 :key="etiqueta"
                 class="p-1 mx-1 d-inline-block"
                 :variant="'primary'"
-
             >
               {{etiqueta}}
             </b-badge>
@@ -66,16 +92,15 @@
       </b-list-group-item>
     </b-list-group>
 
-      <p class="my-4" v-for="i in 20" :key="i">
-        Cras mattis consectetur purus sit amet fermentum. Cras justo odio, dapibus ac facilisis
-        in, egestas eget quam. Morbi leo risus, porta ac consectetur ac, vestibulum at eros.
-      </p>
+
     </div>
   </div>
 </template>
 
 <script>
 
+
+import Task from "@/models/Task";
 
 export default {
   name: "Cronometro",
@@ -84,6 +109,8 @@ export default {
   },
   data(){
     return {
+      lista:[],
+      recomendada:false,
       state: 'inicio',
       TiempoInicioCronometro: Date.now(),
       TiempoActual: Date.now(),
@@ -173,6 +200,16 @@ export default {
     pararTemporizador() {
       clearInterval(this.interval);
     },
+    update(){
+      this.$store.dispatch('DataModule/getRecomendations',new Date().getDay()).then(response=>{
+        this.lista=this.$store.state.DataModule.tareas.filter(a=>a instanceof Task)
+        this.lista.foreach((valor,index)=>this.lista[index].recomendada=false)
+        response.data.forEach(valor=>{
+          let tareas=this.lista.map(item=>item.id)
+          this.lista[tareas.indexOf(valor.id)].recomendada=true
+        })
+      })
+    }
 
 
   },
@@ -180,9 +217,7 @@ export default {
     tiempoenMinutos(){
       return Math.round(this.cronometro/60000)
     },
-    lista(){
-      return this.$store.state.DataModule.tareas//.filter(a=>a instanceof Task)
-    },
+
     cronometro() {
       return this.TiempoActual - this.TiempoInicioCronometro - this.tiempodePausa;
     },
@@ -190,6 +225,7 @@ export default {
   created() {
       //actualizar la lista de tareas cuando se carga la pagina
       this.$store.dispatch('DataModule/update')
+      this.update()
 
   }
 }

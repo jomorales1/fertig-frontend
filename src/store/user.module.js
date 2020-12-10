@@ -293,8 +293,17 @@ export const DataModule = {
                     return Promise.reject()
                 }
             )
+        },
+        getRecomendations({commit}, day){
+            return UserService.getRecomendations(day).then(
+                response=>{
+                    return Promise.resolve(response)
+                },()=>{
+                    commit('error')
+                    return Promise.reject()
+                }
+            )
         }
-
     },
     mutations:{
         //cambios de estado

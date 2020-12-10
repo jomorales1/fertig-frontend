@@ -252,6 +252,12 @@ class UserService {
             })
     }
 
+    getRecomendations(day){
+        return axios.get(API_URL+'/franja-activa/recomendations/'+day,{
+            headers: authHeader()
+        })
+    }
+
 
 
 }

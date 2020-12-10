@@ -47,7 +47,7 @@
               <p class="text-left">{{ listItem.descripcion}}</p>
 <!--Boton para editar tarea -->
               <b-button v-if="routine || task" @click="$emit('addSubTask',{id: idParent, padre: listItem})" size="sm" class="float-left my-2" >+ Subtarea</b-button>
-              <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Tarea</b-button>
+              <b-button @click="$emit('edit',listItem)" size="sm" class="m-2">Editar Actividad</b-button>
               <b-button-group ref="shareGroup">
                 <b-button  size="sm" ref="share"  variant="primary">
                   <b-img src="../assets/share.svg" alt="Compartir enlace" style="height: 1rem"/>

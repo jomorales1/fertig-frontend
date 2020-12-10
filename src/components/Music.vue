@@ -6,38 +6,52 @@
       <b-form-group >
         <h2 >{{ current.title }}</h2>
         <div >
-          <b-img
-              v-if="reproduciendo===false"
-              @click="reproducir"
-              src="../assets/botones/play.png"
-              height="50px"
-              width="auto">
-          </b-img>
-          <b-img
-              v-if="reproduciendo===true"
-              @click="pausar"
-              src="../assets/botones/stop.png"
-              height="50px"
-              width="auto">
-            Pausar
-          </b-img>
-          <b-img
-              v-if="current.favorita===true"
-              @click="quitar"
-              src="../assets/botones/favourite.png"
-              height="50px"
-              width="auto"
-              >
-            quitar favoritas
-          </b-img>
-          <b-img
-              v-if="current.favorita===false"
-              @click="anadir"
-              src="../assets/botones/notfavourite.png"
-              height="50px"
-              width="auto">
-            añadir a favoritas
-          </b-img>
+          <b-button variant="light"
+                    v-if="reproduciendo===false"
+                    @click="reproducir"
+          >
+            <b-img
+                alt="reproducir"
+                src="../assets/botones/play.png"
+                height="50px"
+                width="auto">
+            </b-img>
+          </b-button>
+          <b-button variant="light"
+                    v-if="reproduciendo===true"
+                    @click="pausar"
+          >
+            <b-img
+
+                src="../assets/botones/stop.png"
+                height="50px"
+                width="auto">
+              Pausar
+            </b-img>
+          </b-button>
+          <b-button variant="light"
+                    v-if="current.favorita===true"
+                    @click="quitar"
+          >
+            <b-img
+
+                src="../assets/botones/favourite.png"
+                height="50px"
+                width="auto"
+                >
+              quitar favoritas
+            </b-img>
+          </b-button>
+          <b-button variant="light"
+                    v-if="current.favorita===false"
+                    @click="anadir">
+            <b-img
+                src="../assets/botones/notfavourite.png"
+                height="50px"
+                width="auto">
+              añadir a favoritas
+            </b-img>
+          </b-button>
         </div>
       </b-form-group>
       <h3>Canciones:</h3>
@@ -131,9 +145,11 @@ export default {
       this.reproduciendo = false;
     },
     anadir:function () {
+      this.current.favorita=true
       this.$store.dispatch("DataModule/addFavorite",this.current.title).then(()=>this.update())
     },
     quitar:function () {
+      this.current.favorita=false
       this.$store.dispatch("DataModule/deleteFavorite",this.current.title).then(()=>this.update())
     },
     update(){

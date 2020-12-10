@@ -36,7 +36,11 @@ export const DataModule = {
             UserService.getTEvents().then(tasks=> {
                 for (let i = 0; i < tasks.data.length; i++) {
                     let event=Object.assign(new TEvent(), tasks.data[i])
-                    if(event.recurrencia)event.fecha=new Date(event.fecha)
+                    if(event.recurrencia){
+                        event.fecha=new Date(event.fecha)
+                    }else {
+                        event.fechaFin=event.fechaInicio
+                    }
                     listItems.push(event)
                 }
             })
@@ -171,8 +175,8 @@ export const DataModule = {
                 }
             )
         },
-        addCopy({commit},id){
-            return UserService.addCopy(id).then(
+        addCopy({commit},data){
+            return UserService.addCopy(data.id,data.type).then(
                 result=>{
                     return Promise.resolve(result)
                 },error=>{
@@ -294,6 +298,12 @@ export const DataModule = {
                 }
             )
         },
+        getFranjas({commit}){
+            return UserService.getFranjas().then(response=>{
+                commit('franjas',response.data)
+                return Promise.resolve(response)
+            })
+        },
         getRecomendations({commit}, day){
             return UserService.getRecomendations(day).then(
                 response=>{
@@ -327,6 +337,9 @@ export const DataModule = {
         },
         subTaskCreated(state){
             state.status = 'created'
+        },
+        franjas(state,franjas){
+            state.franjas = franjas
         }
     }
 

@@ -37,13 +37,14 @@
                       <label class="col-form-label">Repetir contraseña: </label>
                       <b-form-input type="password" id="reviewPassword" required placeholder="Confirme la contraseña" v-model="Register_form.reviewPassword"></b-form-input>
                   </div>
-                  </b-form-group  >
-
-
+                  <b-form-group>
+                    <b-form-checkbox class="my-2" v-model="privacy">¿Acepta nuestra <router-link to="/Privacy">politica de privacidad</router-link>?</b-form-checkbox>
+                  </b-form-group>
+                  </b-form-group>
                     <b-form-checkbox v-if="franjas" class="my-2" v-model="franjas">¿Desea que le ofrescamos sugerencias de sus tareas pendientes en sus horas libres?</b-form-checkbox>
                   <b-form-group><!-- Botones de registrar y vaciar !-->
                     <div class="form-row " >
-                      <b-button type="submit" class="col-md-4 text-center" variant="primary" v-model="onSubmit">Registrar</b-button>
+                      <b-button :disabled="!privacy" type="submit" class="col-md-4 text-center" variant="primary" v-model="onSubmit">Registrar</b-button>
                         <b-button type="reset" variant="danger"  class="col-md-4 offset-md-4" v-model="vaciar">Vaciar</b-button>
                     </div>
                   </b-form-group>
@@ -76,7 +77,8 @@
         stringError: '',
         isInit: false,
         isSignIn: false,
-        franja:false
+        franja:false,
+        privacy:false
       }
     },
     methods:{

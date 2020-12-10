@@ -48,8 +48,7 @@
                             {{sb1.descripcion}}
                             <span class="float-right">
                                     Prioridad: {{sb1.prioridad}}
-                                    <br>
-                                    Estimación: {{sb1.estimacion + (sb1.estimacion!==1?" horas":" hora")}}
+
                                   </span>
                           </b-card-text>
                         </b-card>

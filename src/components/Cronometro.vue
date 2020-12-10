@@ -44,7 +44,7 @@
             :key="tarea.id"
         >
           <div class="flex-row w-100 justify-content-between"
-          style="background-color: #31b40d">
+          >
             <div class="d-inline-block align-top align-text-top">
               <b-radio
                   class="d-inline-block"
@@ -53,13 +53,16 @@
                 {{tarea.nombre}}
               </b-radio>
               <b-badge
-                  v-for="etiqueta in tarea.etiqueta.split(' ')"
+                  v-for="etiqueta in (tarea.etiqueta!==null?tarea.etiqueta.split(' '):[])"
                   :key="etiqueta"
                   class="p-1 mx-1 d-inline-block"
                   :variant="'primary'"
 
               >
                 {{etiqueta}}
+              </b-badge>
+              <b-badge v-for="razon in tarea.razon" :key="razon" variant="primary">
+                {{razon}}
               </b-badge>
             </div>
           </div>
@@ -79,7 +82,7 @@
               {{tarea.nombre}}
             </b-radio>
             <b-badge
-                v-for="etiqueta in tarea.etiqueta.split(' ')"
+                v-for="etiqueta in (tarea.etiqueta!==null?tarea.etiqueta.split(' '):[])"
                 :key="etiqueta"
                 class="p-1 mx-1 d-inline-block"
                 :variant="'primary'"
@@ -201,12 +204,21 @@ export default {
       clearInterval(this.interval);
     },
     update(){
+      let that=this
       this.$store.dispatch('DataModule/getRecomendations',new Date().getDay()).then(response=>{
-        this.lista=this.$store.state.DataModule.tareas.filter(a=>a instanceof Task)
-        this.lista.foreach((valor,index)=>this.lista[index].recomendada=false)
+        that.lista=this.$store.state.DataModule.tareas.filter(a=>(a instanceof Task && !a.hecha))
+        console.log(that.lista)
+        that.lista.forEach((valor,index)=>{
+          that.lista[index].recomendada=false
+        })
         response.data.forEach(valor=>{
-          let tareas=this.lista.map(item=>item.id)
-          this.lista[tareas.indexOf(valor.id)].recomendada=true
+          let tareas=that.lista.map(item=>item.id)
+
+          that.lista[tareas.indexOf(valor.id)].recomendada=true
+          if(that.lista[tareas.indexOf(valor.id)].razon==null){
+            that.lista[tareas.indexOf(valor.id)].razon=[]
+          }
+          that.lista[tareas.indexOf(valor.id)].razon.push(valor.criterio)
         })
       })
     }

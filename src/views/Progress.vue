@@ -10,7 +10,7 @@
             <b-button variant="primary" style="margin-left: 5%" @click="addWeek()">+</b-button>
           </div>
           <header style="font-size: 300%">Horas Completadas</header>
-          <Chart id="chart-1" :chart-data="chartData1" :labels-set="labels12" :data-set="data1" label-string="Horas Completadas"  v-if="flag" class="my-5"/>
+          <Chart id="chart-1" :chart-data="chartData1" :labels-set="labels12" :data-set="data1" label-string="Minutos Completados"  v-if="flag" class="my-5"/>
           <header style="font-size: 300%">Tareas Completadas</header>
           <Chart id="chart-2" class="my-5" :chart-data="chartData2" :labels-set="labels12" :data-set="data2" label-string="Tareas Completadas" v-if="flag"/>
           <p style="font-size: 100%">Número de minutos Completadas</p>{{horasSemana}}
@@ -25,7 +25,7 @@
             <b-button variant="primary" style="margin-left: 5%" @click="addMonth()">+</b-button>
           </div>
           <header style="font-size: 300%">Horas Completadas</header>
-          <Chart id="chart-3" :labels-set="labels34" :chart-data="chartData3" :data-set="data3" label-string="Horas Completadas" v-if="flag2" class="my-5" />
+          <Chart id="chart-3" :labels-set="labels34" :chart-data="chartData3" :data-set="data3" label-string="Minutos Completados" v-if="flag2" class="my-5" />
           <header style="font-size: 300%">Tareas Completadas</header>
 
           <Chart id="chart-4" :labels-set="labels34" :chart-data="chartData4" :data-set="data4" label-string="Tareas Completadas" v-if="flag2" class="my-5" />
@@ -42,7 +42,7 @@
             <b-button variant="primary" style="margin-left: 5%" @click="addYear()">+</b-button>
           </div>
           <header style="font-size: 300%">Horas Completadas</header>
-          <Chart id="chart-5" :labels-set="labels56" :chart-data="chartData5" :data-set="data5" label-string="Horas Completadas" v-if="flag3" class="my-5" />
+          <Chart id="chart-5" :labels-set="labels56" :chart-data="chartData5" :data-set="data5" label-string="Minutos Completados" v-if="flag3" class="my-5" />
           <header style="font-size: 300%">Tareas Completadas</header>
           <Chart id="chart-6" :labels-set="labels56" :chart-data="chartData6" :data-set="data6" label-string="Tareas Completadas" v-if="flag3" class="my-5" />
           <p style="font-size: 100%">Número de minutos Completados</p>{{horasAnnio}}

@@ -21,8 +21,7 @@
                 {{sb.descripcion}}
                 <span class="float-right">
                                   Prioridad: {{sb.prioridad}}
-                                  <br>
-                                  Estimación: {{sb.estimacion + (sb.estimacion!==1?" horas":" hora")}}
+
                                 </span>
                 <br>
                 <b-button size="sm" class="p-1" variant="white" :disabled="visible" @click="$emit('addSubTask',{id: sb.id, padre: listItem})" >

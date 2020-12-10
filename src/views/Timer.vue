@@ -1,6 +1,6 @@
 <template>
   <b-container class=" my-10" fluid="lg">
-
+        <franjas/>
         <h1>Fertig</h1>
         <b-row >
           <b-col><b-card class=" mx-2" header="Reloj"
@@ -10,6 +10,7 @@
             <b-form-group>
               <b-tabs card>
                 <b-tab title="Cronometro">
+                  <b-button v-b-modal.franjas>modal franjas</b-button>
                   <Cronometro></Cronometro>
                 </b-tab>
                 <b-tab title="Temporizador" >
@@ -39,11 +40,13 @@ import Dusk from "@/assets/audio/Dusk by IanPost Artlist.mp3"
 import Staring from "@/assets/audio/Staring by Muted Artlist.mp3"
 import World from "@/assets/audio/TheWorldInsideInstrumentalVersion by RodellosMachine Artlist.mp3"
 import Music from "@/components/Music";
+import Franjas from "../components/Franjas";
 
 
 export default {
   name: "Timer",
   components:{
+    Franjas,
     Music,
     Temporizador,
     Cronometro

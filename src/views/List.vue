@@ -13,7 +13,7 @@
                   v-if="etiquetaFilter!==''"
                   class="etqButton mb-2"
                   size="sm"
-        >{{etiquetaFilter}} <strong class="close closeEtq">x</strong> </b-button>
+        >{{etiquetaFilter}} <strong class="close closeEtq">&times;</strong> </b-button>
       </div>
       <div>
         <!--    Boton para reordenar las tareas mostradas-->
@@ -194,7 +194,7 @@ export default {
         lista= lista.filter(task=>task.prioridad===this.priorityFilter)
       }
       if(this.etiquetaFilter!==""){
-        lista= lista.filter(task=>task.etiqueta.includes(this.etiquetaFilter))
+        lista= lista.filter(task=>task.etiqueta!==null?task.etiqueta.includes(this.etiquetaFilter):false)
       }
       return lista
     }

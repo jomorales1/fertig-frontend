@@ -105,5 +105,27 @@ class AuthService{
             headers: authHeader()
         });
     }
+
+    resetPassword(email) {
+        return axios.post(
+            API_URL + '/user/reset-password/' + email,
+            {
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            }
+        );
+    }
+
+    changePassword(requestObj) {
+        return axios.put(
+            API_URL + '/user/change-password',
+            {
+                newPassword: requestObj.password,
+            }, {
+                headers: { Authorization: 'Bearer ' + requestObj.token }
+            }
+        );
+    }
 }
 export default new AuthService()

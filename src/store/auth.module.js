@@ -93,8 +93,33 @@ export const auth = {
                 commit('changesFailure')
                 return Promise.reject(error);
             })
-        }
         },
+        resetPassword({ commit }, email) {
+            return AuthService.resetPassword(email).then(
+                response => {
+                    commit('resetPasswordSuccess');
+                    return Promise.resolve(response.data);
+                },
+                error => {
+                    commit('resetPasswordFailure');
+                    return Promise.reject(error);
+                }
+            );
+        },
+        changePassword({ commit }, requestObj) {
+            console.log(requestObj.token);
+            return AuthService.changePassword(requestObj).then(
+                response => {
+                    commit('resetPasswordSuccess');
+                    return Promise.resolve(response.data);
+                },
+                error => {
+                    commit('resetPasswordFailure');
+                    return Promise.reject(error);
+                }
+            );
+        },
+    },
     mutations: {
         //funciones de cambio de estado
         loginSuccess(state, luser) {

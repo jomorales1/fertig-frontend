@@ -29,6 +29,13 @@
 
 
                   </b-form-group>
+
+                  <b-form-group>
+                    <router-link to="/reset-password">
+                      ¿Olvidó su contraseña?
+                    </router-link>
+                  </b-form-group>
+
                   <b-form-group>
                     <!--se desabilita el boton si los campos no estan llenos o no cumplen con los requisitos-->
                     <b-button type="submit" >Iniciar sesión</b-button>

@@ -22,6 +22,20 @@ const routes=[
             requiresAuth: false
         }
     },{
+        path:'/reset-password',//ruta (localhost:8080/SignUp)
+        name:'Restablecer contraseña',
+        component:()=>import('@/views/ResetPassword.vue'),//componente que ocupa esa vista a partir de carpeta views
+        meta: {
+            requiresAuth: false
+        }
+    },{
+        path:'/change-password/:token',//ruta (localhost:8080/SignUp)
+        name:'Restablecer contraseña',
+        component:()=>import('@/views/ChangePassword.vue'),//componente que ocupa esa vista a partir de carpeta views
+        meta: {
+            requiresAuth: false
+        }
+    },{
         path:'/SignUp',//ruta (localhost:8080/SignUp)
         name:'Crear Cuenta',
         component:()=>import('@/views/SignUp'),//componente que ocupa esa vista a partir de carpeta views

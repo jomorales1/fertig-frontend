@@ -14,7 +14,7 @@
             >
               <b-card-text>
                 <!-- no pasa nada hasta que se hace el 'registrarse'-->
-                <b-form @submit.prevent="onSubmit">
+                <b-form @submit.prevent="onSubmit" :class="{mx_form_inv: formInv}">
                   <b-form-group label="username">
                     <!-- required para que no pase nada si no está lleno el campo-->
 
@@ -53,11 +53,14 @@
                     message
                   }}</span>
                 </b-form>
-                <div>
+                <div :class="{mx_recaptcha_failed: !recaptcha}">
                   <vue-recaptcha
-                    sitekey="6LdFeHYbAAAAAOnpyMpIEP0iGCILHXrnJ6Z0j8kz"
+                    sitekey="6LdREXYbAAAAABEwPItpAuvlUjE_35Ql8t7QJR3P"
+                    @verify="mxVerify"
                     :loadRecaptchaScript="true"
+                    
                   ></vue-recaptcha>
+                  <br/><small>Doesn't complete!</small>
                 </div>
                 <div class="d-flex justify-content-around flex-wrap">
                   <b-button
@@ -121,6 +124,7 @@ export default {
       message: "",
       isInit: false,
       isSignIn: false,
+      recaptcha: null
     };
   },
 
@@ -129,8 +133,15 @@ export default {
     handleSdkInit({ FB, scope }) {
       this.FB = FB;
       this.scope = scope;
-    },
+    }, mxVerify( response ) {
+
+			this.recaptcha = response
+
+		},
     onSubmit() {
+
+			if(this.recaptcha ) {
+       
       //metodo de inicio de sesión
       //añadrir los datos de formulario a el objeto user
       this.user.username = this.username;
@@ -151,7 +162,16 @@ export default {
           }
         );
       }
-    },
+    
+
+
+			} else {
+
+				this.formInv = true
+        this.message ="Por favor completa el captcha para continuar";
+			}
+			
+		},
     //metodo de inicio de sesión con google
     handleGoogle() {
       this.loading = true;
@@ -257,5 +277,15 @@ export default {
 }
 .OauthBtn {
   margin-bottom: 1rem;
+}
+small {
+	color: red;
+	display: none;
+}
+.mx_form_inv .mx_empty_filed ~ small {
+	display: block;
+}
+.mx_form_inv .mx_recaptcha_failed small {
+	display: block;
 }
 </style>

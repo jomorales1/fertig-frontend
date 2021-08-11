@@ -34,6 +34,7 @@ class AuthService{
             "Content-Type": "application/x-www-form-urlencoded",
             ...authHeader()
         }
+        if (token !== null ){
         return axios.delete(API_URL+"/notification/delete-token",{
             data: querystring.stringify({
                 id:token
@@ -43,7 +44,12 @@ class AuthService{
             localStorage.removeItem('user'); // Remueve el usuario de memoria
             localStorage.removeItem('googleUser');//Remueve el usuario de google de la memoria
             localStorage.removeItem("token")
-        })
+            })
+        }else{
+            localStorage.removeItem('user'); // Remueve el usuario de memoria
+            localStorage.removeItem('googleUser');//Remueve el usuario de google de la memoria
+            return Promise.resolve()
+        }
 
     }
     googleLogin(googleToken){//metodo para enviar token de google y obtener token propio

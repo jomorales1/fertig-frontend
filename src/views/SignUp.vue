@@ -101,7 +101,9 @@
       onSubmit(){ //Metodo de registro
           console.log(this.Register_form)
           if(this.Register_form.password === this.Register_form.reviewPassword){
-              let dataUser = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name, this.Register_form.recaptchaToken)
+              let dataUser0 = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name, this.Register_form.recaptchaToken)
+              let dataUser = this.$sanitize(dataUser0, {allowedTags: ['a', 'b']});
+              console.log(dataUser0);
              this.$store.dispatch("auth/register", dataUser) // Llamada a la función de axios creada para registro
                      .then(
                          ()=> {

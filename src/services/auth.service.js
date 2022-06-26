@@ -85,7 +85,8 @@ class AuthService{
             correo: user.email,
             usuario: user.username,
             password: user.password,
-            nombre:user.nombre
+            nombre:user.nombre,
+            reCaptchaToken: user.recaptcha
         },{
             headers:{
                 "Content-Type": "application/json"

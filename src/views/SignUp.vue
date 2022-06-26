@@ -37,6 +37,18 @@
                       <label class="col-form-label">Repetir contraseña: </label>
                       <b-form-input type="password" id="reviewPassword" required placeholder="Confirme la contraseña" v-model="Register_form.reviewPassword"></b-form-input>
                   </div>
+                  <div class="form-row">
+                      <vue-recaptcha 
+                        ref="recaptcha"
+                        @verify="onCaptchaVerified"
+                        @expired="onCaptchaExpired"
+                        size="recaptcha"
+                        sitekey="6Ld1wZ4gAAAAAHYOIEQPxBw3BHTAyIzRHh_7UGMH"
+                        class="my-2"
+                        theme="dark"
+                        >
+                      </vue-recaptcha>
+                  </div>
                   <b-form-group>
                     <b-form-checkbox class="my-2" v-model="privacy">¿Acepta nuestra <router-link to="/Privacy">politica de privacidad</router-link>?</b-form-checkbox>
                   </b-form-group>
@@ -61,6 +73,8 @@
 <script>
 
   import User from "../models/User";
+  import { VueRecaptcha } from 'vue-recaptcha';
+
   export default {
     name: "SignUp",
     data(){
@@ -71,7 +85,8 @@
           username: '',
           email: '',
           password:'',
-            reviewPassword:''
+          reviewPassword:'',
+          recaptchaToken: ''
         },
         // String del error
         stringError: '',
@@ -81,10 +96,12 @@
         privacy:false
       }
     },
+    components: { VueRecaptcha },
     methods:{
       onSubmit(){ //Metodo de registro
+          console.log(this.Register_form)
           if(this.Register_form.password === this.Register_form.reviewPassword){
-              let dataUser = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name)
+              let dataUser = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name, this.Register_form.recaptchaToken)
              this.$store.dispatch("auth/register", dataUser) // Llamada a la función de axios creada para registro
                      .then(
                          ()=> {
@@ -115,8 +132,13 @@
 
 
       },
-      error(error){ //Funcion para mandar error
-        document.getElementById("tagError").textContent = error.toString()
+      onCaptchaVerified: function (recaptchaToken) {
+        this.Register_form.recaptchaToken = recaptchaToken
+        const self = this;
+        self.status = "submitting";
+      },
+      onCaptchaExpired: function () {
+      this.$refs.recaptcha.reset();
       }
     }
 

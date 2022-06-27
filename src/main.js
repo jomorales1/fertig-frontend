@@ -21,8 +21,6 @@ Vue.config.productionTip = false
 //adicion de vee-validate
 Vue.component('ValidationProvider', ValidationProvider);
 Vue.use(VeeValidate);
-import VueSanitize from "vue-sanitize";
-Vue.use(VueSanitize);
 
 //inicializar aplicación
 new Vue({

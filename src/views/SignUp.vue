@@ -11,25 +11,25 @@
                   <b-form-group ><!-- Campo nombre !-->
                     <div class="form-row">
                     <label class="col-form-label">Nombre: </label>
-                    <b-form-input id="nombre" required placeholder="Ingrese el nombre" v-model="Register_form.name"></b-form-input>
+                    <b-form-input type="text" pattern="[A-Za-záéíóúñ \s]{1,30}" title="El nombre solo debe contener letras." id="nombre" required placeholder="Ingrese el nombre" v-model="Register_form.name"></b-form-input>
                     </div>
                   </b-form-group>
                   <b-form-group ><!-- Campo nombre de usuario !-->
                     <div class="form-row">
                       <label class="col-form-label">Usuario: </label>
-                      <b-form-input id="usuario" required placeholder="Ingrese el usuario" v-model="Register_form.username"></b-form-input>
+                      <b-form-input type="text" pattern="[A-Za-z0-9áéíóúñ \s.,-_!¡]{1,20}" title="El usuario solo debe contener máximo 20 letras y números y los siguientes caracteres especiales: . , - _ ! ¡" id="usuario" required placeholder="Ingrese el usuario" v-model="Register_form.username"></b-form-input>
                     </div>
                   </b-form-group>
                   <b-form-group ><!-- Campo correo !-->
                     <div class="form-row">
                       <label class="col-form-label">Correo: </label>
-                      <b-form-input id="email" required placeholder="Ingrese el correo" v-model="Register_form.email"></b-form-input>
+                      <b-form-input id="email" type="email" required placeholder="Ingrese el correo" v-model="Register_form.email"></b-form-input>
                     </div>
                   </b-form-group>
                   <b-form-group ><!-- Campo contraseña !-->
                     <div class="form-row">
                       <label class="col-form-label">Contraseña: </label>
-                      <b-form-input type="password" id="password" required placeholder="Ingrese la contraseña" v-model="Register_form.password"></b-form-input>
+                      <b-form-input type="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres" id="password" required placeholder="Ingrese la contraseña" v-model="Register_form.password"></b-form-input>
                     </div>
                   </b-form-group>
                   <b-form-group><!-- Campo repetir contraseña !-->
@@ -73,7 +73,6 @@
 <script>
 
   import User from "../models/User";
-  import { VueRecaptcha } from 'vue-recaptcha';
 
   export default {
     name: "SignUp",
@@ -96,14 +95,10 @@
         privacy:false
       }
     },
-    components: { VueRecaptcha },
     methods:{
       onSubmit(){ //Metodo de registro
-          console.log(this.Register_form)
           if(this.Register_form.password === this.Register_form.reviewPassword){
-              let dataUser0 = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name, this.Register_form.recaptchaToken)
-              let dataUser = this.$sanitize(dataUser0, {allowedTags: ['a', 'b']});
-              console.log(dataUser0);
+              let dataUser = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name, this.Register_form.recaptchaToken)
              this.$store.dispatch("auth/register", dataUser) // Llamada a la función de axios creada para registro
                      .then(
                          ()=> {

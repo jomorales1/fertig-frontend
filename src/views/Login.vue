@@ -18,14 +18,14 @@
                       label="username">
                     <!-- required para que no pase nada si no está lleno el campo-->
 
-                      <b-form-input v-model="username" required  placeholder="username"></b-form-input>
+                      <b-form-input type="text" pattern="[A-Za-z0-9áéíóúñ \s.,-_!¡]{1,20}" title="El usuario solo debe contener máximo 20 letras y números y los siguientes caracteres especiales: . , - _ ! ¡" v-model="username" required  placeholder="username"></b-form-input>
 
                   </b-form-group>
 
                   <b-form-group
                       label="Contraseña">
 
-                      <b-form-input v-model="password"  required type="password" placeholder="*******"></b-form-input>
+                      <b-form-input v-model="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres" required type="password" placeholder="*******"></b-form-input>
 
 
                   </b-form-group>

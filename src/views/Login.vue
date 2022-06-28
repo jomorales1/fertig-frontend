@@ -26,7 +26,7 @@
                       label="Contraseña">
 
                       <b-form-input v-model="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Debe contener al menos un número y una letra mayúscula y minúscula, y al menos 8 o más caracteres" required type="password" placeholder="*******"></b-form-input>
-
+                      <b-button @click="$router.push('/ForgotPassword')">Olvidé mi contraseña</b-button>
 
                   </b-form-group>
                   <b-form-group>

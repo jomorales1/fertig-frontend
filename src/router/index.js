@@ -29,6 +29,20 @@ const routes=[
             requiresAuth: false
         }
     },{
+        path:'/ForgotPassword',//ruta (localhost:8080/ForgotPassword)
+        name:'Olvide mi contraseña',
+        component:()=>import('@/views/ForgotPassword'),//componente que ocupa esa vista a partir de carpeta views
+        meta: {
+            requiresAuth: false
+        }
+    },{
+        path:'/ResetPassword',//ruta (localhost:8080/ResetPassword/:token)
+        name:'Cambiar Contraseña',
+        component:()=>import('@/views/ResetPassword'),//componente que ocupa esa vista a partir de carpeta views
+        meta: {
+            requiresAuth: false
+        }
+    },{
         path:'/List',//ruta (localhost:8080/List)
         name:'Lista de Actividades',
         component:()=>import('@/views/List'),//componente que ocupa esa vista a partir de carpeta views
@@ -89,7 +103,7 @@ const router = new VueRouter({
 //metodo para redirigir a Login si se intenta acceder a una pagina que requiere iniciar sesión
 //sin haber iniciado sesión
 router.beforeEach((to, from, next) => {
-    const publicPages = ['/Login', '/SignUp', '/','/Privacy'];
+    const publicPages = ['/Login', '/SignUp', '/','/Privacy', '/ForgotPassword', '/ResetPassword'];
     const authRequired = !publicPages.includes(to.path);
     const loggedIn = localStorage.getItem('user');
 

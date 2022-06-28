@@ -45,7 +45,6 @@
                         size="recaptcha"
                         sitekey="6Ld1wZ4gAAAAAHYOIEQPxBw3BHTAyIzRHh_7UGMH"
                         class="my-2"
-                        theme="dark"
                         >
                       </vue-recaptcha>
                   </div>
@@ -73,7 +72,7 @@
 <script>
 
   import User from "../models/User";
-
+  import { VueRecaptcha } from 'vue-recaptcha';
   export default {
     name: "SignUp",
     data(){
@@ -85,7 +84,7 @@
           email: '',
           password:'',
           reviewPassword:'',
-          recaptchaToken: ''
+          recaptcha: ''
         },
         // String del error
         stringError: '',
@@ -95,10 +94,12 @@
         privacy:false
       }
     },
+    components:{VueRecaptcha},
     methods:{
       onSubmit(){ //Metodo de registro
+          console.log(this.Register_form)
           if(this.Register_form.password === this.Register_form.reviewPassword){
-              let dataUser = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name, this.Register_form.recaptchaToken)
+              let dataUser = new User(this.Register_form.username, this.Register_form.password, this.Register_form.email, this.Register_form.name, this.Register_form.recaptcha)
              this.$store.dispatch("auth/register", dataUser) // Llamada a la función de axios creada para registro
                      .then(
                          ()=> {
@@ -129,8 +130,8 @@
 
 
       },
-      onCaptchaVerified: function (recaptchaToken) {
-        this.Register_form.recaptchaToken = recaptchaToken
+      onCaptchaVerified: function (recaptcha) {
+        this.Register_form.recaptcha = recaptcha
         const self = this;
         self.status = "submitting";
       },
